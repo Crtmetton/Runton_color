@@ -1,0 +1,110 @@
+# Database Schema
+
+## Tables
+
+### Utilisateur
+```sql
+CREATE TABLE Utilisateur (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    photoProfile TEXT
+);
+```
+Stocke les utilisateurs avec leur rôle (participant, organisateur, admin…).
+
+### Course
+```sql
+CREATE TABLE Course (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    description TEXT,
+    date TIMESTAMP NOT NULL,
+    lieu VARCHAR(255) NOT NULL,
+    distance DOUBLE NOT NULL,
+    maxParticipants INT NOT NULL,
+    prix INT NOT NULL,
+    cause VARCHAR(255)
+);
+```
+Contient les détails des courses.
+
+### Participant
+```sql
+CREATE TABLE Participant (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+```
+Liste les utilisateurs qui peuvent s’inscrire aux courses.
+
+### Inscription
+```sql
+CREATE TABLE Inscription (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    participant_id INT NOT NULL,
+    course_id INT NOT NULL,
+    FOREIGN KEY (participant_id) REFERENCES Participant(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
+);
+```
+Gère l’association entre les participants et les courses.
+
+### Admin
+```sql
+CREATE TABLE Admin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+```
+Liste des administrateurs (rattachés à un utilisateur).
+
+### Organisateur
+```sql
+CREATE TABLE Organisateur (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+```
+Liste des organisateurs (rattachés à un utilisateur).
+
+### Organisation
+```sql
+CREATE TABLE Organisation (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    organisateur_id INT NOT NULL,
+    course_id INT NOT NULL,
+    FOREIGN KEY (organisateur_id) REFERENCES Organisateur(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
+);
+```
+Relie les organisateurs aux courses qu’ils créent.
+
+### Discussion
+```sql
+CREATE TABLE Discussion (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    course_id INT NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
+);
+```
+Associe une discussion à une course.
+
+### Message
+```sql
+CREATE TABLE Message (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    contenu TEXT NOT NULL,
+    auteur_id INT NOT NULL,
+    discussion_id INT NOT NULL,
+    dateEnvoi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (auteur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    FOREIGN KEY (discussion_id) REFERENCES Discussion(id) ON DELETE CASCADE
+);
+```
+Contient les messages envoyés dans une discussion.
