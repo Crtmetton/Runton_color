@@ -36,3 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+dbFiles/Runton_color_dev.mv.db
+dbFiles/Runton_color_dev.trace.db
