@@ -1,0 +1,166 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .nav {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+header .nav a {
+    text-decoration: none;
+    color: #333;
+}
+
+header .nav a:hover {
+    text-decoration: underline;
+}
+
+header .buttons button,
+header .buttons a {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background: #007bff;
+    border-radius: 5px;
+}
+
+header .buttons button:hover,
+header .buttons a:hover {
+    background: #0056b3;
+}
+
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #f8f9fa;
+    padding: 2rem;
+}
+
+.hero h1 {
+    margin: 1rem 0;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+}
+
+.hero .buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.hero .buttons button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.hero .buttons .btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.hero .buttons .btn-primary:hover {
+    background: #0056b3;
+}
+
+.hero .buttons .btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.hero .buttons .btn-secondary:hover {
+    background: #5a6268;
+}
+
+section {
+    padding: 2rem;
+}
+
+.concept {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+}
+
+.concept img {
+    max-width: 50%;
+    height: auto;
+}
+
+.why-participate {
+    background: #f8f9fa;
+}
+
+.why-participate .reasons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.why-participate .reason {
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+}
+
+footer {
+    background: #333;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .concept {
+        flex-direction: column;
+    }
+
+    .why-participate .reasons {
+        flex-direction: column;
+    }
+
+    .hero .buttons {
+        flex-direction: column;
+    }
+}
