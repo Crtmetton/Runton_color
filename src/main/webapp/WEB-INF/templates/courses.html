@@ -1,23 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <title>Courses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste des Courses</title>
+  <link rel="stylesheet" href="css/style-liste-course.css">
 </head>
 <body>
-<div th:replace="~{entete}"></div>
-<h1>Liste des courses</h1>
-<form action="courses" method="POST">
-  <input type="text" id="nom" name="NOM" placeholder="Nom de la course" th:value="${nom}">
-  <input type="submit" value="Rechercher">
-</form>
-<table class="table table-striped table-hover">
-  <tr th:each="course:${courses}">
-    <td th:text="${course.id}"></td>
-    <td th:text="${course.nom}"></td>
-  </tr>
-</table>
-<a href="course">Ajouter une course</a>
+<!-- Navbar -->
+<header class="navbar" name="navbar">
+  <div class="logo" name="logo">Color Run</div>
+  <nav class="menu" name="menu">
+    <a href="#" name="link-accueil">Accueil</a>
+    <a href="#" name="link-concept">Concept</a>
+    <a href="#" name="link-mes-courses">Mes courses</a>
+    <a href="#" name="link-agenda">Agenda</a>
+    <a href="#" name="link-devenir-benevole">Devenir Bénévole</a>
+  </nav>
+  <div class="profile-icon" name="profile-icon">👤</div>
+</header>
+
+<!-- Search Section -->
+<section class="search-section" name="search-section">
+  <input type="text" class="search-bar" name="search-bar" placeholder="Les courses">
+  <div class="filters" name="filters">
+    <button name="filter-ville">Ville</button>
+    <button name="filter-date">Date</button>
+    <button name="filter-distance">Distance</button>
+    <button class="search-button" name="search-button">Rechercher</button>
+  </div>
+</section>
+
+<!-- Main Section -->
+<main class="courses-container">
+  <section class="courses-grid">
+
+    <article class="course-card">
+      <div class="course-image" style="background-image: url('images/course1.jpg');"></div>
+      <section class="course-details">
+        <h3 class="course-title"><strong><em>LES CULLOMÈTRES</em></strong></h3>
+        <p class="course-location">Culles-les-Roches (71)</p>
+        <p class="course-price"><strong>À partir de 10,00 €</strong></p>
+      </section>
+      <section class="course-distances">
+        <span class="distance-badge">25 km</span>
+        <span class="distance-badge">17 km</span>
+        <span class="distance-badge">+ 2</span>
+      </section>
+    </article>
+
+  </section>
+
+  <!-- Pagination -->
+  <nav class="pagination">
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn">...</button>
+    <button class="page-btn">Suivant</button>
+  </nav>
+</main>
+<!-- Footer -->
+<footer class="footer" name="footer">
+  <div class="newsletter" name="newsletter">
+    <p name="newsletter-text">Abonnez-vous à notre newsletter</p>
+    <form name="newsletter-form">
+      <input type="email" name="newsletter-email" placeholder="Votre email">
+      <button name="newsletter-button">S’abonner</button>
+    </form>
+  </div>
+  <div class="social-icons" name="social-icons">
+    <a href="#" name="instagram-link">📸 Instagram</a>
+    <a href="#" name="facebook-link">📘 Facebook</a>
+  </div>
+  <div class="credits" name="credits">
+    <p name="credits-text">2025 © Color Run. Tous droits réservés.</p>
+  </div>
+</footer>
 </body>
 </html>
