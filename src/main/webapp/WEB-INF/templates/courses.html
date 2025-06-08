@@ -4,31 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Liste des Courses</title>
-  <link rel="stylesheet" href="css/style-liste-course.css">
+  <link rel="stylesheet" href="style-liste-course.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 </head>
 <body>
 <!-- Navbar -->
-<header class="navbar" name="navbar">
-  <div class="logo" name="logo">Color Run</div>
-  <nav class="menu" name="menu">
-    <a href="#" name="link-accueil">Accueil</a>
-    <a href="#" name="link-concept">Concept</a>
-    <a href="#" name="link-mes-courses">Mes courses</a>
-    <a href="#" name="link-agenda">Agenda</a>
-    <a href="#" name="link-devenir-benevole">Devenir Bénévole</a>
+<header class="navbar">
+  <div class="logo">Color Run</div>
+  <nav class="menu">
+    <a href="#">Accueil</a>
+    <a href="#">Concept</a>
+    <a href="#">Mes courses</a>
+    <a href="#">Agenda</a>
+    <a href="#">Devenir Bénévole</a>
   </nav>
-  <div class="profile-icon" name="profile-icon">👤</div>
 </header>
 
 <!-- Search Section -->
-<section class="search-section" name="search-section">
-  <input type="text" class="search-bar" name="search-bar" placeholder="Les courses">
-  <div class="filters" name="filters">
-    <button name="filter-ville">Ville</button>
-    <button name="filter-date">Date</button>
-    <button name="filter-distance">Distance</button>
-    <button class="search-button" name="search-button">Rechercher</button>
-  </div>
+<section class="search-section">
+  <section class="search-hero">
+    <h1 class="main-title">Trouve ton prochain dossard</h1>
+    <div class="search-container">
+      <div class="search-input-container">
+        <input type="text" class="search-input" placeholder="Les courses">
+      </div>
+      <div class="filter-input-container">
+        <input type="text" class="filter-input" placeholder="Ville">
+      </div>
+      <div class="filter-input-container date-container">
+        <input type="text" class="filter-input date-range" placeholder="Dates">
+      </div>
+      <div class="filter-input-container">
+        <input type="number" class="filter-input" placeholder="Distance">
+      </div>
+      <button class="search-button">Rechercher</button>
+    </div>
+  </section>
 </section>
 
 <!-- Main Section -->
@@ -61,21 +74,39 @@
   </nav>
 </main>
 <!-- Footer -->
-<footer class="footer" name="footer">
-  <div class="newsletter" name="newsletter">
-    <p name="newsletter-text">Abonnez-vous à notre newsletter</p>
-    <form name="newsletter-form">
-      <input type="email" name="newsletter-email" placeholder="Votre email">
-      <button name="newsletter-button">S’abonner</button>
-    </form>
-  </div>
-  <div class="social-icons" name="social-icons">
-    <a href="#" name="instagram-link">📸 Instagram</a>
-    <a href="#" name="facebook-link">📘 Facebook</a>
-  </div>
-  <div class="credits" name="credits">
-    <p name="credits-text">2025 © Color Run. Tous droits réservés.</p>
+<footer class="footer">
+  <div class="footer-content">
+    <div class="newsletter">
+      <p>Abonnez-vous à notre newsletter</p>
+      <form>
+        <input type="email" placeholder="Votre email">
+        <button type="submit">S'abonner</button>
+      </form>
+    </div>
+    <div class="social-icons">
+      <a href="#">📸 Instagram</a>
+      <a href="#">📘 Facebook</a>
+    </div>
+    <div class="credits">
+      <p>2025 © Color Run. Tous droits réservés.</p>
+    </div>
   </div>
 </footer>
+
+<script>
+  flatpickr(".date-range", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    minDate: "today",
+    locale: "fr",
+    showMonths: 2,
+    static: true,
+    position: "below",
+    monthSelectorType: "static",
+    animate: true,
+    positionElement: ".date-container",
+    disableMobile: true
+  });
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* General Reset */
+/* Reset et styles de base */
 * {
     margin: 0;
     padding: 0;
@@ -6,218 +6,608 @@
 }
 
 body {
-    background-color: #f6f6f6;
-    margin: 0;
-    font-family: Arial, sans-serif;
+    background-color: #f8f9ff;
+    font-family: 'Inter', sans-serif;
+    min-width: 100%;
 }
 
-/* Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #333;
-    color: #fff;
-}
-
-.navbar .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.navbar .menu a {
-    margin: 0 1rem;
-    color: #fff;
-    text-decoration: none;
-}
-
-.navbar .menu a:hover {
-    text-decoration: underline;
-}
-
-.navbar .profile-icon {
-    font-size: 1.5rem;
-}
-
-/* Search Section */
-.search-section {
-    padding: 2rem;
-    background-color: #f4f4f4;
-    text-align: center;
-}
-
-.search-bar {
-    width: 80%;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-}
-
-.filters button {
-    margin: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-.filters button:hover {
-    background-color: #0056b3;
-}
-
-/* Conteneur principal */
-.courses-container {
+.main-container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f6f6f6;
 }
 
-/* Grille des cards */
+/* Barre de recherche */
+.search-container {
+    width: 100%;
+    background-color: #E2E7FF;
+    border-radius: 25px !important;
+    display: flex;
+    align-items: stretch;
+    padding: 8px;
+    gap: 8px;
+}
+
+/* Conteneurs des inputs */
+.search-input-container,
+.filter-input-container {
+    position: relative;
+    border-radius: 20px !important;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+}
+
+.search-input-container {
+    flex: 2;
+    min-width: 200px;
+}
+
+.filter-input-container {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* Effet hover sur les conteneurs */
+.search-input-container:hover,
+.filter-input-container:hover {
+    background-color: #EEF0FF;
+}
+
+/* Focus styles */
+.search-input:focus,
+.filter-input:focus {
+    outline: none;
+}
+
+.search-input-container:has(input:focus),
+.filter-input-container:has(input:focus) {
+    background-color: #F5F7FF;
+}
+
+/* Style commun pour les inputs */
+.search-input,
+.filter-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    padding: 0 24px;
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Placeholder pour tous les inputs */
+.search-input::placeholder,
+.filter-input::placeholder {
+    color: #666;
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* Bouton de recherche */
+.search-button {
+    min-width: 120px;
+    height: 44px;
+    background-color: #0052FF;
+    color: white;
+    border: none;
+    border-radius: 20px !important;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 24px;
+    white-space: nowrap;
+}
+
+.search-button:hover {
+    background-color: #0045DB;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 82, 255, 0.2);
+}
+
+/* Styles spécifiques pour l'input date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+}
+
+/* Enlever les flèches des inputs number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Main Section */
+.courses-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Grille des courses */
 .courses-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 cards par ligne */
-    gap: 20px; /* Espacement entre les cards */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 40px;
 }
 
-/* Style des cards */
+/* Cards des courses */
 .course-card {
-    background-color: #ffffff; /* Fond blanc */
-    border-radius: 12px; /* Bords arrondis */
+    background-color: #fff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: center;
-    transition: transform 0.3s ease; /* Animation au survol */
+    transition: transform 0.3s ease;
 }
 
 .course-card:hover {
-    transform: translateY(-5px); /* Légère élévation au survol */
+    transform: translateY(-5px);
 }
-
-/* Image des cards */
-.course-image {
-    width: 100%;
-    height: 150px;
-    background-color: #ccc;
-    background-size: cover;
-    background-position: center;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-/* Détails des courses */
-.course-details {
-    padding: 15px;
-}
-
-.course-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin: 10px 0 5px;
-    color: #333;
-}
-
-.course-location {
-    font-size: 0.9em;
-    color: #555;
-}
-
-.course-price {
-    font-size: 1em;
-    color: #000;
-    margin-top: 5px;
-}
-
-/* Badges des distances */
-.course-distances {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 10px 0;
-}
-
-.distance-badge {
-    background-color: #000;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: bold;
-}
-
 
 /* Pagination */
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    gap: 10px;
+    gap: 8px;
+    margin: 40px 0;
 }
 
 .page-btn {
-    background-color: #ffffff;
-    color: #007bff;
-    border: 1px solid #ddd;
-    padding: 10px 15px;
-    border-radius: 5px;
+    min-width: 44px;
+    height: 44px;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .page-btn:hover {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: #EEF0FF;
+    color: #0052FF;
 }
 
 .page-btn.active {
-    background-color: #007bff;
-    color: #ffffff;
-    font-weight: bold;
+    background-color: #0052FF;
+    color: white;
+}
+
+/* Style spécial pour le bouton "Suivant" */
+.page-btn:last-child {
+    min-width: auto;
+    padding: 0 24px;
+    background-color: #E2E7FF;
+}
+
+.page-btn:last-child:hover {
+    background-color: #EEF0FF;
+    color: #0052FF;
+}
+
+/* Header et Navigation */
+.navbar {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 1.5rem 2rem;
+    background-color: #fff;
+    border-radius: 50px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #000;
+    text-decoration: none;
+}
+
+.navbar .menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.navbar .menu a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.navbar .menu a:hover {
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.navbar .menu a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    transition: width 0.3s ease;
+}
+
+.navbar .menu a:hover::after {
+    width: 100%;
+}
+
+.navbar .menu .active {
+    color: #000;
+    font-weight: 800;
+}
+
+.navbar .menu .active::after {
+    width: 100%;
+}
+
+.navbar .menu .account-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+}
+
+.navbar .menu .account-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar .menu-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navbar .language-selector,
+.navbar .currency-selector {
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+}
+
+.navbar .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Titre principal */
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #1a1a1a;
+    margin: 0 0 60px 0;
+    padding-top: 20px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Section de recherche */
+.search-section {
+    width: 100%;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Container principal de recherche avec titre */
+.search-hero {
+    width: 100%;
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 60px !important;
+    padding: 60px;
+}
+
+/* Styles spécifiques pour le champ date */
+.filter-input-container.date-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.filter-input-container.date-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.date-range {
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+/* Styles Flatpickr améliorés */
+.flatpickr-calendar {
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(71, 80, 255, 0.15) !important;
+    border: none !important;
+    padding: 20px !important;
+    margin-top: 12px !important;
+    font-family: 'Inter', sans-serif !important;
+    z-index: 999999 !important;
+}
+
+.flatpickr-calendar.multiMonth {
+    width: 600px !important;
+    display: flex !important;
+    gap: 20px !important;
+}
+
+.flatpickr-calendar.multiMonth .flatpickr-months {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 0 !important;
+    margin-bottom: 15px !important;
+}
+
+.flatpickr-months .flatpickr-month {
+    height: auto !important;
+    padding: 10px 0 !important;
+}
+
+.flatpickr-current-month {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.flatpickr-current-month .cur-month {
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+.flatpickr-weekdays {
+    margin: 10px 0 !important;
+}
+
+.flatpickr-weekday {
+    font-size: 14px !important;
+    color: #666 !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+}
+
+.flatpickr-day {
+    border-radius: 8px !important;
+    margin: 2px !important;
+    height: 38px !important;
+    line-height: 38px !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: #0052FF !important;
+    border-color: #0052FF !important;
+}
+
+.flatpickr-day.inRange {
+    background: rgba(0, 82, 255, 0.1) !important;
+    border-color: transparent !important;
+    color: #0052FF !important;
+}
+
+.flatpickr-day:hover {
+    background: rgba(71, 80, 255, 0.05) !important;
+}
+
+.flatpickr-day.today {
+    border: 2px solid #0052FF !important;
+    color: #0052FF !important;
+}
+
+.flatpickr-day.today:hover {
+    background: #0052FF !important;
+    color: white !important;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    top: 10px !important;
+    padding: 0 10px !important;
+    color: #666 !important;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-months .flatpickr-next-month:hover {
+    color: #0052FF !important;
+}
+
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: currentColor !important;
+}
+
+/* Animation du calendrier */
+@keyframes fpFadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.flatpickr-calendar.animate.open {
+    animation: fpFadeInDown 200ms ease-out !important;
+}
+
+/* Styles des cards */
+.course-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.course-details {
+    padding: 1.5rem;
+}
+
+.course-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.course-location {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.course-price {
+    color: #0052FF;
+    font-size: 1.1rem;
+}
+
+.course-distances {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.distance-badge {
+    background-color: #0052FF;
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 /* Footer */
 .footer {
-    background-color: #333;
+    background-color: #0052FF;
     color: #fff;
-    padding: 2rem;
+    padding: 60px 20px;
+    margin-top: 60px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.newsletter {
+    width: 100%;
+    max-width: 500px;
     text-align: center;
 }
 
-.footer .newsletter form {
-    margin-top: 1rem;
+.newsletter p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
-.footer .newsletter input {
-    padding: 0.5rem;
-    margin-right: 0.5rem;
-    width: 60%;
+.newsletter form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
 }
 
-.footer .newsletter button {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
+.newsletter input {
+    flex: 1;
+    max-width: 300px;
+    height: 44px;
+    padding: 0 20px;
     border: none;
-    cursor: pointer;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
 }
 
-.footer .social-icons a {
-    margin: 0 0.5rem;
+.newsletter button {
+    height: 44px;
+    padding: 0 24px;
+    background-color: #fff;
+    color: #0052FF;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.newsletter button:hover {
+    background-color: #E2E7FF;
+    transform: translateY(-1px);
+}
+
+.social-icons {
+    display: flex;
+    gap: 24px;
+    margin: 20px 0;
+}
+
+.social-icons a {
     color: #fff;
     text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: opacity 0.2s ease;
 }
 
-.footer .social-icons a:hover {
-    text-decoration: underline;
+.social-icons a:hover {
+    opacity: 0.8;
 }
 
-.footer .credits {
-    margin-top: 1rem;
+.credits {
     font-size: 0.9rem;
+    opacity: 0.8;
+    text-align: center;
 }
