@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infos Course | Color Run</title>
+    <link rel="stylesheet" href="style-liste-course.css">
+</head>
+<body>
+<div class="bg-circle1"></div>
+<div class="bg-circle2"></div>
+<div class="bg-circle3"></div>
+
+<!-- Navbar -->
+<header class="navbar">
+    <div class="logo">Color Run</div>
+    <nav class="menu">
+        <a href="#">Accueil</a>
+        <a href="#">Courses</a>
+        <a href="#">Mes courses</a>
+        <a href="#">Agenda</a>
+        <a href="#">Devenir Bénévole</a>
+        <a href="#" class="account-icon" title="Mon compte" style="margin-left:24px;">
+            <!-- Icône compte utilisateur SVG -->
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
+                <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
+                <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </svg>
+        </a>
+    </nav>
+</header>
+
+<!-- Hero Section pour la course -->
+<section class="search-section">
+    <section class="search-hero" style="display:flex; flex-direction:column; align-items:center; gap:32px;">
+        <div style="display:flex; gap:32px; align-items:center; width:100%; justify-content:center;">
+            <div style="width:220px; height:220px; background:#e2e7ff; border-radius:32px; background-image:url('images/course1.jpg'); background-size:cover; background-position:center;"></div>
+            <div style="flex:1; min-width:220px;">
+                <h1 class="main-title" style="margin-bottom:12px;">Nom de la course</h1>
+                <div style="font-size:1.2rem; color:#6a82fb; font-weight:600;">Lieu de la course</div>
+                <div style="font-size:1.05rem; color:#ff6a88; font-weight:600; margin-top:8px;">Date de la course</div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<main class="main-container" style="margin-top:32px;">
+    <div style="display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap;">
+        <!-- Colonne gauche : infos principales -->
+        <div style="flex:2; min-width:340px;">
+            <!-- En-tête infos -->
+            <section class="course-card" style="padding:32px 32px 24px 32px; margin-bottom:24px;">
+                <div style="display:flex; gap:32px; align-items:flex-start;">
+                    <div style="min-width:60px; text-align:center;">
+                        <div style="font-size:2.2rem; font-weight:800; color:#ff6a88;">8</div>
+                        <div style="font-size:1rem; color:#666;">Dim</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:1.1rem; font-weight:700; color:#6a82fb;">Dimanche 8 juin 2025</div>
+                        <div style="font-size:1rem; color:#ff6a88; font-weight:600;">Course terminée</div>
+                        <div style="margin-top:8px; font-size:1rem; font-weight:600;">Huldenberg</div>
+                        <div style="font-size:0.95rem; color:#6a82fb;">BE - Brabant Flamand</div>
+                    </div>
+                </div>
+                <div style="margin-top:24px; color:#666; font-size:0.98rem;">
+                    <div><b>Ouverture :</b> Samedi 7 juin 2025 à 00h00</div>
+                    <div><b>Fermeture :</b> Samedi 7 juin 2025 à 20h00</div>
+                </div>
+            </section>
+            <!-- Description -->
+            <section class="course-card" style="padding:32px; margin-bottom:24px;">
+                <div style="font-size:1.08rem; color:#222; margin-bottom:18px;">
+                    À deux pas de Bruxelles, viens vivre une course à vélo pas comme les autres. Du vintage, de la bonne humeur, et juste ce qu’il faut de compétition entre copains.
+                </div>
+                <div style="margin-bottom:14px;">
+                    <b>Ce que tu vas trouver sur place :</b>
+                    <ul style="margin:8px 0 0 18px; color:#444; font-size:0.98rem;">
+                        <li>Une boucle de 3 km à enchaîner 10 fois dans le centre d’Huldenberg ;</li>
+                        <li>Des pavés, des virages, des montées… et des spectateurs en furie ;</li>
+                        <li>Un village qui sort droit des années 60, avec spiegel tent, fanfare et cochon à la broche ;</li>
+                        <li>Une course pour les vrais… ou du moins pour ceux qui ont un bon sens de l’humour (et un vélo d’avant 1986).</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <b>Dress code & vélo :</b>
+                    <div style="margin-top:4px;">
+                        Oublie le carbone et les gadgets dernier cri.<br>
+                        Ici, c’est acier, manches sur le cadre et pédales vintage obligatoires. Et côté style ?<br>
+                        Cuissard laineux, moustache fièrement assumée, jambes non rasées… tu seras dans le thème ou tu ne seras pas.
+                    </div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <b>L’esprit retrotenburg ?</b>
+                    <ul style="margin:8px 0 0 18px; color:#444; font-size:0.98rem;">
+                        <li>Tu viens avec ton vélo rétro (et ton casque, c’est non négociable) ;</li>
+                        <li>Tu fais un tour de reconnaissance derrière des voitures anciennes ;</li>
+                        <li>Tu te lances dans une course chronométrée où chaque coup de pédale est un hommage au bon vieux temps ;</li>
+                        <li>Et tu termines la journée en te trémoussant dans la tente à miroirs au son d’un DJ ou d’un orchestre live.</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <b>3 très bonnes raisons de participer :</b>
+                    <ul style="margin:8px 0 0 18px; color:#444; font-size:0.98rem;">
+                        <li>C’est fun, vraiment fun !</li>
+                        <li>Personne ne te jugera si tu es le dernier à passer la ligne d’arrivée.</li>
+                        <li>Chaque participant repart avec un sac de cadeaux et des jetons à échanger contre des boissons (si tu rends ton transpondeur, hein).</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b>Résultats :</b> <a href="#" style="color:#6a82fb; text-decoration:underline;">2024</a>
+                </div>
+            </section>
+            <!-- Liste des courses et inscrits -->
+            <section class="course-card" style="padding:24px; margin-bottom:24px;">
+                <div style="font-weight:700; font-size:1.1rem; margin-bottom:12px;">Liste des inscrits</div>
+                <div style="color:#666; margin-bottom:8px;" id="nb-inscrits">0 inscrit(s)</div>
+                <button id="show-participants" class="search-button secondary" style="min-width:100px; font-size:0.95rem; padding:6px 18px;">Voir la liste →</button>
+            </section>
+        </div>
+        <!-- Colonne droite : Choix rapide -->
+        <div style="flex:1; min-width:320px;">
+            <section id="sticky-course-choice" class="course-card" style="padding:32px 24px; margin-bottom:24px;">
+                <div style="font-weight:700; font-size:1.1rem; margin-bottom:24px;">Choisir une course</div>
+                <div class="choix-course-list" id="choix-course-list" style="display:flex; flex-direction:column; gap:20px;">
+                    <!-- Les choix de course seront générés dynamiquement ici -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Popup participants -->
+    <div id="participants-popup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:32px; max-width:500px; width:90%; margin:auto; box-shadow:0 8px 32px rgba(0,0,0,0.13); padding:32px 24px; position:relative;">
+            <button onclick="document.getElementById('participants-popup').style.display='none'" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
+            <h2 style="font-size:1.3rem; margin-bottom:18px; text-align:center;">Liste des participants</h2>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:0;">
+                <thead>
+                <tr style="background:#e2e7ff;">
+                    <th style="padding:8px; border-radius:12px 0 0 12px;">Nom</th>
+                    <th style="padding:8px;">Prénom</th>
+                    <th style="padding:8px; border-radius:0 12px 12px 0;">Course</th>
+                </tr>
+                </thead>
+                <tbody id="participants-list">
+                <!-- Participants dynamiques ici -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Tchat et carte sous la colonne principale -->
+    <div style="display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; margin-top:32px;">
+        <div style="flex:2; min-width:340px;">
+            <!-- Tchat -->
+            <section class="course-card" style="padding:32px 24px; margin-bottom:24px;">
+                <div style="font-weight:700; margin-bottom:8px;">ChatBox de la course</div>
+                <div style="background:#f8f9ff; border-radius:16px; border:1px solid #e2e7ff; padding:16px; min-height:120px; max-height:180px; overflow-y:auto; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:1.1rem;">👤</span>
+                        <span style="background:#fff; border:1px solid #bbb; border-radius:16px; padding:6px 14px; font-size:0.98rem;">Salut</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:1.1rem;">👤</span>
+                        <span style="background:#fff; border:1px solid #bbb; border-radius:16px; padding:6px 14px; font-size:0.98rem;">BLABLABLA</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:1.1rem;">👤</span>
+                        <span style="background:#fff; border:1px solid #bbb; border-radius:16px; padding:6px 14px; font-size:0.98rem;">BLABLABLABLA</span>
+                    </div>
+                    <div style="justify-content:flex-end; display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="background:#fff; border:1px solid #bbb; border-radius:16px; padding:6px 14px; font-size:0.98rem;">BLABLA</span>
+                        <span style="font-size:1.1rem;">👤</span>
+                    </div>
+                </div>
+                <form style="margin-top:8px;">
+                    <input type="text" placeholder="Écrire..." style="width:100%; border-radius:12px; border:1px solid #bbb; padding:10px; font-size:1rem;">
+                </form>
+            </section>
+            <!-- Carte -->
+            <section class="course-card" style="padding:24px;">
+                <div style="font-weight:700; margin-bottom:8px;">Lieu de la course</div>
+                <div style="width:100%; height:400px; border-radius:16px; overflow:hidden; border:1px solid #e2e7ff;">
+                    <iframe
+                            src="https://www.openstreetmap.org/export/embed.html?bbox=4.5,50.8,4.6,50.9&amp;layer=mapnik"
+                            style="width:100%; height:100%; border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="newsletter">
+            <p>Abonnez-vous à notre newsletter</p>
+            <form>
+                <input type="email" placeholder="Votre email">
+                <button type="submit">S'abonner</button>
+            </form>
+        </div>
+        <div class="social-icons">
+            <a href="#">📸 Instagram</a>
+            <a href="#">📘 Facebook</a>
+        </div>
+        <div class="credits">
+            <p>2025 © Color Run. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Popup compte utilisateur (connexion/inscription) -->
+<div id="account-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.38); z-index:9999;">
+    <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
+        <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
+        <img src="images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;">
+        <div id="account-popup-content">
+            <!-- Connexion par défaut -->
+            <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Se connecter</h2>
+            <form>
+                <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
+                <input type="email" style="width:100%; margin-bottom:16px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
+                <input type="password" style="width:100%; margin-bottom:24px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">Se connecter</button>
+            </form>
+            <div style="text-align:center; font-size:0.95rem;">
+                Tu n'as pas de compte ? <a href="#" id="show-register" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Créer le tien</a>
+            </div>
+        </div>
+        <!-- Formulaire inscription (masqué par défaut) -->
+        <div id="register-popup-content" style="display:none; width:100%;">
+            <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Créer un compte</h2>
+            <form>
+                <label style="font-size:0.98rem; font-weight:600;">Nom :</label>
+                <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <label style="font-size:0.98rem; font-weight:600;">Prénom :</label>
+                <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
+                <input type="email" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
+                <input type="password" style="width:100%; margin-bottom:20px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">S'inscrire</button>
+            </form>
+            <div style="text-align:center; font-size:0.95rem;">
+                Tu as déjà un compte ? <a href="#" id="show-login" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Connecte-toi</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('show-participants').onclick = function() {
+        document.getElementById('participants-popup').style.display = 'flex';
+    };
+
+    // --- Variables dynamiques pour les inscrits et les choix de course ---
+    const participants = [
+        { nom: "Dupont", prenom: "Jean", course: "10 km" },
+        { nom: "Martin", prenom: "Sophie", course: "Marche 5 km" },
+        { nom: "Durand", prenom: "Paul", course: "Course enfants BENJAMINS 1km" }
+        // ...ajoute d'autres participants ici...
+    ];
+
+    const choixCourses = [
+        { label: "Marche<br>5 km", prix: "5,00 €" },
+        { label: "Course<br>10 km", prix: "16,00 €" },
+        { label: "Course enfants<br>POUSSINS 1km", prix: "Gratuit" },
+        { label: "Course enfants<br>BENJAMINS 1km", prix: "Gratuit" },
+        { label: "Course<br>5 km", prix: "11,00 €" }
+    ];
+
+    // Génération dynamique des inscrits
+    document.getElementById('participants-list').innerHTML = participants.map(p =>
+        `<tr>
+        <td style="padding:8px;">${p.nom}</td>
+        <td style="padding:8px;">${p.prenom}</td>
+        <td style="padding:8px;">${p.course}</td>
+    </tr>`
+    ).join('');
+    document.getElementById('nb-inscrits').textContent = participants.length + (participants.length > 1 ? " inscrits" : " inscrit");
+
+    // Génération dynamique des choix de course
+    document.getElementById('choix-course-list').innerHTML = choixCourses.map(c =>
+        `<div class="choix-course-item" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+        <span class="choix-course-label" style="font-weight:600; max-width:110px; font-size:0.98rem; line-height:1.2; word-break:break-word; flex:1 1 0;">${c.label}</span>
+        <span class="choix-course-prix" style="font-weight:600; font-size:0.98rem; flex:0 0 auto; margin:0 8px;">${c.prix}</span>
+        <button class="btn-inscrire" type="button" style="flex:0 0 auto;">S'inscrire</button>
+    </div>`
+    ).join('');
+
+    // Sticky "Choisir une course" jusqu'au tchat
+    window.addEventListener('DOMContentLoaded', function() {
+        var sticky = document.getElementById('sticky-course-choice');
+        var chat = document.querySelector('.course-card[style*="ChatBox"]');
+        if (!sticky || !chat) return;
+
+        var stickyInitialTop = sticky.getBoundingClientRect().top + window.scrollY;
+        var stickyHeight = sticky.offsetHeight;
+
+        function onScroll() {
+            var chatTop = chat.getBoundingClientRect().top + window.scrollY;
+            var scrollY = window.scrollY || window.pageYOffset;
+            var margin = 32;
+
+            if (scrollY + margin > stickyInitialTop && (scrollY + stickyHeight + margin) < chatTop) {
+                sticky.style.position = 'fixed';
+                sticky.style.top = margin + 'px';
+                sticky.style.width = sticky.parentElement.offsetWidth + 'px';
+                sticky.style.zIndex = 10;
+            } else if ((scrollY + stickyHeight + margin) >= chatTop) {
+                sticky.style.position = 'absolute';
+                sticky.style.top = (chatTop - stickyHeight - sticky.parentElement.getBoundingClientRect().top + window.scrollY) + 'px';
+                sticky.style.width = '';
+                sticky.style.zIndex = '';
+            } else {
+                sticky.style.position = '';
+                sticky.style.top = '';
+                sticky.style.width = '';
+                sticky.style.zIndex = '';
+            }
+        }
+        window.addEventListener('scroll', onScroll);
+        window.addEventListener('resize', onScroll);
+    });
+
+    // Ouvre la popup compte
+    document.querySelectorAll('.account-icon').forEach(function(el) {
+        el.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById('account-popup-overlay').style.display = 'block';
+            document.getElementById('account-popup-content').style.display = 'block';
+            document.getElementById('register-popup-content').style.display = 'none';
+        };
+    });
+    // Ferme la popup
+    function closeAccountPopup() {
+        document.getElementById('account-popup-overlay').style.display = 'none';
+    }
+    // Switch vers inscription
+    document.getElementById('show-register').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('account-popup-content').style.display = 'none';
+        document.getElementById('register-popup-content').style.display = 'block';
+    };
+    // Switch vers connexion
+    document.getElementById('show-login').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('register-popup-content').style.display = 'none';
+        document.getElementById('account-popup-content').style.display = 'block';
+    };
+    // Fermer popup si on clique sur l'overlay (hors popup)
+    document.getElementById('account-popup-overlay').onclick = function(e) {
+        if (e.target === this) closeAccountPopup();
+    };
+</script>
+</body>
+</html>

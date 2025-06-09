@@ -9,6 +9,10 @@ body {
     background-color: #f8f9ff;
     font-family: 'Inter', sans-serif;
     min-width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #f8f9ff 0%, #ffe3ec 40%, #e2e7ff 100%);
+    position: relative;
+    overflow-x: hidden;
 }
 
 .main-container {
@@ -16,6 +20,39 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+}
+
+/* === BACKGROUND COLOR RUN FESTIF === */
+
+/* Cercles colorés flous décoratifs */
+.bg-circle1, .bg-circle2, .bg-circle3 {
+    position: fixed;
+    z-index: -1; /* toujours derrière le contenu */
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.38;
+    pointer-events: none;
+}
+.bg-circle1 {
+    width: 420px;
+    height: 420px;
+    left: -140px;
+    top: 40px;
+    background: radial-gradient(circle, #ffb347 0%, #ff5e62 80%, transparent 100%);
+}
+.bg-circle2 {
+    width: 320px;
+    height: 320px;
+    right: -100px;
+    bottom: 0;
+    background: radial-gradient(circle, #7ee8fa 0%, #a1ffce 80%, transparent 100%);
+}
+.bg-circle3 {
+    width: 260px;
+    height: 260px;
+    left: 60vw;
+    top: 10vh;
+    background: radial-gradient(circle, #fcb1ff 0%, #a18cd1 80%, transparent 100%);
 }
 
 /* Barre de recherche */
@@ -95,22 +132,107 @@ body {
 .search-button {
     min-width: 120px;
     height: 44px;
-    background-color: #0052FF;
-    color: white;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
     border: none;
     border-radius: 20px !important;
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease, box-shadow 0.2s;
     padding: 0 24px;
     white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    position: relative;
+    z-index: 1;
 }
 
 .search-button:hover {
-    background-color: #0045DB;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 82, 255, 0.2);
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+/* Variante bouton secondaire coloré (ex: pour les boutons avec fond clair) */
+.search-button.secondary,
+.search-button[style*="background:#E2E7FF"] {
+    background: #fff !important;
+    color: #ff6a88 !important;
+    border: 2px solid #ff6a88 !important;
+    box-shadow: 0 2px 8px rgba(255,106,136,0.08);
+}
+
+.search-button.secondary:hover,
+.search-button[style*="background:#E2E7FF"]:hover {
+    background: #ff6a88 !important;
+    color: #fff !important;
+    border-color: #ff6a88 !important;
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18);
+}
+
+/* Bouton s'inscrire version "disabled" (style comme sur l'image fournie) */
+.btn-inscrire-disabled,
+.search-button.secondary[disabled] {
+    background: #fafafa !important;
+    color: #bdbdbd !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    font-weight: 600;
+    opacity: 1 !important;
+    transition: none;
+}
+
+/* Bouton s'inscrire version "disabled" restylé (fond blanc, contour rose, texte rose, hover gris) */
+.btn-inscrire,
+.search-button.secondary.btn-inscrire {
+    min-width: 90px;
+    height: 38px;
+    font-size: 1rem;
+    border-radius: 24px !important;
+    padding: 0 18px;
+    font-weight: 700;
+    border: 2px solid #ff6a88 !important;
+    background: #fff !important;
+    color: #ff6a88 !important;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-inscrire:hover,
+.search-button.secondary.btn-inscrire:hover {
+    background: #ffe3ec !important;
+    color: #ff6a88 !important;
+    border-color: #ff6a88 !important;
+}
+
+/* Si désactivé */
+.btn-inscrire[disabled],
+.search-button.secondary.btn-inscrire[disabled] {
+    background: #fafafa !important;
+    color: #bdbdbd !important;
+    border: 2px solid #eee !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+}
+
+/* Pour la colonne "choisir une course" : bouton plus petit et arrondi */
+.btn-inscrire,
+.search-button.secondary.btn-inscrire {
+    min-width: 90px;
+    height: 38px;
+    font-size: 1rem;
+    border-radius: 24px !important;
+    padding: 0 18px;
+    font-weight: 600;
+    border: none;
+    box-shadow: none;
+    background: #fafafa;
+    color: #bdbdbd;
+    cursor: not-allowed;
+    transition: none;
 }
 
 /* Styles spécifiques pour l'input date */
@@ -135,6 +257,9 @@ input[type="number"] {
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 /* Grille des courses */
@@ -151,10 +276,54 @@ input[type="number"] {
     border-radius: 20px;
     overflow: hidden;
     transition: transform 0.3s ease;
+    /* garde le style de base */
+    border: none;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+    position: relative;
+    z-index: 1;
 }
 
 .course-card:hover {
     transform: translateY(-5px);
+}
+
+.course-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a; /* texte noir/gris foncé comme avant */
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+.course-location {
+    color: #666; /* gris comme avant */
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.course-price {
+    color: #1a1a1a; /* noir/gris foncé comme avant */
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.course-distances {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.distance-badge {
+    background: #ff6a88;
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 1px 4px rgba(255,106,136,0.10);
 }
 
 /* Pagination */
@@ -169,39 +338,47 @@ input[type="number"] {
 .page-btn {
     min-width: 44px;
     height: 44px;
-    background-color: #fff;
-    color: #333;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
     border: none;
     border-radius: 12px;
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease, box-shadow 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    position: relative;
+    z-index: 1;
 }
 
 .page-btn:hover {
-    background-color: #EEF0FF;
-    color: #0052FF;
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
 }
 
 .page-btn.active {
-    background-color: #0052FF;
-    color: white;
+    background: #fff;
+    color: #ff6a88;
+    border: 2px solid #ff6a88;
 }
 
-/* Style spécial pour le bouton "Suivant" */
 .page-btn:last-child {
     min-width: auto;
     padding: 0 24px;
-    background-color: #E2E7FF;
+    background: #fff;
+    color: #ff6a88;
+    border: 2px solid #ff6a88;
 }
 
 .page-btn:last-child:hover {
-    background-color: #EEF0FF;
-    color: #0052FF;
+    background: #ff6a88;
+    color: #fff;
+    border-color: #ff6a88;
 }
 
 /* Header et Navigation */
@@ -314,6 +491,10 @@ input[type="number"] {
     padding-top: 20px;
     text-align: center;
     line-height: 1.2;
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
 }
 
 /* Section de recherche */
@@ -331,6 +512,16 @@ input[type="number"] {
     background-color: #fff;
     border-radius: 60px !important;
     padding: 60px;
+}
+
+/* Contour blanc sur les titres principaux de l'accueil */
+.search-hero p,
+.courses-container h2,
+.courses-container h3 {
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
 }
 
 /* Styles spécifiques pour le champ date */
@@ -495,17 +686,22 @@ input[type="number"] {
 .course-title {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: #1a1a1a;
+    color: #1a1a1a; /* texte noir/gris foncé comme avant */
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 1px;
 }
 
 .course-location {
-    color: #666;
+    color: #666; /* gris comme avant */
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .course-price {
-    color: #0052FF;
+    color: #1a1a1a; /* noir/gris foncé comme avant */
     font-size: 1.1rem;
+    font-weight: 700;
 }
 
 .course-distances {
@@ -516,20 +712,28 @@ input[type="number"] {
 }
 
 .distance-badge {
-    background-color: #0052FF;
-    color: white;
+    background: #ff6a88;
+    color: #fff;
     padding: 0.4rem 1rem;
     border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 1px 4px rgba(255,106,136,0.10);
 }
 
 /* Footer */
 .footer {
-    background-color: #0052FF;
+    background: #ff6a88;
     color: #fff;
-    padding: 60px 20px;
+    padding: 60px 20px 32px 20px;
     margin-top: 60px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 2;
+    width: 100%;
 }
 
 .footer-content {
@@ -538,19 +742,25 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: 48px;
 }
 
 .newsletter {
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     text-align: center;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 2px 16px rgba(255,106,136,0.10), 0 1px 6px rgba(106,130,251,0.08);
+    padding: 32px 24px 24px 24px;
+    margin-bottom: 12px;
 }
 
 .newsletter p {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 20px;
+    color: #ff6a88;
 }
 
 .newsletter form {
@@ -564,28 +774,32 @@ input[type="number"] {
     max-width: 300px;
     height: 44px;
     padding: 0 20px;
-    border: none;
+    border: 2px solid #ffb6e6;
     border-radius: 12px;
     font-size: 15px;
     font-weight: 500;
+    background: #f8f9ff;
+    color: #6a82fb;
 }
 
 .newsletter button {
     height: 44px;
     padding: 0 24px;
-    background-color: #fff;
-    color: #0052FF;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
     border: none;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease, box-shadow 0.2s;
 }
 
 .newsletter button:hover {
-    background-color: #E2E7FF;
-    transform: translateY(-1px);
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
 }
 
 .social-icons {
@@ -597,17 +811,94 @@ input[type="number"] {
 .social-icons a {
     color: #fff;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 1.1rem;
     transition: opacity 0.2s ease;
 }
 
 .social-icons a:hover {
     opacity: 0.8;
+    text-decoration: underline;
 }
 
 .credits {
-    font-size: 0.9rem;
-    opacity: 0.8;
+    font-size: 1rem;
+    opacity: 0.85;
     text-align: center;
+    margin-top: 12px;
+    color: #fff;
+}
+
+.acceuil-bloc-blanc {
+    background: #fff;
+    border-radius: 64px;
+    box-shadow: 0 8px 48px rgba(255,106,136,0.08), 0 2px 16px rgba(106,130,251,0.06);
+    max-width: 1200px;
+    margin: 32px auto 0 auto;
+    padding: 24px 0 16px 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Réduit l'écart vertical entre les sections à l'intérieur du bloc blanc */
+.acceuil-bloc-blanc .courses-container {
+    margin: 16px auto;
+    padding: 0 16px;
+}
+
+/* Plus de bords arrondis sur les cards */
+.course-card {
+    border-radius: 32px;
+    /* ...existing code... */
+}
+
+/* Plus de bords arrondis sur les images des cards */
+.course-image {
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    /* ...existing code... */
+}
+
+/* Plus de bords arrondis sur les boutons */
+.search-button,
+.page-btn,
+.newsletter button {
+    border-radius: 32px !important;
+}
+
+/* Plus de bords arrondis sur les badges */
+.distance-badge {
+    border-radius: 32px;
+}
+
+/* Plus de bords arrondis sur la newsletter */
+.newsletter {
+    border-radius: 32px;
+}
+
+.acceuil-bloc-blanc > div {
+    padding-left: 48px;
+    padding-right: 48px;
+}
+@media (max-width: 900px) {
+    .acceuil-bloc-blanc > div {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* Animation slide-in pour le popup compte */
+@keyframes slideInAccountPopup {
+    from {
+        transform: translateX(100%);
+        opacity: 0.3;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#account-popup {
+    animation: slideInAccountPopup 0.35s cubic-bezier(0.4,0,0.2,1);
 }
