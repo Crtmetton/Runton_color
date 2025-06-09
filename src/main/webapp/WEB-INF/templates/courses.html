@@ -6,19 +6,29 @@
   <title>Liste des Courses</title>
   <link rel="stylesheet" href="style-liste-course.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+  <!-- DÉPLACE les scripts flatpickr ICI, APRÈS le body, pas dans le head -->
 </head>
 <body>
+<div class="bg-circle1"></div>
+<div class="bg-circle2"></div>
+<div class="bg-circle3"></div>
 <!-- Navbar -->
 <header class="navbar">
   <div class="logo">Color Run</div>
   <nav class="menu">
     <a href="#">Accueil</a>
-    <a href="#">Concept</a>
+    <a href="#">Courses</a>
     <a href="#">Mes courses</a>
     <a href="#">Agenda</a>
     <a href="#">Devenir Bénévole</a>
+    <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
+      <!-- Icône compte utilisateur SVG -->
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
+        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
+        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </a>
   </nav>
 </header>
 
@@ -33,8 +43,8 @@
       <div class="filter-input-container">
         <input type="text" class="filter-input" placeholder="Ville">
       </div>
-      <div class="filter-input-container date-container">
-        <input type="text" class="filter-input date-range" placeholder="Dates">
+      <div class="filter-input-container date-container" id="date-container">
+        <input type="text" class="filter-input date-range" placeholder="Dates" id="date-range-input" autocomplete="off">
       </div>
       <div class="filter-input-container">
         <input type="number" class="filter-input" placeholder="Distance">
@@ -46,31 +56,12 @@
 
 <!-- Main Section -->
 <main class="courses-container">
-  <section class="courses-grid">
-
-    <article class="course-card">
-      <div class="course-image" style="background-image: url('images/course1.jpg');"></div>
-      <section class="course-details">
-        <h3 class="course-title"><strong><em>LES CULLOMÈTRES</em></strong></h3>
-        <p class="course-location">Culles-les-Roches (71)</p>
-        <p class="course-price"><strong>À partir de 10,00 €</strong></p>
-      </section>
-      <section class="course-distances">
-        <span class="distance-badge">25 km</span>
-        <span class="distance-badge">17 km</span>
-        <span class="distance-badge">+ 2</span>
-      </section>
-    </article>
-
+  <section class="courses-grid" id="courses-list">
+    <!-- Les cartes de course seront générées dynamiquement ici -->
   </section>
-
   <!-- Pagination -->
-  <nav class="pagination">
-    <button class="page-btn active">1</button>
-    <button class="page-btn">2</button>
-    <button class="page-btn">3</button>
-    <button class="page-btn">...</button>
-    <button class="page-btn">Suivant</button>
+  <nav class="pagination" id="pagination">
+    <!-- Pagination dynamique ici -->
   </nav>
 </main>
 <!-- Footer -->
@@ -93,19 +84,175 @@
   </div>
 </footer>
 
+<!-- Popup compte utilisateur (connexion/inscription) -->
+<div id="account-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.38); z-index:9999;">
+  <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
+    <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
+    <img src="images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;">
+    <div id="account-popup-content">
+      <!-- Connexion par défaut -->
+      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Se connecter</h2>
+      <form>
+        <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
+        <input type="email" style="width:100%; margin-bottom:16px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
+        <input type="password" style="width:100%; margin-bottom:24px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">Se connecter</button>
+      </form>
+      <div style="text-align:center; font-size:0.95rem;">
+        Tu n'as pas de compte ? <a href="#" id="show-register" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Créer le tien</a>
+      </div>
+    </div>
+    <!-- Formulaire inscription (masqué par défaut) -->
+    <div id="register-popup-content" style="display:none; width:100%;">
+      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Créer un compte</h2>
+      <form>
+        <label style="font-size:0.98rem; font-weight:600;">Nom :</label>
+        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <label style="font-size:0.98rem; font-weight:600;">Prénom :</label>
+        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
+        <input type="email" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
+        <input type="password" style="width:100%; margin-bottom:20px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">S'inscrire</button>
+      </form>
+      <div style="text-align:center; font-size:0.95rem;">
+        Tu as déjà un compte ? <a href="#" id="show-login" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Connecte-toi</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Place les scripts JS à la fin du body -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 <script>
-  flatpickr(".date-range", {
-    mode: "range",
-    dateFormat: "d/m/Y",
-    minDate: "today",
-    locale: "fr",
-    showMonths: 2,
-    static: true,
-    position: "below",
-    monthSelectorType: "static",
-    animate: true,
-    positionElement: ".date-container",
-    disableMobile: true
+  document.addEventListener("DOMContentLoaded", function() {
+    // Flatpickr
+    if (typeof flatpickr === "undefined") {
+      alert("Flatpickr n'est pas chargé !");
+      return;
+    }
+    flatpickr("#date-range-input", {
+      mode: "range",
+      dateFormat: "d/m/Y",
+      minDate: "today",
+      locale: "fr",
+      showMonths: 2,
+      static: true,
+      position: "below",
+      monthSelectorType: "static",
+      animate: true,
+      positionElement: document.getElementById("date-container"),
+      disableMobile: true
+    });
+
+    // --- Variables dynamiques pour les courses ---
+    const courses = [
+      {
+        image: "images/course1.jpg",
+        titre: "LES CULLOMÈTRES",
+        lieu: "Culles-les-Roches (71)",
+        prix: "À partir de 10,00 €",
+        distances: ["25 km", "17 km", "+ 2"]
+      },
+      {
+        image: "images/course2.jpg",
+        titre: "COLOR RUN PARIS",
+        lieu: "Paris (75)",
+        prix: "À partir de 15,00 €",
+        distances: ["5 km", "10 km"]
+      },
+      {
+        image: "images/course2.jpg",
+        titre: "COLOR RUN PARIS",
+        lieu: "Paris (75)",
+        prix: "À partir de 15,00 €",
+        distances: ["5 km", "10 km"]
+      },
+      {
+        image: "images/course2.jpg",
+        titre: "COLOR RUN PARIS",
+        lieu: "Paris (75)",
+        prix: "À partir de 15,00 €",
+        distances: ["5 km", "10 km"]
+      },
+      {
+        image: "images/course2.jpg",
+        titre: "COLOR RUN PARIS",
+        lieu: "Paris (75)",
+        prix: "À partir de 15,00 €",
+        distances: ["5 km", "10 km"]
+      },
+      {
+        image: "images/course2.jpg",
+        titre: "COLOR RUN PARIS",
+        lieu: "Paris (75)",
+        prix: "À partir de 15,00 €",
+        distances: ["5 km", "10 km"]
+      },
+
+      // ... Ajoute d'autres objets course ici ...
+    ];
+
+    // Génération dynamique des cartes de course
+    const coursesList = document.getElementById('courses-list');
+    coursesList.innerHTML = courses.map(course => `
+      <article class="course-card">
+        <div class="course-image" style="background-image: url('${course.image}');"></div>
+        <section class="course-details">
+          <h3 class="course-title"><strong><em>${course.titre}</em></strong></h3>
+          <p class="course-location">${course.lieu}</p>
+          <p class="course-price"><strong>${course.prix}</strong></p>
+        </section>
+        <section class="course-distances">
+          ${course.distances.map(d => `<span class="distance-badge">${d}</span>`).join('')}
+        </section>
+      </article>
+    `).join('');
+
+    // --- Pagination dynamique (exemple simple) ---
+    const pagination = document.getElementById('pagination');
+    const totalPages = 3;
+    let currentPage = 1;
+    function renderPagination() {
+      let html = '';
+      for(let i=1; i<=totalPages; i++) {
+        html += `<button class="page-btn${i===currentPage?' active':''}">${i}</button>`;
+      }
+      html += `<button class="page-btn">...</button><button class="page-btn">Suivant</button>`;
+      pagination.innerHTML = html;
+    }
+    renderPagination();
+
+    // Ouvre la popup compte
+    document.getElementById('open-account-popup').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('account-popup-overlay').style.display = 'block';
+      document.getElementById('account-popup-content').style.display = 'block';
+      document.getElementById('register-popup-content').style.display = 'none';
+    };
+    // Ferme la popup
+    function closeAccountPopup() {
+      document.getElementById('account-popup-overlay').style.display = 'none';
+    }
+    // Switch vers inscription
+    document.getElementById('show-register').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('account-popup-content').style.display = 'none';
+      document.getElementById('register-popup-content').style.display = 'block';
+    };
+    // Switch vers connexion
+    document.getElementById('show-login').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('register-popup-content').style.display = 'none';
+      document.getElementById('account-popup-content').style.display = 'block';
+    };
+    // Fermer popup si on clique sur l'overlay (hors popup)
+    document.getElementById('account-popup-overlay').onclick = function(e) {
+      if (e.target === this) closeAccountPopup();
+    };
   });
 </script>
 </body>
