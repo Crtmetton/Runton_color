@@ -835,17 +835,6 @@ input[type="number"] {
     color: #fff;
 }
 
-.acceuil-bloc-blanc {
-    background: #fff;
-    border-radius: 64px;
-    box-shadow: 0 8px 48px rgba(255,106,136,0.08), 0 2px 16px rgba(106,130,251,0.06);
-    max-width: 1200px;
-    margin: 32px auto 0 auto;
-    padding: 24px 0 16px 0;
-    position: relative;
-    z-index: 1;
-}
-
 /* Réduit l'écart vertical entre les sections à l'intérieur du bloc blanc */
 .acceuil-bloc-blanc .courses-container {
     margin: 16px auto;

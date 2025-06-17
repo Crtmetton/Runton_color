@@ -1,0 +1,341 @@
+/* Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f8f9ff;
+    font-family: 'Inter', sans-serif;
+    min-width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #f8f9ff 0%, #ffe3ec 40%, #e2e7ff 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* --- STYLES GLOBAUX --- */
+.main-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- STYLES SPECIFIQUES A LA PAGE CREATION-COURSE --- */
+
+/* Card de création de course */
+.course-card {
+    background-color: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    /* garde le style de base */
+    border: none;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+    position: relative;
+    z-index: 1;
+}
+
+.course-card.no-hover {
+    pointer-events: none;
+    transform: none !important;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+}
+
+/* Labels et champs de formulaire */
+.form-label {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    color: #6a82fb;
+    letter-spacing: 0.2px;
+}
+
+.form-field {
+    border-radius: 14px !important;
+    border: 1.5px solid #e2e7ff !important;
+    background: #f8f9ff !important;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 11px 18px !important;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.03);
+    transition: border 0.2s, box-shadow 0.2s;
+    color: #222;
+}
+
+.form-field:focus {
+    border: 1.5px solid #6a82fb !important;
+    outline: none;
+    background: #fff !important;
+    box-shadow: 0 4px 16px rgba(106,130,251,0.08);
+}
+
+/* Boutons */
+.search-button {
+    min-width: 120px;
+    height: 44px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px !important;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease, box-shadow 0.2s;
+    padding: 0 24px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    position: relative;
+    z-index: 1;
+}
+
+.search-button:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+/* Bouton obstacle sélectionné */
+.obstacle-btn.selected,
+.obstacle-btn.selected:focus {
+    background: #6a82fb !important;
+    color: #fff !important;
+    border-color: #6a82fb !important;
+}
+
+/* Cercles colorés flous décoratifs */
+.bg-circle1, .bg-circle2, .bg-circle3 {
+    position: fixed;
+    z-index: -1; /* toujours derrière le contenu */
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.38;
+    pointer-events: none;
+}
+.bg-circle1 {
+    width: 420px;
+    height: 420px;
+    left: -140px;
+    top: 40px;
+    background: radial-gradient(circle, #ffb347 0%, #ff5e62 80%, transparent 100%);
+}
+.bg-circle2 {
+    width: 320px;
+    height: 320px;
+    right: -100px;
+    bottom: 0;
+    background: radial-gradient(circle, #7ee8fa 0%, #a1ffce 80%, transparent 100%);
+}
+.bg-circle3 {
+    width: 260px;
+    height: 260px;
+    left: 60vw;
+    top: 10vh;
+    background: radial-gradient(circle, #fcb1ff 0%, #a18cd1 80%, transparent 100%);
+}
+
+/* Titre principal */
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #1a1a1a;
+    margin: 0 0 60px 0;
+    padding-top: 20px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
+}
+
+/* Footer */
+.footer {
+    background: #ff6a88;
+    color: #fff;
+    padding: 60px 20px 32px 20px;
+    margin-top: 60px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+}
+
+.newsletter {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 2px 16px rgba(255,106,136,0.10), 0 1px 6px rgba(106,130,251,0.08);
+    padding: 32px 24px 24px 24px;
+    margin-bottom: 12px;
+}
+
+.newsletter p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #ff6a88;
+}
+
+.newsletter form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.newsletter input {
+    flex: 1;
+    max-width: 300px;
+    height: 44px;
+    padding: 0 20px;
+    border: 2px solid #ffb6e6;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    background: #f8f9ff;
+    color: #6a82fb;
+}
+
+.newsletter button {
+    height: 44px;
+    padding: 0 24px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease, box-shadow 0.2s;
+}
+
+.newsletter button:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+.social-icons {
+    display: flex;
+    gap: 24px;
+    margin: 20px 0;
+}
+
+.social-icons a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: opacity 0.2s ease;
+}
+
+.social-icons a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.credits {
+    font-size: 1rem;
+    opacity: 0.85;
+    text-align: center;
+    margin-top: 12px;
+    color: #fff;
+}
+
+/* Animation du calendrier */
+@keyframes fpFadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.flatpickr-calendar.animate.open {
+    animation: fpFadeInDown 220ms cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+/* Animation slide-in pour le popup compte */
+@keyframes slideInAccountPopup {
+    from {
+        transform: translateX(100%);
+        opacity: 0.3;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.popup-animate {
+    animation: slideInAccountPopup 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Réduit l'écart vertical entre les sections à l'intérieur du bloc blanc */
+.acceuil-bloc-blanc .courses-container {
+    margin: 16px auto;
+    padding: 0 16px;
+}
+
+/* Plus de bords arrondis sur les cards */
+.course-card {
+    border-radius: 32px;
+    /* ...existing code... */
+}
+
+/* Plus de bords arrondis sur les images des cards */
+.course-image {
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    /* ...existing code... */
+}
+
+/* Plus de bords arrondis sur les boutons */
+.search-button,
+.page-btn,
+.newsletter button {
+    border-radius: 32px !important;
+}
+
+/* Plus de bords arrondis sur les badges */
+.distance-badge {
+    border-radius: 32px;
+}
+
+/* Plus de bords arrondis sur la newsletter */
+.newsletter {
+    border-radius: 32px;
+}
+
+.acceuil-bloc-blanc > div {
+    padding-left: 48px;
+    padding-right: 48px;
+}
+@media (max-width: 900px) {
+    .acceuil-bloc-blanc > div {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

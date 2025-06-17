@@ -1,0 +1,534 @@
+/* ...reset et styles globaux... */
+
+body {
+    background-color: #f8f9ff;
+    font-family: 'Inter', sans-serif;
+    min-width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #f8f9ff 0%, #ffe3ec 40%, #e2e7ff 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.bg-circle1, .bg-circle2, .bg-circle3 {
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.38;
+    pointer-events: none;
+}
+.bg-circle1 {
+    width: 420px;
+    height: 420px;
+    left: -140px;
+    top: 40px;
+    background: radial-gradient(circle, #ffb347 0%, #ff5e62 80%, transparent 100%);
+}
+.bg-circle2 {
+    width: 320px;
+    height: 320px;
+    right: -100px;
+    bottom: 0;
+    background: radial-gradient(circle, #7ee8fa 0%, #a1ffce 80%, transparent 100%);
+}
+.bg-circle3 {
+    width: 260px;
+    height: 260px;
+    left: 60vw;
+    top: 10vh;
+    background: radial-gradient(circle, #fcb1ff 0%, #a18cd1 80%, transparent 100%);
+}
+
+.navbar {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 1.5rem 2rem;
+    background-color: #fff;
+    border-radius: 50px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar .logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #000;
+    text-decoration: none;
+}
+.navbar .menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+.navbar .menu a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+.navbar .menu a:hover,
+.navbar .menu .active {
+    color: #000;
+    font-weight: 800;
+}
+.navbar .menu a::after,
+.navbar .menu .active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    transition: width 0.3s ease;
+}
+.navbar .menu a:hover::after,
+.navbar .menu .active::after {
+    width: 100%;
+}
+.navbar .account-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+}
+.navbar .account-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #1a1a1a;
+    margin: 0 0 40px 0;
+    padding-top: 20px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    /* padding déjà géré dans .courses-container */
+}
+
+.search-section {
+    width: 100%;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.search-hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 60px !important;
+    padding: 60px;
+    /* supprime width: 100%; et padding: 60px 0; */
+}
+
+.courses-container,
+.my-courses-list {
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+    padding: 0 60px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Card horizontale */
+.my-course-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 32px;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    min-height: 160px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    /* supprime max-width: 900px; et margin: 0 auto; */
+}
+.my-course-card:hover {
+    transform: translateY(-4px) scale(1.01);
+}
+
+.my-course-image {
+    width: 180px;
+    height: 100%;
+    min-height: 160px;
+    background-size: cover;
+    background-position: center;
+    border-top-left-radius: 32px;
+    border-bottom-left-radius: 32px;
+    flex-shrink: 0;
+}
+
+.my-course-details {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.my-course-title {
+    font-size: 1.3rem;
+    color: #1a1a1a;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 1px;
+    margin-bottom: 0.2rem;
+}
+.my-course-location {
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+.my-course-price {
+    color: #1a1a1a;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+.my-course-distances {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+}
+.distance-badge {
+    background: #ff6a88;
+    color: #fff;
+    padding: 0.3rem 1rem;
+    border-radius: 32px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 1px 4px rgba(255,106,136,0.10);
+}
+
+.my-course-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+    height: 100%;
+}
+.payer-btn {
+    min-width: 150px;
+    height: 48px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    outline: none;
+}
+.payer-btn:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+/* Bouton principal (rechercher, se connecter, s'inscrire) */
+.search-button {
+    min-width: 120px;
+    height: 44px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px !important;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease, box-shadow 0.2s;
+    padding: 0 24px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    position: relative;
+    z-index: 1;
+}
+
+.search-button:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+/* Footer styles (repris de style-liste-course.css) */
+.footer {
+    background: #ff6a88;
+    color: #fff;
+    padding: 60px 20px 32px 20px;
+    margin-top: 60px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+}
+.newsletter {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 2px 16px rgba(255,106,136,0.10), 0 1px 6px rgba(106,130,251,0.08);
+    padding: 32px 24px 24px 24px;
+    margin-bottom: 12px;
+}
+.newsletter p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #ff6a88;
+}
+.newsletter form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.newsletter input {
+    flex: 1;
+    max-width: 300px;
+    height: 44px;
+    padding: 0 20px;
+    border: 2px solid #ffb6e6;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    background: #f8f9ff;
+    color: #6a82fb;
+}
+.newsletter button {
+    height: 44px;
+    padding: 0 24px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease, box-shadow 0.2s;
+}
+.newsletter button:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+.social-icons {
+    display: flex;
+    gap: 24px;
+    margin: 20px 0;
+}
+.social-icons a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: opacity 0.2s ease;
+}
+.social-icons a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+.credits {
+    font-size: 1rem;
+    opacity: 0.85;
+    text-align: center;
+    margin-top: 12px;
+    color: #fff;
+}
+
+/* Animation slide-in pour le popup compte */
+@keyframes slideInAccountPopup {
+    from {
+        transform: translateX(100%);
+        opacity: 0.3;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.popup-animate {
+    animation: slideInAccountPopup 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Zone de titre et de filtrage (identique à courses.html) */
+.search-section {
+    width: 100%;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.search-hero {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 60px !important;
+    padding: 60px;
+}
+
+.search-container {
+    width: 100%;
+    background-color: #E2E7FF;
+    border-radius: 25px !important;
+    display: flex;
+    align-items: stretch;
+    padding: 8px;
+    gap: 8px;
+}
+
+.search-input-container,
+.filter-input-container {
+    position: relative;
+    border-radius: 20px !important;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+}
+
+.search-input-container {
+    flex: 2;
+    min-width: 200px;
+}
+
+.filter-input-container {
+    flex: 1;
+    min-width: 140px;
+}
+
+.search-input-container:hover,
+.filter-input-container:hover {
+    background-color: #EEF0FF;
+}
+
+.search-input:focus,
+.filter-input:focus {
+    outline: none;
+}
+
+.search-input-container:has(input:focus),
+.filter-input-container:has(input:focus) {
+    background-color: #F5F7FF;
+}
+
+.search-input,
+.filter-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    padding: 0 24px;
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.search-input::placeholder,
+.filter-input::placeholder {
+    color: #666;
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* Date picker container */
+.filter-input-container.date-container {
+    position: relative;
+    cursor: pointer;
+}
+.filter-input-container.date-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+.date-range {
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .courses-container {
+        padding: 0 4px;
+    }
+    .my-course-card {
+        flex-direction: column;
+        min-height: unset;
+    }
+    .my-course-image {
+        width: 100%;
+        height: 180px;
+        border-radius: 32px 32px 0 0;
+    }
+    .my-course-details {
+        padding: 1.2rem 1rem;
+    }
+    .my-course-actions {
+        width: 100%;
+        padding: 1rem 0 1.5rem 0;
+        justify-content: center;
+    }
+}
+.my-course-actions {
+    width: 100%;
+    padding: 1rem 0 1.5rem 0;
+    justify-content: center;
+}
+
+

@@ -17,7 +17,7 @@ import org.thymeleaf.context.IContext;
 /**
  * Cette classe aura le pouvoir de traiter des requêtes HTTP
  */
-@WebServlet(name = "coursesServlet", value = {"/index", "/courses"})
+@WebServlet(name = "coursesServlet", value = {"/accueil"})
 public class CoursesServlet extends HttpServlet {
     private String message;
 
