@@ -37,19 +37,22 @@
   <section class="search-hero">
     <h1 class="main-title">Trouve ton prochain dossard</h1>
     <div class="search-container">
-      <div class="search-input-container">
-        <input type="text" class="search-input" placeholder="Les courses">
+      <div class="search-input-container" style="flex:1.35; min-width:130px;">
+        <input type="text" class="search-input" placeholder="Rechercher une course">
       </div>
       <div class="filter-input-container">
         <input type="text" class="filter-input" placeholder="Ville">
       </div>
-      <div class="filter-input-container date-container" id="date-container">
-        <input type="text" class="filter-input date-range" placeholder="Dates" id="date-range-input" autocomplete="off">
+      <div class="filter-input-container">
+        <input type="date" class="filter-input" id="date-from" placeholder="Du">
+      </div>
+      <div class="filter-input-container">
+        <input type="date" class="filter-input" id="date-to" placeholder="Au">
       </div>
       <div class="filter-input-container">
         <input type="number" class="filter-input" placeholder="Distance">
       </div>
-      <button class="search-button">Rechercher</button>
+      <button class="search-button">Filtrer</button>
     </div>
   </section>
 </section>
@@ -148,6 +151,14 @@
       disableMobile: true
     });
 
+    // Met la date du jour par défaut dans le champ "Du"
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateFrom = document.getElementById('date-from');
+    if (dateFrom) dateFrom.value = `${yyyy}-${mm}-${dd}`;
+
     // --- Variables dynamiques pour les courses ---
     const courses = [
       {
@@ -155,42 +166,42 @@
         titre: "LES CULLOMÈTRES",
         lieu: "Culles-les-Roches (71)",
         prix: "10,00 €",
-        distances: ["25 km", "17 km", "+ 2"]
+        distance: "25 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
+        distance: "5 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
+        distance: "5 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
+        distance: "5 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
+        distance: "5 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
+        distance: "5 km"
       },
 
       // ... Ajoute d'autres objets course ici ...
@@ -207,7 +218,7 @@
           <p class="course-price"><strong>${course.prix}</strong></p>
         </section>
         <section class="course-distances">
-          ${course.distances.map(d => `<span class="distance-badge">${d}</span>`).join('')}
+          <span class="distance-badge">${course.distance}</span>
         </section>
       </article>
     `).join('');

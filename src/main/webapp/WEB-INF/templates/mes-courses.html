@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mes Courses | Color Run</title>
+  <link rel="stylesheet" href="style-liste-course.css">
   <link rel="stylesheet" href="style-mes-courses.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 <div class="bg-circle1"></div>
@@ -21,7 +21,7 @@
     <a href="#">Agenda</a>
     <a href="#">Devenir Bénévole</a>
     <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
-      <!-- ...existing SVG code... -->
+      <!-- Icône compte utilisateur SVG -->
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
         <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
         <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
@@ -31,35 +31,39 @@
   </nav>
 </header>
 
-<!-- Zone de titre et de filtrage -->
+<!-- Zone blanche autour du titre et du filtre -->
 <section class="search-section">
   <section class="search-hero">
-    <h1 class="main-title">Mes Courses</h1>
+    <h1 class="main-title">Mes courses</h1>
     <div class="search-container">
-      <div class="search-input-container">
-        <input type="text" class="search-input" placeholder="Les courses">
+      <div class="search-input-container" style="flex:1.35; min-width:130px;">
+        <input type="text" class="search-input" placeholder="Rechercher une course">
       </div>
       <div class="filter-input-container">
         <input type="text" class="filter-input" placeholder="Ville">
       </div>
-      <div class="filter-input-container date-container" id="date-container">
-        <input type="text" class="filter-input date-range" placeholder="Dates" id="date-range-input" autocomplete="off">
+      <div class="filter-input-container">
+        <input type="date" class="filter-input" id="date-from" placeholder="Du">
+      </div>
+      <div class="filter-input-container">
+        <input type="date" class="filter-input" id="date-to" placeholder="Au">
       </div>
       <div class="filter-input-container">
         <input type="number" class="filter-input" placeholder="Distance">
       </div>
-      <button class="search-button">Rechercher</button>
+      <button class="search-button">Filtrer</button>
     </div>
   </section>
 </section>
 
-<!-- Liste des courses -->
 <main class="courses-container">
-  <section class="my-courses-list" id="my-courses-list">
-    <!-- Les cards horizontales seront générées ici -->
-  </section>
+  <div class="mes-courses-bloc-blanc">
+    <section class="courses-grid" id="mes-courses-list" style="grid-template-columns: 1fr;">
+      <!-- Les cartes de course seront générées dynamiquement ici -->
+    </section>
+  </div>
 </main>
-
+<!-- Footer -->
 <footer class="footer">
   <div class="footer-content">
     <div class="newsletter">
@@ -81,11 +85,11 @@
 
 <!-- Popup compte utilisateur (connexion/inscription) -->
 <div id="account-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.38); z-index:9999;">
-  <div id="account-popup" class="popup-animate" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
+  <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
     <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
     <img src="images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;">
     <div id="account-popup-content">
-      <!-- ...existing code for login/register... -->
+      <!-- Connexion par défaut -->
       <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Se connecter</h2>
       <form>
         <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
@@ -98,6 +102,7 @@
         Tu n'as pas de compte ? <a href="#" id="show-register" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Créer le tien</a>
       </div>
     </div>
+    <!-- Formulaire inscription (masqué par défaut) -->
     <div id="register-popup-content" style="display:none; width:100%;">
       <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Créer un compte</h2>
       <form>
@@ -120,89 +125,84 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // --- Variables dynamiques pour les courses ---
-    const courses = [
+    // --- Variables dynamiques pour les courses de l'utilisateur ---
+    const mesCourses = [
       {
         image: "images/course1.jpg",
         titre: "LES CULLOMÈTRES",
         lieu: "Culles-les-Roches (71)",
         prix: "10,00 €",
-        distances: ["25 km", "17 km", "+ 2"]
+        distance: "25 km"
       },
       {
         image: "images/course2.jpg",
         titre: "COLOR RUN PARIS",
         lieu: "Paris (75)",
         prix: "15,00 €",
-        distances: ["5 km", "10 km"]
-      },
+        distance: "5 km"
+      }
       // ... Ajoute d'autres objets course ici ...
     ];
 
-    // Génération dynamique des cards horizontales
-    const myCoursesList = document.getElementById('my-courses-list');
-    myCoursesList.innerHTML = courses.map(course => `
-      <article class="my-course-card">
-        <div class="my-course-image" style="background-image: url('${course.image}');"></div>
-        <section class="my-course-details">
-          <h3 class="my-course-title"><strong><em>${course.titre}</em></strong></h3>
-          <p class="my-course-location">${course.lieu}</p>
-          <p class="my-course-price"><strong>${course.prix}</strong></p>
-          <div class="my-course-distances">
-            ${course.distances.map(d => `<span class="distance-badge">${d}</span>`).join('')}
-          </div>
+    // Génération dynamique des cartes de course (une par ligne)
+    const mesCoursesList = document.getElementById('mes-courses-list');
+    mesCoursesList.innerHTML = mesCourses.map(course => `
+      <article class="course-card" style="display:flex; flex-direction:row; align-items:stretch;">
+        <div class="course-image" style="background-image: url('${course.image}'); min-width:260px; width:260px; height:200px;"></div>
+        <section class="course-details" style="flex:1;">
+          <h3 class="course-title"><strong><em>${course.titre}</em></strong></h3>
+          <p class="course-location">${course.lieu}</p>
+          <p class="course-price"><strong>${course.prix}</strong></p>
+          <section class="course-distances" style="margin-top:1rem;">
+            <span class="distance-badge">${course.distance}</span>
+          </section>
         </section>
-        <div class="my-course-actions">
-          <button class="payer-btn">Payer ma place</button>
+        <div style="display:flex; align-items:center; padding:2rem;">
+          <button class="search-button secondary" style="min-width:120px;">Dossard</button>
         </div>
       </article>
     `).join('');
 
-    // Popup compte (identique à courses.html)
+    // Ouvre la popup compte
     document.getElementById('open-account-popup').onclick = function(e) {
       e.preventDefault();
       document.getElementById('account-popup-overlay').style.display = 'block';
       document.getElementById('account-popup-content').style.display = 'block';
       document.getElementById('register-popup-content').style.display = 'none';
     };
+    // Ferme la popup
     function closeAccountPopup() {
       document.getElementById('account-popup-overlay').style.display = 'none';
     }
+    window.closeAccountPopup = closeAccountPopup;
+    // Switch vers inscription
     document.getElementById('show-register').onclick = function(e) {
       e.preventDefault();
       document.getElementById('account-popup-content').style.display = 'none';
       document.getElementById('register-popup-content').style.display = 'block';
     };
+    // Switch vers connexion
     document.getElementById('show-login').onclick = function(e) {
       e.preventDefault();
       document.getElementById('register-popup-content').style.display = 'none';
       document.getElementById('account-popup-content').style.display = 'block';
     };
+    // Fermer popup si on clique sur l'overlay (hors popup)
     document.getElementById('account-popup-overlay').onclick = function(e) {
       if (e.target === this) closeAccountPopup();
     };
-    window.closeAccountPopup = closeAccountPopup;
 
-    // Flatpickr pour la zone de filtre date
-    if (typeof flatpickr !== "undefined") {
-      flatpickr("#date-range-input", {
-        mode: "range",
-        dateFormat: "d/m/Y",
-        minDate: "today",
-        locale: "fr",
-        showMonths: 2,
-        static: true,
-        position: "below",
-        monthSelectorType: "static",
-        animate: true,
-        positionElement: document.getElementById("date-container"),
-        disableMobile: true
-      });
-    }
+    // Met la date du jour par défaut dans le champ "Du"
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    document.getElementById('date-from').value = `${yyyy}-${mm}-${dd}`;
   });
 </script>
-<!-- Ajoute les scripts flatpickr si besoin -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+</body>
+</html>
+
 </body>
 </html>
