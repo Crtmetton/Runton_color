@@ -1,0 +1,132 @@
+/* Styles principaux pour la page devenir organisateur */
+/* Réutilise les styles de style-creation-course.css pour cohérence */
+
+.course-card {
+    background-color: #fff;
+    border-radius: 32px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+    min-height: 520px;
+    padding: 72px 80px;
+    margin: 40px auto;
+    box-sizing: border-box;
+}
+
+.course-card.no-hover {
+    pointer-events: none;
+    transform: none !important;
+    box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+    color: #6a82fb;
+    letter-spacing: 0.2px;
+}
+
+.form-field {
+    border-radius: 14px !important;
+    border: 1.5px solid #e2e7ff !important;
+    background: #f8f9ff !important;
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 11px 18px !important;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.03);
+    transition: border 0.2s, box-shadow 0.2s;
+    color: #222;
+}
+
+.form-field:focus {
+    border: 1.5px solid #6a82fb !important;
+    outline: none;
+    background: #fff !important;
+    box-shadow: 0 4px 16px rgba(106,130,251,0.08);
+}
+
+textarea.form-field {
+    min-height: 180px !important;
+    border-radius: 14px !important;
+    border: 1.5px solid #e2e7ff !important;
+    background: #f8f9ff !important;
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 11px 18px !important;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.03);
+    transition: border 0.2s, box-shadow 0.2s;
+    color: #222;
+}
+
+.search-button {
+    min-width: 120px;
+    height: 44px;
+    background: linear-gradient(90deg, #ff6a88 0%, #6a82fb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 32px !important;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease, box-shadow 0.2s;
+    padding: 0 24px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(106,130,251,0.08);
+    position: relative;
+    z-index: 1;
+}
+
+.search-button:hover {
+    background: linear-gradient(90deg, #ff6a88 10%, #6a82fb 90%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(255,106,136,0.18), 0 2px 8px rgba(106,130,251,0.12);
+}
+
+.main-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #1a1a1a;
+    margin: 0 0 32px 0;
+    padding-top: 10px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
+}
+
+/* Responsive */
+@media (max-width: 1300px) {
+    .course-card {
+        max-width: 98vw;
+        padding: 40px 24px;
+    }
+}
+@media (max-width: 900px) {
+    .course-card {
+        padding: 24px 6px;
+    }
+    .main-title {
+        font-size: 1.6rem;
+    }
+    .form-label,
+    .form-field,
+    textarea.form-field {
+        font-size: 1rem !important;
+    }
+    textarea.form-field {
+        min-height: 100px !important;
+    }
+}

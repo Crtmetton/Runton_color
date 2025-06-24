@@ -1,0 +1,92 @@
+/* Card mes courses : largeur max comme la navbar */
+#mes-courses-list .course-card {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto 2.5rem auto;
+    min-height: 260px;
+    padding: 2.5rem 3.5rem;
+    box-sizing: border-box;
+}
+
+/* Titre plus grand */
+#mes-courses-list .course-title {
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+/* Lieu plus grand */
+#mes-courses-list .course-location {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Prix plus grand */
+#mes-courses-list .course-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+/* Badge distance plus grand */
+#mes-courses-list .distance-badge {
+    font-size: 1.15rem;
+    padding: 0.5rem 1.3rem;
+}
+
+/* Responsive */
+@media (max-width: 1300px) {
+    #mes-courses-list .course-card {
+        max-width: 98vw;
+        padding: 2rem 1rem;
+    }
+}
+@media (max-width: 900px) {
+    #mes-courses-list .course-card {
+        flex-direction: column;
+        min-width: 0;
+        padding: 1.2rem 0.5rem;
+    }
+    #mes-courses-list .course-title {
+        font-size: 1.4rem;
+    }
+    #mes-courses-list .course-location,
+    #mes-courses-list .course-price {
+        font-size: 1.05rem;
+    }
+    #mes-courses-list .distance-badge {
+        font-size: 1rem;
+        padding: 0.4rem 1rem;
+    }
+}
+
+/* Titre principal même taille que la page liste des courses */
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #1a1a1a;
+    margin: 0 0 60px 0;
+    padding-top: 20px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow:
+            0 2px 8px #fff,
+            0 0 2px #fff,
+            0 0 1px #fff;
+}
+
+.mes-courses-bloc-blanc {
+    background: #fff;
+    border-radius: 48px;
+    box-shadow: 0 4px 32px rgba(106,130,251,0.07), 0 1.5px 8px rgba(255,106,136,0.06);
+    padding: 48px 48px 32px 48px;
+    max-width: 1200px;
+    margin: 0 auto 48px auto;
+}
+
+@media (max-width: 900px) {
+    .mes-courses-bloc-blanc {
+        padding: 18px 6px 12px 6px;
+        border-radius: 24px;
+    }
+}
