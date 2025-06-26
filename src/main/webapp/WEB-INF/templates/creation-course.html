@@ -1,65 +1,65 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer une course | Color Run</title>
-    <link rel="stylesheet" href="style-liste-course.css">
+<html lang="fr" id="html-creation">
+<head id="head-creation">
+    <meta charset="UTF-8" id="meta-charset-creation">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" id="meta-viewport-creation">
+    <title id="title-creation">Créer une course | Color Run</title>
+    <link rel="stylesheet" href="style-liste-course.css" id="link-stylesheet-creation">
 </head>
-<body>
-<div class="bg-circle1"></div>
-<div class="bg-circle2"></div>
-<div class="bg-circle3"></div>
-<header class="navbar">
-    <div class="logo">Color Run</div>
-    <nav class="menu">
-        <a href="#">Accueil</a>
-        <a href="#">Courses</a>
-        <a href="#">Mes courses</a>
-        <a href="#">Agenda</a>
-        <a href="#">Devenir Bénévole</a>
-        <a href="#" class="account-icon" title="Mon compte" style="margin-left:24px;">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
-                <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
-                <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+<body id="body-creation">
+<div class="bg-circle1" id="bg-circle1-creation"></div>
+<div class="bg-circle2" id="bg-circle2-creation"></div>
+<div class="bg-circle3" id="bg-circle3-creation"></div>
+<header class="navbar" id="navbar-creation">
+    <div class="logo" id="logo-creation">Color Run</div>
+    <nav class="menu" id="menu-nav-creation">
+        <a href="#" id="nav-accueil-creation">Accueil</a>
+        <a href="#" id="nav-courses-creation">Courses</a>
+        <a href="#" id="nav-mes-courses-creation">Mes courses</a>
+        <a href="#" id="nav-agenda-creation">Agenda</a>
+        <a href="#" id="nav-devenir-benevole-creation">Devenir Bénévole</a>
+        <a href="#" class="account-icon" title="Mon compte" style="margin-left:24px;" id="account-icon-creation">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg" id="account-svg-creation">
+                <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff" id="svg-circle-outer-creation"/>
+                <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5" id="svg-circle-inner-creation"/>
+                <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round" id="svg-path-creation"/>
             </svg>
         </a>
     </nav>
 </header>
 
-<main class="main-container" style="display:flex; justify-content:center; align-items:center; min-height:80vh;">
-    <section class="course-card no-hover" style="max-width:1200px; width:100%; margin:40px auto; padding:40px 48px;">
-        <h2 style="text-align:center; font-size:1.6rem; font-weight:700; margin-bottom:32px;">Créer une course</h2>
-        <form>
-            <div style="display:flex; gap:24px; flex-wrap:wrap; margin-bottom:18px; align-items:flex-start;">
+<main class="main-container" style="display:flex; justify-content:center; align-items:center; min-height:80vh;" id="main-container-creation">
+    <section class="course-card no-hover" style="max-width:1200px; width:100%; margin:40px auto; padding:40px 48px;" id="course-card-creation">
+        <h2 style="text-align:center; font-size:1.6rem; font-weight:700; margin-bottom:32px;" id="form-title-creation">Créer une course</h2>
+        <form id="creation-form">
+            <div style="display:flex; gap:24px; flex-wrap:wrap; margin-bottom:18px; align-items:flex-start;" id="form-columns">
                 <!-- Colonne gauche -->
-                <div style="flex:1 1 0; min-width:220px; display:flex; flex-direction:column; gap:18px;">
-                    <label for="nom" class="form-label">Nom de la course :</label>
+                <div style="flex:1 1 0; min-width:220px; display:flex; flex-direction:column; gap:18px;" id="left-column">
+                    <label for="nom" class="form-label" id="nom-label">Nom de la course :</label>
                     <input id="nom" type="text" class="filter-input form-field" placeholder="Ex : Color Run Paris">
 
-                    <label for="ville" class="form-label">Ville :</label>
+                    <label for="ville" class="form-label" id="ville-label">Ville :</label>
                     <input id="ville" type="text" class="filter-input form-field" placeholder="Ex : Paris">
 
-                    <label for="dateheure" class="form-label">Date et heure :</label>
+                    <label for="dateheure" class="form-label" id="dateheure-label">Date et heure :</label>
                     <input id="dateheure" type="datetime-local" class="filter-input form-field">
 
-                    <label for="max" class="form-label">Nombre max de participant :</label>
+                    <label for="max" class="form-label" id="max-label">Nombre max de participant :</label>
                     <input id="max" type="number" class="filter-input form-field" min="1" placeholder="Ex : 200">
 
-                    <label for="prix" class="form-label">Prix :</label>
+                    <label for="prix" class="form-label" id="prix-label">Prix :</label>
                     <input id="prix" type="number" step="0.01" class="filter-input form-field" placeholder="Ex : 15.00">
                 </div>
                 <!-- Colonne droite -->
-                <div style="flex:1 1 0; min-width:220px; display:flex; flex-direction:column; gap:18px;">
-                    <label for="adresse" class="form-label">Adresse :</label>
+                <div style="flex:1 1 0; min-width:220px; display:flex; flex-direction:column; gap:18px;" id="right-column">
+                    <label for="adresse" class="form-label" id="adresse-label">Adresse :</label>
                     <input id="adresse" type="text" class="filter-input form-field" placeholder="Ex : 12 rue de la course">
 
-                    <label for="distance" class="form-label">Distance :</label>
+                    <label for="distance" class="form-label" id="distance-label">Distance :</label>
                     <input id="distance" type="text" class="filter-input form-field" placeholder="Ex : 10 km">
 
-                    <label class="form-label">Obstacle :</label>
-                    <div style="display:flex; gap:12px;">
+                    <label class="form-label" id="obstacle-label">Obstacle :</label>
+                    <div style="display:flex; gap:12px;" id="obstacle-buttons">
                         <button type="button" id="btn-obstacle-oui" class="search-button secondary obstacle-btn" style="flex:1;">Oui</button>
                         <button type="button" id="btn-obstacle-non" class="search-button secondary obstacle-btn" style="flex:1;">Non</button>
                     </div>
@@ -67,13 +67,13 @@
                 </div>
             </div>
             <!-- Champs pleine largeur -->
-            <label for="cause" class="form-label">Cause :</label>
+            <label for="cause" class="form-label" id="cause-label">Cause :</label>
             <input id="cause" type="text" class="filter-input form-field" style="margin-bottom:18px;" placeholder="Ex : Soutien à une association">
 
-            <label for="desc" class="form-label">Description :</label>
+            <label for="desc" class="form-label" id="desc-label">Description :</label>
             <textarea id="desc" class="filter-input form-field" style="min-height:60px; margin-bottom:28px; resize:vertical;" placeholder="Décrivez la course..."></textarea>
-            <div style="display:flex; justify-content:center; margin-top:32px;">
-                <button type="submit" class="search-button" style="width:180px; font-size:1.1rem; padding:12px 0;">Créer</button>
+            <div style="display:flex; justify-content:center; margin-top:32px;" id="submit-container">
+                <button type="submit" class="search-button" style="width:180px; font-size:1.1rem; padding:12px 0;" id="submit-btn">Créer</button>
             </div>
         </form>
     </section>

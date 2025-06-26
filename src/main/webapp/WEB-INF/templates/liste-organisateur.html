@@ -1,52 +1,52 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des organisateurs | Color Run</title>
-    <link rel="stylesheet" href="style-liste-course.css">
-    <link rel="stylesheet" href="style-mes-courses.css">
+<html lang="fr" id="html-liste-organisateur">
+<head id="head-liste-organisateur">
+    <meta charset="UTF-8" id="meta-charset-liste-organisateur">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" id="meta-viewport-liste-organisateur">
+    <title id="title-liste-organisateur">Liste des organisateurs | Color Run</title>
+    <link rel="stylesheet" href="style-liste-course.css" id="link-stylesheet-liste-organisateur">
+    <link rel="stylesheet" href="style-mes-courses.css" id="link-stylesheet-mes-courses-liste-organisateur">
 </head>
-<body>
-<div class="bg-circle1"></div>
-<div class="bg-circle2"></div>
-<div class="bg-circle3"></div>
-<header class="navbar">
-    <div class="logo">Color Run</div>
-    <nav class="menu">
-        <a href="#">Accueil</a>
-        <a href="#">Courses</a>
-        <a href="#">Mes courses</a>
-        <a href="#">Agenda</a>
-        <a href="#">Devenir Bénévole</a>
+<body id="body-liste-organisateur">
+<div class="bg-circle1" id="bg-circle1-liste-organisateur"></div>
+<div class="bg-circle2" id="bg-circle2-liste-organisateur"></div>
+<div class="bg-circle3" id="bg-circle3-liste-organisateur"></div>
+<header class="navbar" id="navbar-liste-organisateur">
+    <div class="logo" id="logo-liste-organisateur">Color Run</div>
+    <nav class="menu" id="menu-nav-liste-organisateur">
+        <a href="#" id="nav-accueil-liste-organisateur">Accueil</a>
+        <a href="#" id="nav-courses-liste-organisateur">Courses</a>
+        <a href="#" id="nav-mes-courses-liste-organisateur">Mes courses</a>
+        <a href="#" id="nav-agenda-liste-organisateur">Agenda</a>
+        <a href="#" id="nav-devenir-benevole-liste-organisateur">Devenir Bénévole</a>
         <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
-                <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
-                <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg" id="account-svg-liste-organisateur">
+                <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff" id="svg-circle-outer-liste-organisateur"/>
+                <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5" id="svg-circle-inner-liste-organisateur"/>
+                <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round" id="svg-path-liste-organisateur"/>
             </svg>
         </a>
     </nav>
 </header>
 
-<section class="search-section">
-    <section class="search-hero">
-        <h1 class="main-title">Liste des organisateurs</h1>
+<section class="search-section" id="search-section-liste-organisateur">
+    <section class="search-hero" id="search-hero-liste-organisateur">
+        <h1 class="main-title" id="main-title-liste-organisateur">Liste des organisateurs</h1>
     </section>
 </section>
 
-<main class="courses-container">
-    <div class="mes-courses-bloc-blanc">
+<main class="courses-container" id="main-container-liste-organisateur">
+    <div class="mes-courses-bloc-blanc" id="mes-courses-bloc-blanc-liste-organisateur">
         <!-- Liste des futurs organisateurs -->
-        <section style="margin-bottom:48px;">
-            <h2 style="font-size:2rem; margin-bottom:32px; text-align:center;">Futurs organisateurs (en attente)</h2>
+        <section style="margin-bottom:48px;" id="futurs-organisateurs-section">
+            <h2 style="font-size:2rem; margin-bottom:32px; text-align:center;" id="futurs-organisateurs-title">Futurs organisateurs (en attente)</h2>
             <div id="futurs-organisateurs-list" class="courses-grid" style="grid-template-columns: 1fr;">
                 <!-- Cartes générées dynamiquement -->
             </div>
         </section>
         <!-- Liste des organisateurs -->
-        <section>
-            <h2 style="font-size:2rem; margin-bottom:32px; text-align:center;">Organisateurs</h2>
+        <section id="organisateurs-section">
+            <h2 style="font-size:2rem; margin-bottom:32px; text-align:center;" id="organisateurs-title">Organisateurs</h2>
             <div id="organisateurs-list" class="courses-grid" style="grid-template-columns: 1fr;">
                 <!-- Cartes générées dynamiquement -->
             </div>

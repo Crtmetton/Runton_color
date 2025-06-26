@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mes Courses | Color Run</title>
-  <link rel="stylesheet" href="style-liste-course.css">
-  <link rel="stylesheet" href="style-mes-courses.css">
+<html lang="fr" id="html-mes-courses">
+<head id="head-mes-courses">
+  <meta charset="UTF-8" id="meta-charset-mes-courses">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" id="meta-viewport-mes-courses">
+  <title id="title-mes-courses">Mes Courses | Color Run</title>
+  <link rel="stylesheet" href="style-liste-course.css" id="link-stylesheet-mes-courses">
+  <link rel="stylesheet" href="style-mes-courses.css" id="link-stylesheet-mes-courses-2">
 </head>
-<body>
-<div class="bg-circle1"></div>
-<div class="bg-circle2"></div>
-<div class="bg-circle3"></div>
+<body id="body-mes-courses">
+<div class="bg-circle1" id="bg-circle1-mes-courses"></div>
+<div class="bg-circle2" id="bg-circle2-mes-courses"></div>
+<div class="bg-circle3" id="bg-circle3-mes-courses"></div>
 <!-- Navbar -->
-<header class="navbar">
-  <div class="logo">Color Run</div>
-  <nav class="menu">
-    <a href="#">Accueil</a>
-    <a href="#">Courses</a>
-    <a href="#" class="active">Mes courses</a>
-    <a href="#">Agenda</a>
-    <a href="#">Devenir Bénévole</a>
+<header class="navbar" id="navbar-mes-courses">
+  <div class="logo" id="logo-mes-courses">Color Run</div>
+  <nav class="menu" id="menu-nav-mes-courses">
+    <a href="#" id="nav-accueil-mes-courses">Accueil</a>
+    <a href="#" id="nav-courses-mes-courses">Courses</a>
+    <a href="#" class="active" id="nav-mes-courses-mes-courses">Mes courses</a>
+    <a href="#" id="nav-agenda-mes-courses">Agenda</a>
+    <a href="#" id="nav-devenir-benevole-mes-courses">Devenir Bénévole</a>
     <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
       <!-- Icône compte utilisateur SVG -->
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
-        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
-        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg" id="account-svg-mes-courses">
+        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff" id="svg-circle-outer-mes-courses"/>
+        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5" id="svg-circle-inner-mes-courses"/>
+        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round" id="svg-path-mes-courses"/>
       </svg>
     </a>
   </nav>
 </header>
 
 <!-- Zone blanche autour du titre et du filtre -->
-<section class="search-section">
-  <section class="search-hero">
-    <h1 class="main-title">Mes courses</h1>
-    <div class="search-container">
-      <div class="search-input-container" style="flex:1.35; min-width:130px;">
-        <input type="text" class="search-input" placeholder="Rechercher une course">
+<section class="search-section" id="search-section-mes-courses">
+  <section class="search-hero" id="search-hero-mes-courses">
+    <h1 class="main-title" id="main-title-mes-courses">Mes courses</h1>
+    <div class="search-container" id="search-container-mes-courses">
+      <div class="search-input-container" style="flex:1.35; min-width:130px;" id="search-input-container-mes-courses">
+        <input type="text" class="search-input" placeholder="Rechercher une course" id="search-input-mes-courses">
       </div>
       <div class="filter-input-container">
         <input type="text" class="filter-input" placeholder="Ville">
@@ -200,9 +200,9 @@
     document.getElementById('date-from').value = `${yyyy}-${mm}-${dd}`;
   });
 </script>
-
+<!-- Ajout des scripts flatpickr si besoin -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 </body>
 </html>
 
-</body>
-</html>

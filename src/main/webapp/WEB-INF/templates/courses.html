@@ -1,64 +1,64 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liste des Courses | Color Run</title>
-  <link rel="stylesheet" href="style-liste-course.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<html lang="fr" id="html-courses">
+<head id="head-courses">
+  <meta charset="UTF-8" id="meta-charset-courses">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" id="meta-viewport-courses">
+  <title id="title-courses">Liste des Courses | Color Run</title>
+  <link rel="stylesheet" href="style-liste-course.css" id="link-stylesheet-courses">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" id="link-flatpickr">
   <!-- DÉPLACE les scripts flatpickr ICI, APRÈS le body, pas dans le head -->
 </head>
-<body>
-<div class="bg-circle1"></div>
-<div class="bg-circle2"></div>
-<div class="bg-circle3"></div>
+<body id="body-courses">
+<div class="bg-circle1" id="bg-circle1-courses"></div>
+<div class="bg-circle2" id="bg-circle2-courses"></div>
+<div class="bg-circle3" id="bg-circle3-courses"></div>
 <!-- Navbar -->
-<header class="navbar">
-  <div class="logo">Color Run</div>
-  <nav class="menu">
-    <a href="#">Accueil</a>
-    <a href="#">Courses</a>
-    <a href="#">Mes courses</a>
-    <a href="#">Agenda</a>
-    <a href="#">Devenir Bénévole</a>
+<header class="navbar" id="navbar-courses">
+  <div class="logo" id="logo-courses">Color Run</div>
+  <nav class="menu" id="menu-nav-courses">
+    <a href="#" id="nav-accueil-courses">Accueil</a>
+    <a href="#" id="nav-courses-courses">Courses</a>
+    <a href="#" id="nav-mes-courses-courses">Mes courses</a>
+    <a href="#" id="nav-agenda-courses">Agenda</a>
+    <a href="#" id="nav-devenir-benevole-courses">Devenir Bénévole</a>
     <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
       <!-- Icône compte utilisateur SVG -->
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
-        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
-        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg" id="account-svg-courses">
+        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff" id="svg-circle-outer-courses"/>
+        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5" id="svg-circle-inner-courses"/>
+        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round" id="svg-path-courses"/>
       </svg>
     </a>
   </nav>
 </header>
 
 <!-- Search Section -->
-<section class="search-section">
-  <section class="search-hero">
-    <h1 class="main-title">Trouve ton prochain dossard</h1>
-    <div class="search-container">
-      <div class="search-input-container" style="flex:1.35; min-width:130px;">
-        <input type="text" class="search-input" placeholder="Rechercher une course">
+<section class="search-section" id="search-section-courses">
+  <section class="search-hero" id="search-hero-courses">
+    <h1 class="main-title" id="main-title-courses">Trouve ton prochain dossard</h1>
+    <div class="search-container" id="search-container-courses">
+      <div class="search-input-container" style="flex:1.35; min-width:130px;" id="search-input-container">
+        <input type="text" class="search-input" placeholder="Rechercher une course" id="search-input">
       </div>
-      <div class="filter-input-container">
-        <input type="text" class="filter-input" placeholder="Ville">
+      <div class="filter-input-container" id="ville-input-container">
+        <input type="text" class="filter-input" placeholder="Ville" id="ville-input">
       </div>
-      <div class="filter-input-container">
+      <div class="filter-input-container" id="date-from-container">
         <input type="date" class="filter-input" id="date-from" placeholder="Du">
       </div>
-      <div class="filter-input-container">
+      <div class="filter-input-container" id="date-to-container">
         <input type="date" class="filter-input" id="date-to" placeholder="Au">
       </div>
-      <div class="filter-input-container">
-        <input type="number" class="filter-input" placeholder="Distance">
+      <div class="filter-input-container" id="distance-input-container">
+        <input type="number" class="filter-input" placeholder="Distance" id="distance-input">
       </div>
-      <button class="search-button">Filtrer</button>
+      <button class="search-button" id="filter-button">Filtrer</button>
     </div>
   </section>
 </section>
 
 <!-- Main Section -->
-<main class="courses-container">
+<main class="courses-container" id="main-courses-container">
   <section class="courses-grid" id="courses-list">
     <!-- Les cartes de course seront générées dynamiquement ici -->
   </section>
@@ -68,59 +68,58 @@
   </nav>
 </main>
 <!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="newsletter">
-      <p>Abonnez-vous à notre newsletter</p>
-      <form>
-        <input type="email" placeholder="Votre email">
-        <button type="submit">S'abonner</button>
+<footer class="footer" id="footer-courses">
+  <div class="footer-content" id="footer-content-courses">
+    <div class="newsletter" id="newsletter-section-courses">
+      <p id="newsletter-text-courses">Abonnez-vous à notre newsletter</p>
+      <form id="newsletter-form-courses">
+        <input type="email" placeholder="Votre email" id="newsletter-email-courses">
+        <button type="submit" id="newsletter-submit-courses">S'abonner</button>
       </form>
     </div>
-    <div class="social-icons">
-      <a href="#">📸 Instagram</a>
-      <a href="#">📘 Facebook</a>
+    <div class="social-icons" id="social-icons-courses">
+      <a href="#" id="social-instagram-courses">📸 Instagram</a>
+      <a href="#" id="social-facebook-courses">📘 Facebook</a>
     </div>
-    <div class="credits">
-      <p>2025 © Color Run. Tous droits réservés.</p>
+    <div class="credits" id="credits-courses">
+      <p id="credits-text-courses">2025 © Color Run. Tous droits réservés.</p>
     </div>
   </div>
 </footer>
 
 <!-- Popup compte utilisateur (connexion/inscription) -->
 <div id="account-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.38); z-index:9999;">
-  <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
-    <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
-    <img src="images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;">
+  <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">        <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;" id="popup-close-btn-courses">×</button>
+    <img src="images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;" id="popup-logo-courses">
     <div id="account-popup-content">
       <!-- Connexion par défaut -->
-      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Se connecter</h2>
-      <form>
-        <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
-        <input type="email" style="width:100%; margin-bottom:16px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
-        <input type="password" style="width:100%; margin-bottom:24px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">Se connecter</button>
+      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;" id="login-title-courses">Se connecter</h2>
+      <form id="login-form-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="login-email-label-courses">Adresse email :</label>
+        <input type="email" style="width:100%; margin-bottom:16px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="login-email-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="login-password-label-courses">Mot de passe :</label>
+        <input type="password" style="width:100%; margin-bottom:24px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="login-password-courses">
+        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;" id="login-submit-courses">Se connecter</button>
       </form>
-      <div style="text-align:center; font-size:0.95rem;">
+      <div style="text-align:center; font-size:0.95rem;" id="login-switch-courses">
         Tu n'as pas de compte ? <a href="#" id="show-register" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Créer le tien</a>
       </div>
     </div>
     <!-- Formulaire inscription (masqué par défaut) -->
     <div id="register-popup-content" style="display:none; width:100%;">
-      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;">Créer un compte</h2>
-      <form>
-        <label style="font-size:0.98rem; font-weight:600;">Nom :</label>
-        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <label style="font-size:0.98rem; font-weight:600;">Prénom :</label>
-        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <label style="font-size:0.98rem; font-weight:600;">Adresse email :</label>
-        <input type="email" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <label style="font-size:0.98rem; font-weight:600;">Mot de passe :</label>
-        <input type="password" style="width:100%; margin-bottom:20px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
-        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;">S'inscrire</button>
+      <h2 style="font-size:1.15rem; margin-bottom:18px; text-align:left;" id="register-title-courses">Créer un compte</h2>
+      <form id="register-form-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="register-nom-label-courses">Nom :</label>
+        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="register-nom-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="register-prenom-label-courses">Prénom :</label>
+        <input type="text" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="register-prenom-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="register-email-label-courses">Adresse email :</label>
+        <input type="email" style="width:100%; margin-bottom:12px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="register-email-courses">
+        <label style="font-size:0.98rem; font-weight:600;" id="register-password-label-courses">Mot de passe :</label>
+        <input type="password" style="width:100%; margin-bottom:20px; margin-top:4px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" id="register-password-courses">
+        <button type="submit" class="search-button" style="width:100%; margin-bottom:18px;" id="register-submit-courses">S'inscrire</button>
       </form>
-      <div style="text-align:center; font-size:0.95rem;">
+      <div style="text-align:center; font-size:0.95rem;" id="register-switch-courses">
         Tu as déjà un compte ? <a href="#" id="show-login" style="color:#6a82fb; text-decoration:underline; cursor:pointer;">Connecte-toi</a>
       </div>
     </div>
