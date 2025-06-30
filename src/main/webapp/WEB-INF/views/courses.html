@@ -12,25 +12,8 @@
 <div class="bg-circle1"></div>
 <div class="bg-circle2"></div>
 <div class="bg-circle3"></div>
-<!-- Navbar -->
-<header class="navbar">
-  <div class="logo">Color Run</div>
-  <nav class="menu">
-    <a href="#">Accueil</a>
-    <a href="#">Courses</a>
-    <a href="#">Mes courses</a>
-    <a href="#">Agenda</a>
-    <a href="#">Devenir Bénévole</a>
-    <a href="#" class="account-icon" id="open-account-popup" title="Mon compte" style="margin-left:24px;">
-      <!-- Icône compte utilisateur SVG -->
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="13" stroke="#6a82fb" stroke-width="2" fill="#fff"/>
-        <circle cx="14" cy="11" r="5" fill="#e2e7ff" stroke="#6a82fb" stroke-width="1.5"/>
-        <path d="M6 22c1.5-4 14.5-4 16 0" stroke="#6a82fb" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      </svg>
-    </a>
-  </nav>
-</header>
+<!-- Inclusion de la navbar -->
+<%@ include file="/WEB-INF/views/fragments/navbar.jsp" %>
 
 <!-- Search Section -->
 <section class="search-section">

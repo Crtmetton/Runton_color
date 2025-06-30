@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification de compte - Color Run</title>
+    <link rel="stylesheet" href="../css/style-acceuil.css">
+    <style>
+        .verification-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-home {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-home:hover {
+            background-color: #c0392b;
+        }
+        
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .success-icon {
+            color: #27ae60;
+        }
+        
+        .error-icon {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <% if (request.getAttribute("success") != null) { %>
+            <div class="icon success-icon">✓</div>
+            <h1>Vérification réussie !</h1>
+            <div class="success-message">
+                <%= request.getAttribute("success") %>
+            </div>
+            <a href="/runton-color/" class="btn-home">Se connecter</a>
+        <% } else if (request.getAttribute("error") != null) { %>
+            <div class="icon error-icon">✗</div>
+            <h1>Erreur de vérification</h1>
+            <div class="error-message">
+                <%= request.getAttribute("error") %>
+            </div>
+            <a href="/runton-color/" class="btn-home">Retour à l'accueil</a>
+        <% } else { %>
+            <div class="icon error-icon">?</div>
+            <h1>Vérification en cours...</h1>
+            <p>Traitement de votre demande de vérification.</p>
+        <% } %>
+    </div>
+</body>
+</html> 

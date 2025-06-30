@@ -32,9 +32,10 @@
 <main class="main-container" style="display:flex; justify-content:center; align-items:center; min-height:80vh;">
     <section class="course-card">
         <h2 class="main-title">Devenir organisateur</h2>
-        <form>
-            <label for="infos" class="form-label">Vos informations :</label>
-            <textarea id="infos" class="filter-input form-field" placeholder="Présentez-vous, votre projet, vos motivations..."></textarea>
+        
+        <form action="/organizer/request" method="POST">
+            <label for="motivation" class="form-label">Vos informations :</label>
+            <textarea id="motivation" name="motivation" class="filter-input form-field" placeholder="Présentez-vous, votre projet, vos motivations..." required></textarea>
             <div style="display:flex; justify-content:center; margin-top:32px;">
                 <button type="submit" class="search-button" style="width:220px; font-size:1.1rem; padding:12px 0;">Envoyer</button>
             </div>
@@ -126,34 +127,4 @@
 </script>
 </body>
 </html>
-</div>
-</div>
-</div>
-<script>
-    document.querySelectorAll('.account-icon').forEach(function(el) {
-        el.onclick = function(e) {
-            e.preventDefault();
-            document.getElementById('account-popup-overlay').style.display = 'block';
-            document.getElementById('account-popup-content').style.display = 'block';
-            document.getElementById('register-popup-content').style.display = 'none';
-        };
-    });
-    function closeAccountPopup() {
-        document.getElementById('account-popup-overlay').style.display = 'none';
-    }
-    document.getElementById('show-register').onclick = function(e) {
-        e.preventDefault();
-        document.getElementById('account-popup-content').style.display = 'none';
-        document.getElementById('register-popup-content').style.display = 'block';
-    };
-    document.getElementById('show-login').onclick = function(e) {
-        e.preventDefault();
-        document.getElementById('register-popup-content').style.display = 'none';
-        document.getElementById('account-popup-content').style.display = 'block';
-    };
-    document.getElementById('account-popup-overlay').onclick = function(e) {
-        if (e.target === this) closeAccountPopup();
-    };
-</script>
-</body>
-</html>
+

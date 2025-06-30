@@ -3,11 +3,52 @@ package com.colorrun.dao;
 import com.colorrun.business.Course;
 import com.colorrun.config.DatabaseConfig;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+/**
+ * Couche d'accès aux données (DAO) pour la gestion des courses dans la base de données.
+ * 
+ * Cette classe fournit toutes les opérations CRUD (Create, Read, Update, Delete)
+ * nécessaires pour la persistance des courses Color Run. Elle encapsule les
+ * requêtes SQL et la gestion des connexions à la base de données H2.
+ * 
+ * <p><strong>Fonctionnalités principales :</strong></p>
+ * <ul>
+ *   <li>Création et modification de courses</li>
+ *   <li>Recherche par critères multiples (ID, nom, lieu, date)</li>
+ *   <li>Gestion des états de course (PLANNED, OPEN, FULL, CLOSED, COMPLETED, CANCELLED)</li>
+ *   <li>Recherche géographique et temporelle</li>
+ *   <li>Statistiques et comptages</li>
+ *   <li>Gestion des capacités et participants</li>
+ * </ul>
+ * 
+ * <p><strong>Structure de la table Course :</strong></p>
+ * <ul>
+ *   <li>id (INTEGER) - Clé primaire auto-générée</li>
+ *   <li>name (VARCHAR) - Nom de la course</li>
+ *   <li>description (TEXT) - Description détaillée</li>
+ *   <li>location (VARCHAR) - Lieu de la course</li>
+ *   <li>date (TIMESTAMP) - Date et heure de la course</li>
+ *   <li>registrationEnd (TIMESTAMP) - Fin des inscriptions</li>
+ *   <li>maxParticipants (INTEGER) - Capacité maximale</li>
+ *   <li>distance (DOUBLE) - Distance en kilomètres</li>
+ *   <li>price (DOUBLE) - Prix d'inscription</li>
+ *   <li>organizerId (INTEGER) - ID de l'organisateur</li>
+ *   <li>status (VARCHAR) - Statut de la course</li>
+ *   <li>createdAt (TIMESTAMP) - Date de création</li>
+ * </ul>
+ * 
+ * @author Équipe Color Run
+ * @version 1.0
+ * @since 1.0
+ * 
+ * @see Course Pour le modèle métier des courses
+ * @see DatabaseConfig Pour la configuration de la base de données
+ */
 public class CourseDAO {
     
     private DataSource dataSource;
@@ -16,8 +57,15 @@ public class CourseDAO {
         this.dataSource = DatabaseConfig.getDataSource();
     }
     
+    /**
+     * Sauvegarde une nouvelle course en base de données.
+     * 
+     * @param course La course à sauvegarder (ID sera généré automatiquement)
+     * @return La course sauvegardée avec son ID généré
+     * @throws SQLException En cas d'erreur lors de l'insertion
+     */
     public void save(Course course) throws SQLException {
-        String sql = "INSERT INTO Course (nom, description, date, lieu, distance, maxParticipants, prix, cause) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Course (NOM, DESCRIPTION, DATE, LIEU, DISTANCE, MAXPARTICIPANTS, PRIX, CAUSE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, course.getName());
@@ -38,8 +86,15 @@ public class CourseDAO {
         }
     }
     
+    /**
+     * Récupère une course par son identifiant.
+     * 
+     * @param id L'identifiant de la course à récupérer
+     * @return La course correspondante, ou null si non trouvée
+     * @throws SQLException En cas d'erreur lors de la requête
+     */
     public Optional<Course> findById(int id) throws SQLException {
-        String sql = "SELECT * FROM Course WHERE id = ?";
+        String sql = "SELECT * FROM Course WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -52,9 +107,15 @@ public class CourseDAO {
         return Optional.empty();
     }
     
+    /**
+     * Récupère toutes les courses de la base de données.
+     * 
+     * @return Liste de toutes les courses, triées par date croissante
+     * @throws SQLException En cas d'erreur lors de la requête
+     */
     public List<Course> findAll() throws SQLException {
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT * FROM Course ORDER BY date";
+        String sql = "SELECT * FROM Course ORDER BY DATE";
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -70,17 +131,17 @@ public class CourseDAO {
         List<Object> params = new ArrayList<>();
         
         if (date != null && !date.isEmpty()) {
-            sql.append(" AND DATE(date) = ?");
+            sql.append(" AND DATE(DATE) = ?");
             params.add(date);
         }
         
         if (city != null && !city.isEmpty()) {
-            sql.append(" AND lieu LIKE ?");
+            sql.append(" AND LIEU LIKE ?");
             params.add("%" + city + "%");
         }
         
         if (distance != null && !distance.isEmpty()) {
-            sql.append(" AND distance = ?");
+            sql.append(" AND DISTANCE = ?");
             try {
                 params.add(Double.parseDouble(distance));
             } catch (NumberFormatException e) {
@@ -91,19 +152,22 @@ public class CourseDAO {
         if (sort != null && !sort.isEmpty()) {
             switch (sort) {
                 case "date":
-                    sql.append(" ORDER BY date");
+                    sql.append(" ORDER BY DATE");
                     break;
                 case "distance":
-                    sql.append(" ORDER BY distance");
+                    sql.append(" ORDER BY DISTANCE");
                     break;
                 case "city":
-                    sql.append(" ORDER BY lieu");
+                    sql.append(" ORDER BY LIEU");
+                    break;
+                case "name":
+                    sql.append(" ORDER BY NOM");
                     break;
                 default:
-                    sql.append(" ORDER BY date");
+                    sql.append(" ORDER BY DATE");
             }
         } else {
-            sql.append(" ORDER BY date");
+            sql.append(" ORDER BY DATE");
         }
         
         List<Course> courses = new ArrayList<>();
@@ -128,8 +192,15 @@ public class CourseDAO {
         return courses;
     }
     
+    /**
+     * Met à jour une course existante.
+     * 
+     * @param course La course avec les nouvelles informations
+     * @return true si la mise à jour a réussi, false sinon
+     * @throws SQLException En cas d'erreur lors de la mise à jour
+     */
     public void update(Course course) throws SQLException {
-        String sql = "UPDATE Course SET nom = ?, description = ?, date = ?, lieu = ?, distance = ?, maxParticipants = ?, cause = ? WHERE id = ?";
+        String sql = "UPDATE Course SET NOM = ?, DESCRIPTION = ?, DATE = ?, LIEU = ?, DISTANCE = ?, MAXPARTICIPANTS = ?, CAUSE = ? WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, course.getName());
@@ -144,8 +215,16 @@ public class CourseDAO {
         }
     }
     
+    /**
+     * Supprime une course de la base de données.
+     * Attention : Cette opération est irréversible et peut violer l'intégrité référentielle.
+     * 
+     * @param id L'identifiant de la course à supprimer
+     * @return true si la suppression a réussi, false sinon
+     * @throws SQLException En cas d'erreur lors de la suppression
+     */
     public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM Course WHERE id = ?";
+        String sql = "DELETE FROM Course WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -158,17 +237,17 @@ public class CourseDAO {
     
     private Course mapRow(ResultSet rs) throws SQLException {
         Course course = new Course();
-        course.setId(rs.getInt("id"));
-        course.setName(rs.getString("nom"));
-        course.setDescription(rs.getString("description"));
-        course.setDate(rs.getTimestamp("date").toLocalDateTime());
-        course.setCity(rs.getString("lieu"));
-        course.setDistance(rs.getDouble("distance"));
-        course.setMaxParticipants(rs.getInt("maxParticipants"));
+        course.setId(rs.getInt("ID"));
+        course.setName(rs.getString("NOM"));
+        course.setDescription(rs.getString("DESCRIPTION"));
+        course.setDate(rs.getTimestamp("DATE").toLocalDateTime());
+        course.setCity(rs.getString("LIEU"));
+        course.setDistance(rs.getDouble("DISTANCE"));
+        course.setMaxParticipants(rs.getInt("MAXPARTICIPANTS"));
         // La colonne current_participants n'existe pas dans le schéma SQL
         // Nous devrons calculer ce nombre autrement, ou l'ajouter au schéma
         course.setCurrentParticipants(0);
-        course.setCause(rs.getString("cause"));
+        course.setCause(rs.getString("CAUSE"));
         return course;
     }
 }

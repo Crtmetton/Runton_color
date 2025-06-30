@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle ?: 'Mes Courses'} + ' | Color Run'">Mes Courses | Color Run</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            padding: 2rem;
+        }
+        .course-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .course-header {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 1.5rem;
+        }
+        .course-info {
+            padding: 1.5rem;
+        }
+        .badge-distance {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+        .stats-card {
+            background: linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 15px;
+            color: #333;
+        }
+        .stats-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            color: #f5576c !important;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+        }
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+        }
+        .btn-outline-primary:hover {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="bi bi-palette text-primary"></i> Color Run
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">
+                            <i class="bi bi-house"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/courses}">
+                            <i class="bi bi-flag"></i> Courses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/profile}">
+                            <i class="bi bi-person-circle"></i> Mes Courses
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${isOrganizer}">
+                        <a class="nav-link" th:href="@{/organizer/request}">
+                            <i class="bi bi-briefcase"></i> Devenir Organisateur
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Informations utilisateur -->
+                <div class="navbar-nav" th:if="${isAuthenticated}">
+                    <span class="navbar-text me-3">
+                        <i class="bi bi-person-check text-success"></i>
+                        <span th:text="${userName}">Utilisateur</span>
+                        <span class="badge bg-success ms-1" th:text="${userRole}">USER</span>
+                    </span>
+                    <a class="nav-link text-danger" th:href="@{/logout}">
+                        <i class="bi bi-box-arrow-right"></i> Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="container" style="margin-top: 100px;">
+        <div class="main-container">
+            <!-- En-tête -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h1 class="display-5 mb-3">
+                        <i class="bi bi-person-circle text-primary"></i>
+                        Mes Courses
+                    </h1>
+                    <p class="lead text-muted">
+                        Voici toutes les courses auxquelles vous participez ou que vous organisez.
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="stats-card card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-trophy stats-icon"></i>
+                            <h3 class="card-title" th:text="${totalCourses}">0</h3>
+                            <p class="card-text">Course(s) trouvée(s)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${info}" class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle"></i>
+                <span th:text="${info}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Liste des courses -->
+            <div th:if="${courses != null and !courses.isEmpty()}">
+                <div class="row">
+                    <div class="col-md-6" th:each="course : ${courses}">
+                        <div class="course-card card">
+                            <div class="course-header">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title mb-1" th:text="${course.name}">Nom de la course</h5>
+                                        <p class="card-subtitle mb-0 opacity-75">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span th:text="${course.city}">Ville</span>
+                                        </p>
+                                    </div>
+                                    <span class="badge-distance" th:text="${course.distance} + ' km'">5 km</span>
+                                </div>
+                            </div>
+                            
+                            <div class="course-info">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1">
+                                            <i class="bi bi-calendar"></i> Date
+                                        </p>
+                                        <p class="fw-bold" th:text="${#temporals.format(course.date, 'dd/MM/yyyy')}">
+                                            01/01/2024
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1">
+                                            <i class="bi bi-people"></i> Participants
+                                        </p>
+                                        <p class="fw-bold" th:text="${course.maxParticipants ?: 'Illimité'}">
+                                            100
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${course.description}" class="mt-3">
+                                    <p class="text-muted mb-1">
+                                        <i class="bi bi-info-circle"></i> Description
+                                    </p>
+                                    <p th:text="${course.description}">Description de la course...</p>
+                                </div>
+                                
+                                <div class="mt-3 d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> Détails
+                                    </button>
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="bi bi-chat"></i> Discussion
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- État vide -->
+            <div th:if="${courses == null or courses.isEmpty()}" class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h3>Aucune course trouvée</h3>
+                <p class="lead">Vous ne participez à aucune course pour le moment.</p>
+                <a th:href="@{/courses}" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Découvrir les courses
+                </a>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <h4 class="mb-3">Actions rapides</h4>
+                    <a th:href="@{/courses}" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-search"></i> Chercher des courses
+                    </a>
+                    <a th:href="@{/organizer/request}" class="btn btn-outline-primary" th:if="${!isOrganizer}">
+                        <i class="bi bi-briefcase"></i> Devenir organisateur
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

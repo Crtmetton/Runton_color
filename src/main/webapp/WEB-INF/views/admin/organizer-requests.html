@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demandes Organisateur | Admin Color Run</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #6a82fb, #ff6a88);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .request-card {
+            border-left: 4px solid #6a82fb;
+            transition: transform 0.2s;
+        }
+        .request-card:hover {
+            transform: translateY(-2px);
+        }
+        .status-badge {
+            font-size: 0.8rem;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #6a82fb, #ff6a88) !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="container mt-4">
+        <!-- Header Admin -->
+        <div class="admin-header text-center">
+            <h1><i class="bi bi-file-text"></i> Gestion des Demandes d'Organisateur</h1>
+            <p class="mb-0">Approuver ou rejeter les demandes des utilisateurs</p>
+        </div>
+
+        <!-- Messages d'alerte -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Navigation Admin -->
+        <nav class="navbar navbar-expand-lg mb-4 rounded" style="background-color: #6a82fb;">
+            <div class="container-fluid">
+                <div class="navbar-nav">
+                    <a class="nav-link text-white" href="/admin/dashboard">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                    <a class="nav-link text-white active" href="/admin/organizer-requests">
+                        <i class="bi bi-file-text"></i> Demandes Organisateur
+                    </a>
+                    <a class="nav-link text-white" href="/admin/users">
+                        <i class="bi bi-people"></i> Gestion Utilisateurs
+                    </a>
+                    <a class="nav-link text-white" href="/admin/statistics">
+                        <i class="bi bi-graph-up"></i> Statistiques
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Filtres -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/admin/organizer-requests" method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Filtrer par statut :</label>
+                        <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                            <option value="pending" th:selected="${currentStatus == 'pending'}">En attente</option>
+                            <option value="all" th:selected="${currentStatus == 'all'}">Toutes</option>
+                            <option value="approved" th:selected="${currentStatus == 'approved'}">Approuvées</option>
+                            <option value="rejected" th:selected="${currentStatus == 'rejected'}">Rejetées</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Section des demandes -->
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-text"></i> 
+                    Demandes 
+                    <span th:switch="${currentStatus}">
+                        <span th:case="'pending'">en attente</span>
+                        <span th:case="'all'">toutes</span>
+                        <span th:case="'approved'">approuvées</span>
+                        <span th:case="'rejected'">rejetées</span>
+                        <span th:case="*">en attente</span>
+                    </span>
+                    <span class="badge bg-light text-dark ms-2" th:text="${requests?.size() ?: 0}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- État vide -->
+                <div th:if="${#lists.isEmpty(requests)}" class="text-center text-muted py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem;"></i>
+                    <h4>Aucune demande trouvée</h4>
+                    <p th:switch="${currentStatus}">
+                        <span th:case="'pending'">Il n'y a actuellement aucune demande d'organisateur en attente.</span>
+                        <span th:case="*">Aucune demande ne correspond aux critères sélectionnés.</span>
+                    </p>
+                </div>
+
+                <!-- Liste des demandes -->
+                <div th:each="request : ${requests}" class="request-card card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-start">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h5 class="card-title mb-0 me-3" th:text="${request.requester.fullName}">Nom Utilisateur</h5>
+                                    <span class="badge status-badge" 
+                                          th:classappend="${request.status == 'PENDING' ? 'bg-warning' : (request.status == 'APPROVED' ? 'bg-success' : 'bg-danger')}"
+                                          th:text="${request.status}">STATUS</span>
+                                </div>
+                                <p class="card-text mb-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-envelope"></i> <span th:text="${request.requester.email}">email@example.com</span>
+                                        <br>
+                                        <i class="bi bi-calendar"></i> <span th:text="${request.submissionDate}">Date</span>
+                                    </small>
+                                </p>
+                                <div class="mt-3">
+                                    <strong><i class="bi bi-chat-text"></i> Motivation :</strong>
+                                    <div class="bg-light p-3 rounded mt-2">
+                                        <span th:text="${request.reason}">Motivation de l'utilisateur</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div th:if="${request.status == 'PENDING'}" class="d-grid gap-2">
+                                    <form method="post" action="/admin/approve-organizer">
+                                        <input type="hidden" name="requestId" th:value="${request.id}">
+                                        <button type="submit" class="btn btn-success w-100" 
+                                                onclick="return confirm('Êtes-vous sûr de vouloir approuver cette demande ?')">
+                                            <i class="bi bi-check-lg"></i> Approuver
+                                        </button>
+                                    </form>
+                                    <form method="post" action="/admin/reject-organizer">
+                                        <input type="hidden" name="requestId" th:value="${request.id}">
+                                        <button type="submit" class="btn btn-danger w-100" 
+                                                onclick="return confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')">
+                                            <i class="bi bi-x-lg"></i> Rejeter
+                                        </button>
+                                    </form>
+                                </div>
+                                <div th:if="${request.status != 'PENDING'}" class="text-muted">
+                                    <i class="bi bi-check-circle" th:if="${request.status == 'APPROVED'}"></i>
+                                    <i class="bi bi-x-circle" th:if="${request.status == 'REJECTED'}"></i>
+                                    Demande traitée
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html> 

@@ -23,9 +23,9 @@ public class OrganizerRequestDAO {
         String sql = "INSERT INTO DemandeOrganisateur (utilisateurId, date, motivations, statut) VALUES (?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, request.getUser().getId());
-            stmt.setTimestamp(2, Timestamp.valueOf(request.getDate()));
-            stmt.setString(3, request.getMotivation());
+            stmt.setInt(1, request.getRequester().getId());
+            stmt.setTimestamp(2, Timestamp.valueOf(request.getSubmissionDate()));
+            stmt.setString(3, request.getReason());
             stmt.setString(4, request.getStatus());
             stmt.executeUpdate();
             
@@ -97,9 +97,9 @@ public class OrganizerRequestDAO {
         String sql = "UPDATE DemandeOrganisateur SET utilisateurId = ?, date = ?, motivations = ?, statut = ? WHERE id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, request.getUser().getId());
-            stmt.setTimestamp(2, Timestamp.valueOf(request.getDate()));
-            stmt.setString(3, request.getMotivation());
+            stmt.setInt(1, request.getRequester().getId());
+            stmt.setTimestamp(2, Timestamp.valueOf(request.getSubmissionDate()));
+            stmt.setString(3, request.getReason());
             stmt.setString(4, request.getStatus());
             stmt.setInt(5, request.getId());
             stmt.executeUpdate();
@@ -131,10 +131,10 @@ public class OrganizerRequestDAO {
         
         int userId = rs.getInt("utilisateurId");
         User user = userDAO.findById(userId).orElse(new User());
-        request.setUser(user);
+        request.setRequester(user);
         
-        request.setDate(rs.getTimestamp("date").toLocalDateTime());
-        request.setMotivation(rs.getString("motivations"));
+        request.setSubmissionDate(rs.getTimestamp("date").toLocalDateTime());
+        request.setReason(rs.getString("motivations"));
         request.setStatus(rs.getString("statut"));
         
         return request;

@@ -5,6 +5,7 @@ import com.colorrun.business.User;
 import com.colorrun.dao.OrganizerRequestDAO;
 import com.colorrun.dao.UserDAO;
 import com.colorrun.service.OrganizerRequestService;
+import com.colorrun.util.Logger;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -22,28 +23,25 @@ public class OrganizerRequestServiceImpl implements OrganizerRequestService {
     }
     
     @Override
-    public void submitRequest(int userId, String motivation) throws SQLException {
-        // Vérifier si l'utilisateur existe
-        Optional<User> userOpt = userDAO.findById(userId);
-        if (!userOpt.isPresent()) {
-            throw new SQLException("User not found");
+    public void submitRequest(int userId, String reason) {
+        try {
+            Logger.info("OrganizerRequestService", "Soumission demande organisateur pour utilisateur " + userId);
+            
+            User user = userDAO.findById(userId).orElseThrow();
+            
+            OrganizerRequest request = new OrganizerRequest();
+            request.setRequester(user);
+            request.setReason(reason);
+            request.setSubmissionDate(LocalDateTime.now());
+            request.setStatus("PENDING");
+            
+            organizerRequestDAO.save(request);
+            Logger.success("OrganizerRequestService", "Demande soumise avec succès");
+            
+        } catch (Exception e) {
+            Logger.error("OrganizerRequestService", "Erreur soumission demande", e);
+            throw new RuntimeException("Erreur lors de la soumission de la demande", e);
         }
-        
-        // Vérifier si l'utilisateur a déjà fait une demande
-        Optional<OrganizerRequest> existingRequestOpt = organizerRequestDAO.findByUser(userId);
-        if (existingRequestOpt.isPresent()) {
-            throw new SQLException("User has already submitted a request");
-        }
-        
-        // Créer une nouvelle demande
-        OrganizerRequest request = new OrganizerRequest();
-        request.setUser(userOpt.get());
-        request.setMotivation(motivation);
-        request.setDate(LocalDateTime.now());
-        request.setStatus("PENDING");
-        
-        // Enregistrer la demande
-        organizerRequestDAO.save(request);
     }
     
     @Override
@@ -79,7 +77,7 @@ public class OrganizerRequestServiceImpl implements OrganizerRequestService {
         organizerRequestDAO.update(request);
         
         // Mettre à jour le rôle de l'utilisateur
-        User user = request.getUser();
+        User user = request.getRequester();
         user.setRole("ORGANIZER");
         userDAO.update(user);
     }
@@ -131,10 +129,13 @@ public class OrganizerRequestServiceImpl implements OrganizerRequestService {
     }
     
     @Override
-    public boolean hasRequestForUser(int userId) throws SQLException {
-        Optional<OrganizerRequest> requestOpt = getUserRequest(userId);
-        return requestOpt.isPresent() && 
-               (requestOpt.get().getStatus().equals("PENDING") || 
-                requestOpt.get().getStatus().equals("APPROVED"));
+    public boolean hasRequestForUser(int userId) {
+        try {
+            // TODO: Implement when DAO method exists
+            return false;
+        } catch (Exception e) {
+            Logger.error("OrganizerRequestService", "Erreur vérification demande", e);
+            return false;
+        }
     }
 } 

@@ -1,0 +1,165 @@
+<!-- TEMPLATE: Liste des courses -->
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-flag"></i> Courses Color Run</h1>
+        <div th:if="${isOrganizer}">
+            <a th:href="@{/creation-course}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Créer une course
+            </a>
+        </div>
+    </div>
+    
+    <!-- Informations utilisateur -->
+    <div th:if="${isAuthenticated}" class="alert alert-info d-flex align-items-center">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>
+            <strong th:text="${userName}">Utilisateur</strong> - 
+            Vous consultez en tant que <strong th:text="${userRole}">Rôle</strong>
+        </div>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-flag"></i> Total Courses
+                    </h5>
+                    <h2 th:text="${courses != null} ? ${#lists.size(courses)} : 0">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" th:if="${isAuthenticated}">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person-check"></i> Mes Participations
+                    </h5>
+                    <h2>-</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" th:if="${isOrganizer}">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-calendar-plus"></i> Mes Organisations
+                    </h5>
+                    <h2>-</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Liste des courses -->
+    <div th:if="${courses != null and not #lists.isEmpty(courses)}">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4" th:each="course : ${courses}">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0" th:text="${course.name}">Nom de la course</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${course.description}">Description de la course</p>
+                        
+                        <div class="course-details">
+                            <p class="mb-2">
+                                <i class="bi bi-geo-alt text-primary"></i>
+                                <strong>Ville:</strong> <span th:text="${course.city}">Ville</span>
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-speedometer2 text-success"></i>
+                                <strong>Distance:</strong> <span th:text="${course.distance}">0</span> km
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-calendar text-info"></i>
+                                <strong>Date:</strong> <span th:text="${course.date}">Date</span>
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-people text-warning"></i>
+                                <strong>Places:</strong> <span th:text="${course.maxParticipants}">0</span> max
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <!-- Actions pour utilisateurs connectés -->
+                        <div th:if="${isAuthenticated}" class="d-grid gap-2">
+                            <a th:href="@{/participate(courseId=${course.id})}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="bi bi-person-plus"></i> Participer
+                            </a>
+                            <a th:href="@{/courseDetail(id=${course.id})}" 
+                               class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-info-circle"></i> Voir détails
+                            </a>
+                        </div>
+                        
+                        <!-- Message pour utilisateurs non connectés -->
+                        <div th:unless="${isAuthenticated}" class="text-center">
+                            <small class="text-muted">
+                                <i class="bi bi-lock"></i> 
+                                <a th:href="@{/}" onclick="openAuthModal(); return false;">Connectez-vous</a> 
+                                pour participer
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Aucune course -->
+    <div th:if="${courses == null or #lists.isEmpty(courses)}" class="text-center py-5">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
+            <h4>Aucune course disponible</h4>
+            <p>Il n'y a aucune course programmée pour le moment.</p>
+            <div th:if="${isOrganizer}" class="mt-3">
+                <a th:href="@{/creation-course}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Créer la première course
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtres et recherche (future fonctionnalité) -->
+    <div class="mt-5">
+        <h3>🔍 Filtres <small class="text-muted">(bientôt disponible)</small></h3>
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" class="form-control" placeholder="Rechercher..." disabled>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" disabled>
+                    <option>Toutes les villes</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" disabled>
+                    <option>Toutes les distances</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-primary w-100" disabled>
+                    <i class="bi bi-search"></i> Filtrer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.course-details {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+</style> 

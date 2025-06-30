@@ -24,8 +24,8 @@ public class MessageDAO {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, message.getSender().getId());
-            stmt.setInt(2, message.getReceiver().getId());
-            stmt.setTimestamp(3, Timestamp.valueOf(message.getDate()));
+            stmt.setInt(2, message.getRecipient().getId());
+            stmt.setTimestamp(3, Timestamp.valueOf(message.getTimestamp()));
             stmt.setString(4, message.getContent());
             stmt.setBoolean(5, message.isRead());
             stmt.executeUpdate();
@@ -133,9 +133,9 @@ public class MessageDAO {
         
         int receiverId = rs.getInt("destinataireId");
         User receiver = userDAO.findById(receiverId).orElse(new User());
-        message.setReceiver(receiver);
+        message.setRecipient(receiver);
         
-        message.setDate(rs.getTimestamp("date").toLocalDateTime());
+        message.setTimestamp(rs.getTimestamp("date").toLocalDateTime());
         message.setContent(rs.getString("contenu"));
         message.setRead(rs.getBoolean("lu"));
         
