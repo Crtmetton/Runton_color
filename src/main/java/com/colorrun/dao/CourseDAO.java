@@ -132,6 +132,19 @@ public class CourseDAO {
     }
     
     public List<Course> findFiltered(String date, String city, String distance, String sort) throws SQLException {
+        /**
+         * Recherche les courses en fonction de différents critères facultatifs.
+         * <p>
+         * Tous les paramètres peuvent être {@code null} ou vides ; seuls ceux
+         * renseignés seront pris en compte dans le filtre.</p>
+         *
+         * @param date      date exacte recherchée (format « YYYY-MM-DD »)
+         * @param city      ville contenant cette chaîne (recherche LIKE)
+         * @param distance  distance en kilomètres (valeur exacte)
+         * @param sort      clé de tri : "date", "distance", "city" ou "name"
+         * @return          liste des courses correspondant aux critères, triées selon {@code sort}
+         * @throws SQLException en cas d'erreur d'accès à la base
+         */
         StringBuilder sql = new StringBuilder("SELECT * FROM Course WHERE 1=1");
         List<Object> params = new ArrayList<>();
         

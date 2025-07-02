@@ -6,8 +6,29 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service pour la gestion des inscriptions (participations) des utilisateurs
+ * aux courses Color Run.
+ * <p>
+ * Responsabilités :
+ * <ul>
+ *   <li>Inscription d'un utilisateur à une course avec vérification de capacité</li>
+ *   <li>Consultation, annulation de participation</li>
+ *   <li>Génération de PDF de dossard (méthode avancée)</li>
+ *   <li>Méthodes d'aide pour les servlets legacy (alias create/find...)</li>
+ * </ul>
+ * Les méthodes lèvent {@link java.sql.SQLException} lorsque des opérations
+ * d'E/S sur la base échouent.
+ * </p>
+ */
 public interface ParticipationService {
     
+    /**
+     * Inscrit un utilisateur à une course si des places sont disponibles.
+     *
+     * @param userId   identifiant de l'utilisateur
+     * @param courseId identifiant de la course
+     */
     void registerParticipation(int userId, int courseId) throws SQLException;
     
     List<Participation> getUserParticipations(int userId) throws SQLException;

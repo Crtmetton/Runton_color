@@ -1,9 +1,17 @@
 package com.colorrun.business;
 
-import jdk.jshell.execution.Util;
-
 import java.util.List;
 
+/**
+ * Représente un organisateur d'événements Color Run.
+ *
+ * Un organisateur est un utilisateur disposant du droit de créer et de gérer
+ * des courses. Cette classe stocke la relation avec l'objet
+ * {@link Utilisateur} ainsi que la liste des {@link Course} qu'il a créées.
+ *
+ * @author Équipe Runton
+ * @version 1.0
+ */
 public class Organisateur {
     private int id;
     private Utilisateur utilisateur;
@@ -39,10 +47,22 @@ public class Organisateur {
         this.coursesCreees = coursesCreees;
     }
 
+    /**
+     * Crée une nouvelle course et l'ajoute à la liste des courses créées.
+     * L'implémentation réelle sera effectuée dans le service.
+     *
+     * @param course la course à ajouter
+     */
     public void CreerCourse(Course course) {
 
     }
 
+    /**
+     * Modifie une course existante créée par l'organisateur.
+     * L'implémentation réelle sera effectuée dans le service.
+     *
+     * @param course la course à modifier
+     */
     public void ModifierCourse(Course course) {
 
     }

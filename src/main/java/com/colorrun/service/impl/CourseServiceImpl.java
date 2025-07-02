@@ -11,6 +11,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 
+/**
+ * Implémentation concrète de {@link com.colorrun.service.CourseService}.
+ * <p>
+ * Cette classe délègue la persistance aux DAO et applique la logique métier
+ * minimale (à compléter). Les méthodes marquées TODO devront être enrichies
+ * pour respecter toutes les règles décrites dans l'interface.
+ * </p>
+ */
 public class CourseServiceImpl implements CourseService {
     
     private CourseDAO courseDAO;
@@ -23,6 +31,13 @@ public class CourseServiceImpl implements CourseService {
     
     // Méthodes principales requises par l'interface
     
+    /**
+     * Valide les champs obligatoires et la cohérence des données avant
+     * l'enregistrement ou la mise à jour d'une course.
+     *
+     * @param course course à valider
+     * @throws IllegalArgumentException si une règle n'est pas respectée
+     */
     @Override
     public void validateCourseData(Course course) {
         // TODO: implémenter validation

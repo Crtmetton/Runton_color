@@ -6,8 +6,20 @@ import java.io.IOException;
 import com.colorrun.security.TokenManager;
 import com.colorrun.util.Logger;
 
+/**
+ * Servlet de déconnexion utilisateur.
+ * <p>
+ * Invalide la session, détruit le token d'authentification via
+ * {@link com.colorrun.security.TokenManager}, puis redirige l'utilisateur
+ * vers l'URL souhaitée (paramètre <code>redirect</code>) ou vers l'accueil.
+ * Les requêtes POST sont redirigées vers {@link #doGet(HttpServletRequest, HttpServletResponse)}.
+ * </p>
+ */
 public class LogoutServlet extends HttpServlet {
     
+    /**
+     * Effectue la déconnexion et redirige l'utilisateur.
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Définir l'encodage pour les caractères spéciaux
@@ -48,9 +60,11 @@ public class LogoutServlet extends HttpServlet {
         resp.sendRedirect(redirectUrl);
     }
     
+    /**
+     * Alias POST → GET.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Rediriger les POST vers GET
         doGet(req, resp);
     }
 } 

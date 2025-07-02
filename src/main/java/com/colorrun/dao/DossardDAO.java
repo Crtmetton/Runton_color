@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO pour la gestion des dossards en base de données.
- * 
- * Cette classe gère toutes les opérations CRUD pour les dossards,
- * ainsi que les requêtes spécialisées pour l'attribution et le suivi
- * des dossards lors des courses.
+ * DAO pour la table DOSSARD.
+ * <p>
+ * Gère la création, la mise à jour et la recherche des {@link com.colorrun.business.Dossard}
+ * ainsi que des requêtes spécialisées (numéro suivant disponible, dossards par course, etc.).
+ * </p>
  * 
  * @author Équipe Color Run
  * @version 1.0

@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+/**
+ * DAO dédié aux messages de discussion (table DISCUSSION).
+ * <p>
+ * Fournit les opérations CRUD ainsi que des méthodes de recherche par course
+ * ou par utilisateur. Toutes les méthodes déclarent {@link SQLException} afin
+ * que la couche service puisse gérer proprement les erreurs d'accès aux
+ * données.
+ * </p>
+ */
 public class DiscussionDAO {
     
     private DataSource dataSource;
@@ -20,7 +29,10 @@ public class DiscussionDAO {
     }
     
     /**
-     * Sauvegarde une nouvelle discussion dans la base de données
+     * Sauvegarde un nouveau message de discussion.
+     *
+     * @param discussion instance à persister (l'ID sera mis à jour)
+     * @throws SQLException en cas d'erreur d'insertion
      */
     public void save(Discussion discussion) throws SQLException {
         String sql = "INSERT INTO Discussion (course_id, date, contenu, expediteurId) VALUES (?, ?, ?, ?)";
@@ -43,7 +55,11 @@ public class DiscussionDAO {
     }
     
     /**
-     * Trouve une discussion par son ID
+     * Recherche un message de discussion par son identifiant.
+     *
+     * @param id identifiant du message
+     * @return une {@link Optional} contenant la discussion si trouvée
+     * @throws SQLException en cas d'erreur SQL
      */
     public Optional<Discussion> findById(int id) throws SQLException {
         String sql = "SELECT * FROM Discussion WHERE id = ?";
@@ -61,7 +77,11 @@ public class DiscussionDAO {
     }
     
     /**
-     * Trouve tous les messages d'une course, triés par date (plus anciens en haut, plus récents en bas)
+     * Liste les messages d'une course triés par date croissante.
+     *
+     * @param courseId identifiant de la course
+     * @return liste de messages
+     * @throws SQLException en cas d'erreur SQL
      */
     public List<Discussion> findByCourse(int courseId) throws SQLException {
         List<Discussion> discussions = new ArrayList<>();
@@ -81,7 +101,11 @@ public class DiscussionDAO {
     }
     
     /**
-     * Trouve tous les messages d'un utilisateur
+     * Liste les messages envoyés par un utilisateur.
+     *
+     * @param userId identifiant de l'expéditeur
+     * @return liste de messages
+     * @throws SQLException en cas d'erreur SQL
      */
     public List<Discussion> findByUser(int userId) throws SQLException {
         List<Discussion> discussions = new ArrayList<>();
@@ -101,7 +125,11 @@ public class DiscussionDAO {
     }
     
     /**
-     * Compte le nombre de messages dans une course
+     * Compte le nombre de messages dans une course.
+     *
+     * @param courseId identifiant de la course
+     * @return nombre de messages
+     * @throws SQLException en cas d'erreur SQL
      */
     public int countByCourse(int courseId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Discussion WHERE course_id = ?";
@@ -119,7 +147,10 @@ public class DiscussionDAO {
     }
     
     /**
-     * Supprime un message de discussion
+     * Supprime un message de discussion.
+     *
+     * @param id identifiant du message à supprimer
+     * @throws SQLException en cas d'erreur SQL
      */
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM Discussion WHERE id = ?";
@@ -132,7 +163,11 @@ public class DiscussionDAO {
     }
     
     /**
-     * Met à jour le contenu d'un message de discussion
+     * Met à jour le contenu d'un message de discussion.
+     *
+     * @param id         identifiant du message
+     * @param newContent nouveau contenu
+     * @throws SQLException en cas d'erreur SQL
      */
     public void updateContent(int id, String newContent) throws SQLException {
         String sql = "UPDATE Discussion SET contenu = ? WHERE id = ?";
@@ -146,7 +181,10 @@ public class DiscussionDAO {
     }
     
     /**
-     * Supprime tous les messages d'une course
+     * Supprime tous les messages liés à une course.
+     *
+     * @param courseId identifiant de la course
+     * @throws SQLException en cas d'erreur SQL
      */
     public void deleteByCourse(int courseId) throws SQLException {
         String sql = "DELETE FROM Discussion WHERE course_id = ?";

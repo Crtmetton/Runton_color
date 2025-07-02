@@ -9,6 +9,13 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+/**
+ * DAO chargé de la table DEMANDEORGANISATEUR.
+ * <p>
+ * Gère la persistance des {@link com.colorrun.business.OrganizerRequest}
+ * ainsi que les recherches par utilisateur ou statut.
+ * </p>
+ */
 public class OrganizerRequestDAO {
     
     private DataSource dataSource;

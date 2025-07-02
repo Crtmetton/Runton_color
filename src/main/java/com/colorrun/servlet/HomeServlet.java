@@ -15,8 +15,17 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Servlet pour la page d'accueil
- * UTILISE JSP - Système original restauré
+ * Servlet d'affichage de la page d'accueil ("/" ou racine).
+ * <p>
+ * Responsabilités :
+ * <ul>
+ *   <li>Initialiser le {@link com.colorrun.service.CourseService} afin de récupérer les prochaines courses.</li>
+ *   <li>Lire les messages flash stockés en session pour informer l'utilisateur.</li>
+ *   <li>Transférer la requête vers le JSP d'accueil situé dans <code>/WEB-INF/views/acceuil-2.jsp</code>.</li>
+ *   <li>Gérer les exceptions en affichant une page HTML minimaliste.</li>
+ * </ul>
+ * Cette servlet n'effectue pas de traitement POST ; toute requête POST est redirigée vers {@link #doGet(HttpServletRequest, HttpServletResponse)}.
+ * </p>
  */
 @WebServlet(name = "HomeServlet", urlPatterns = {"", "/"})
 public class HomeServlet extends HttpServlet {
@@ -30,6 +39,12 @@ public class HomeServlet extends HttpServlet {
         Logger.info("HomeServlet", "✅ Service courses initialisé");
     }
     
+    /**
+     * Traite l'affichage de la page d'accueil.
+     *
+     * @param request  requête HTTP
+     * @param response réponse HTTP
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -97,10 +112,12 @@ public class HomeServlet extends HttpServlet {
         }
     }
     
+    /**
+     * Redirige toute requête POST vers {@link #doGet(HttpServletRequest, HttpServletResponse)}.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Pour l'instant, rediriger vers GET
         doGet(request, response);
     }
 } 

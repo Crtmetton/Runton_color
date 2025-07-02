@@ -12,6 +12,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implémentation concrète de {@link com.colorrun.service.OrganizerRequestService}.
+ * <p>
+ * Cette classe orchestre la persistance via {@link com.colorrun.dao.OrganizerRequestDAO}
+ * et {@link com.colorrun.dao.UserDAO}, ainsi que les validations de base
+ * (existence d'utilisateur, changements de rôle, etc.).
+ * </p>
+ */
 public class OrganizerRequestServiceImpl implements OrganizerRequestService {
     
     private OrganizerRequestDAO organizerRequestDAO;

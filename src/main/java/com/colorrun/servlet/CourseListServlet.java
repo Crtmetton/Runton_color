@@ -20,8 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Servlet pour afficher la liste des courses
- * UTILISE JSP - Comme demandé par l'utilisateur
+ * Servlet d'affichage de la liste des courses accessibles via <code>/courses</code>.
+ * <p>
+ * Responsabilités :
+ * <ul>
+ *   <li>Récupérer toutes les {@link com.colorrun.business.Course} via le {@link com.colorrun.service.CourseService}</li>
+ *   <li>Vérifier, si l'utilisateur est connecté, les participations existantes</li>
+ *   <li>Transférer la requête vers le JSP <code>/WEB-INF/views/courses/simple-list.jsp</code></li>
+ *   <li>Gérer les messages flash et l'encodage UTF-8</li>
+ * </ul>
+ * Les requêtes POST sont simplement redirigées vers {@link #doGet(HttpServletRequest, HttpServletResponse)}.
+ * </p>
  */
 @WebServlet(name = "CourseListServlet", urlPatterns = {"/courses"})
 public class CourseListServlet extends HttpServlet {
@@ -37,6 +46,9 @@ public class CourseListServlet extends HttpServlet {
         Logger.info("CourseListServlet", "✅ Services courses et participations initialisés");
     }
     
+    /**
+     * Affiche la liste des courses.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -133,10 +145,12 @@ public class CourseListServlet extends HttpServlet {
         }
     }
     
+    /**
+     * Redirige toute requête POST vers {@link #doGet(HttpServletRequest, HttpServletResponse)}.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Pour l'instant, rediriger vers GET
         doGet(request, response);
     }
 }

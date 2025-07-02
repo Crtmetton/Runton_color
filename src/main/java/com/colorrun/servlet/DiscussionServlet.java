@@ -14,6 +14,19 @@ import com.colorrun.security.TokenManager;
 import com.colorrun.security.UserToken;
 import com.colorrun.util.Logger;
 
+/**
+ * Servlet REST (HTTP DELETE uniquement) pour la suppression d'un message de
+ * discussion d'une course.
+ * <p>
+ * Elle vérifie :
+ * <ul>
+ *   <li>Authentification de l'utilisateur via {@link com.colorrun.security.TokenManager}</li>
+ *   <li>Existence du message et de la course</li>
+ *   <li>Permissions : auteur du message, organisateur de la course ou admin</li>
+ * </ul>
+ * En cas de succès, la réponse est <code>204 No&nbsp;Content</code>.
+ * </p>
+ */
 public class DiscussionServlet extends HttpServlet {
     
     private final DiscussionService discussionService;
@@ -24,6 +37,10 @@ public class DiscussionServlet extends HttpServlet {
         this.courseService = new CourseServiceImpl();
     }
     
+    /**
+     * Supprime un message de discussion.
+     * <p>Répond avec les codes HTTP appropriés : 400, 401, 403, 404 ou 204.</p>
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

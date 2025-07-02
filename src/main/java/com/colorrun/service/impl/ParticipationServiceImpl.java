@@ -24,6 +24,15 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.awt.image.BufferedImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
+/**
+ * Implémentation concrète de {@link com.colorrun.service.ParticipationService}.
+ * <p>
+ * Elle assure les vérifications métier lors de l'inscription à une course
+ * (capacité restante, double inscription, existence des entités) et délègue la
+ * persistance aux DAO correspondants. Certains traitements avancés (génération
+ * de PDF, QR code) sont implémentés de façon simplifiée ou marqués TODO.
+ * </p>
+ */
 public class ParticipationServiceImpl implements ParticipationService {
     
     private ParticipationDAO participationDAO;

@@ -1,5 +1,17 @@
 package com.colorrun.business;
 
+/**
+ * Modèle simplifié d'utilisateur utilisé par certaines classes historiques du
+ * projet. Il sera progressivement remplacé par {@link User}, plus complet.
+ *
+ * Cette classe stocke les informations basiques d'un utilisateur ainsi que
+ * quelques opérations rudimentaires telles que la connexion ou la mise à jour
+ * de profil. Aucune logique de sécurité réelle n'est implémentée ici ; ces
+ * aspects sont gérés dans les couches service et sécurité.
+ *
+ * @author Équipe Runton
+ * @version 1.0
+ */
 public class Utilisateur {
     private int id;
     private String nom;
@@ -65,6 +77,18 @@ public class Utilisateur {
         this.photoProfile = photoProfile;
     }
 
+    /**
+     * Tente de connecter l'utilisateur à l'aide de l'email et du mot de passe
+     * fournis.
+     *
+     * <strong>Attention :</strong> cette implémentation est purement illustrative
+     * et ne réalise <em>aucune</em> vérification du mot de passe. La vraie
+     * authentification est assurée par la couche de sécurité.
+     *
+     * @param email       email saisi
+     * @param motDePasse  mot de passe saisi
+     * @return {@code true} si l'email correspond, {@code false} sinon
+     */
     public boolean seConnecter(String email, String motDePasse){
         if (this.email == email){
             return true;
@@ -74,6 +98,15 @@ public class Utilisateur {
         }
     }
 
+    /**
+     * Met à jour les informations du profil utilisateur.
+     *
+     * @param nom           nouveau nom
+     * @param prenom        nouveau prénom
+     * @param email         nouvel email
+     * @param role          nouveau rôle
+     * @param photoProfile  nouvelle photo de profil
+     */
     public void ModifierProfile(String nom, String prenom, String email, String role, String photoProfile){
         this.nom = nom;
         this.prenom = prenom;

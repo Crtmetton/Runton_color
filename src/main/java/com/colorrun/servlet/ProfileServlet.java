@@ -13,11 +13,29 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Servlet de gestion du profil utilisateur (<code>/profile</code>).
+ * <p>
+ * Fonctionnalités :
+ * <ul>
+ *   <li>Affichage du profil de l'utilisateur connecté (GET)</li>
+ *   <li>Mise à jour des informations de profil (nom, prénom) et changement
+ *       de mot de passe (POST)</li>
+ *   <li>Redirection vers la page de connexion si l'utilisateur n'est pas
+ *       authentifié</li>
+ * </ul>
+ * Les méthodes lèvent {@link javax.servlet.ServletException} et
+ * {@link java.io.IOException} comme requis par l'API Servlet.
+ * </p>
+ */
 @WebServlet(name = "ProfileServlet", urlPatterns = "/profile")
 public class ProfileServlet extends HttpServlet {
 
     private final UserService userService = new UserServiceImpl();
 
+    /**
+     * Affiche la page de profil.
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
@@ -28,6 +46,9 @@ public class ProfileServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(req, resp);
     }
 
+    /**
+     * Traite la mise à jour du profil : noms et mot de passe.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);

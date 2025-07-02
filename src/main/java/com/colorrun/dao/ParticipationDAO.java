@@ -10,6 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+/**
+ * DAO pour la gestion des participations (table PARTICIPATION).
+ * <p>
+ * Permet l'enregistrement, la recherche et la suppression des inscriptions des
+ * utilisateurs aux courses. Fournit également des méthodes utilitaires comme le
+ * comptage des participants par course.
+ * </p>
+ */
 public class ParticipationDAO {
     
     private DataSource dataSource;
