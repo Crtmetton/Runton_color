@@ -140,11 +140,20 @@ body {
     font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease, box-shadow 0.2s;
-    padding: 0 24px;
+    padding: 0 24px !important;
     white-space: nowrap;
     box-shadow: 0 2px 8px rgba(106,130,251,0.08);
     position: relative;
     z-index: 1;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    /* Forcer l'alignement vertical du texte */
+    text-align: center !important;
+    box-sizing: border-box !important;
 }
 
 .search-button:hover {
@@ -161,6 +170,14 @@ body {
     color: #ff6a88 !important;
     border: 2px solid #ff6a88 !important;
     box-shadow: 0 2px 8px rgba(255,106,136,0.08);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    padding: 0 24px !important;
 }
 
 .search-button.secondary:hover,
@@ -289,6 +306,40 @@ body {
     box-shadow: 0 4px 24px rgba(255,106,136,0.07), 0 1.5px 8px rgba(106,130,251,0.06);
     position: relative;
     z-index: 1;
+}
+
+/* Forcer l'alignement vertical pour tous les boutons dans les cartes de cours */
+.course-card .search-button,
+.course-card .search-button.secondary,
+.course-card a.search-button,
+.course-card span.search-button,
+a.search-button,
+span.search-button,
+button.search-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    padding: 0 24px !important;
+    margin: 0 !important;
+    /* Centrage du texte */
+    font-style: normal !important;
+    text-transform: none !important;
+}
+
+/* Règle ultime pour centrer le texte dans tous les boutons search-button */
+.search-button * {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.search-button:before,
+.search-button:after {
+    display: none !important;
 }
 
 .course-card:hover {
@@ -425,11 +476,13 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
+    background-color: transparent !important;
 }
 
 .navbar .menu a:hover {
     color: #000;
     transform: translateY(-2px);
+    background-color: transparent !important;
 }
 
 .navbar .menu a::after {
@@ -450,6 +503,7 @@ body {
 .navbar .menu .active {
     color: #000;
     font-weight: 800;
+    background-color: transparent !important;
 }
 
 .navbar .menu .active::after {
@@ -852,4 +906,18 @@ body {
     background: #ffe3ec !important;
     color: #ff6a88 !important;
     border-color: #ff6a88 !important;
+}
+
+/* Ensure navbar links never have a white background */
+body .navbar .menu a:hover,
+body .navbar .menu a.active,
+body .navbar .menu a:focus,
+body .navbar .menu a:active {
+    background-color: transparent !important;
+    color: #000;
+}
+
+/* Additional style to ensure no white background on hover */
+.navbar .menu a {
+    background-color: transparent !important;
 }

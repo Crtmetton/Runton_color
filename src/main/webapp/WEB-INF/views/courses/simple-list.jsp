@@ -5,100 +5,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses - Runton Color</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Courses | Color Run</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style-liste-course.css">
 </head>
 <body>
-    <!-- Utilisation de la navbar centralisée avec système de token -->
-    <jsp:include page="../fragments/navbar.jsp" />
+<div class="bg-circle1"></div>
+<div class="bg-circle2"></div>
+<div class="bg-circle3"></div>
 
-    <div class="container mt-4">
-        <h1>🏃‍♂️ Courses Color Run Disponibles</h1>
+<!-- Navbar unifiée -->
+<%@ include file="/WEB-INF/views/fragments/navbar.jsp" %>
+
+<!-- Hero Section -->
+<section class="search-section">
+    <section class="search-hero">
+        <h1 class="main-title" style="font-size: 2.2rem;">Découvrez nos prochaines courses</h1>
         
-        <!-- Informations utilisateur -->
-        <c:if test="${isAuthenticated}">
-            <div class="alert alert-info">
-                <strong>👋 ${userName}</strong> - Vous consultez en tant que <strong>${userRole}</strong>
+        <!-- Barre de recherche -->
+        <div class="search-container">
+            <div class="search-input-container">
+                <input type="text" class="search-input" placeholder="Rechercher une course..." id="searchInput">
             </div>
-        </c:if>
-        
-        <!-- Affichage des courses -->
-        <div class="row">
-            <div class="col-12">
-                <p>Nombre de courses : <strong>${courses.size()}</strong></p>
-                
-                <c:choose>
-                    <c:when test="${not empty courses}">
-                        <div class="row">
-                            <c:forEach var="course" items="${courses}">
-                                <div class="col-md-6 col-lg-4 mb-4">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <h5 class="card-title">${course.name}</h5>
-                                            <p class="card-text">${course.description}</p>
-                                            <p class="text-muted">
-                                                <i class="bi bi-geo-alt"></i> ${course.city}<br>
-                                                <i class="bi bi-speedometer2"></i> ${course.distance} km<br>
-                                                <i class="bi bi-calendar"></i> ${course.date}<br>
-                                                <i class="bi bi-people"></i> ${course.maxParticipants} participants max
-                                            </p>
-                                            
-                                            <!-- Actions selon le rôle -->
-                                            <div class="mt-3">
-                                                <c:if test="${isAuthenticated}">
-                                                    <!-- Bouton participer pour tous les utilisateurs connectés -->
-                                                    <a href="${pageContext.request.contextPath}/participate?courseId=${course.id}" 
-                                                       class="btn btn-primary btn-sm">
-                                                        <i class="bi bi-person-plus"></i> Participer
-                                                    </a>
-                                                    
-                                                    <!-- Bouton détails pour voir plus d'infos -->
-                                                    <a href="${pageContext.request.contextPath}/courseDetail?id=${course.id}" 
-                                                       class="btn btn-outline-info btn-sm">
-                                                        <i class="bi bi-info-circle"></i> Détails
-                                                    </a>
-                                                </c:if>
-                                                
-                                                <c:if test="${not isAuthenticated}">
-                                                    <!-- Message pour utilisateurs non connectés -->
-                                                    <small class="text-muted">
-                                                        <i class="bi bi-lock"></i> Connectez-vous pour participer
-                                                    </small>
-                                                </c:if>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle"></i> 
-                            Aucune course disponible pour le moment.
-                        </div>
-                    </c:otherwise>
-                </c:choose>
+            <div class="filter-input-container">
+                <input type="text" class="filter-input" placeholder="Ville ou région..." id="cityFilter">
+            </div>
+            <div class="filter-input-container date-container">
+                <input type="date" class="filter-input" placeholder="Date" id="dateFilter">
+            </div>
+            <button class="search-button" onclick="filterCourses()">Rechercher</button>
+        </div>
+    </section>
+</section>
+
+<main class="main-container">
+    <!-- Messages d'information -->
+    <c:if test="${not empty success}">
+        <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+            ${success}
+        </div>
+    </c:if>
+    <c:if test="${not empty error}">
+        <div class="alert alert-error" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+            ${error}
+        </div>
+    </c:if>
+
+    <!-- Zone blanche autour du titre et du nombre de courses -->
+    <div class="acceuil-bloc-blanc" style="margin-bottom: 32px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h2 style="font-size:1.8rem; font-weight:700; color:#333; margin-bottom:8px;">Courses disponibles</h2>
+                <p style="color:#666; margin:0;">${courses.size()} course(s) trouvée(s)</p>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Script pour interactions utilisateur
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page des courses chargée avec ${courses.size()} courses');
+    <!-- Grid des courses -->
+    <div class="courses-container">
+        <c:choose>
+            <c:when test="${not empty courses}">
+                <div class="courses-grid" id="coursesGrid">
+                    <c:forEach var="course" items="${courses}">
+                        <article class="course-card" data-course-name="${course.name}" data-course-city="${course.city}" data-course-date="${course.date.year}-${String.format('%02d', course.date.monthValue)}-${String.format('%02d', course.date.dayOfMonth)}">
+                            <!-- Image de la course -->
+                            <div class="course-image" style="background-image: url('${pageContext.request.contextPath}/images/course-placeholder.jpg');"></div>
+                            
+                            <!-- Détails de la course -->
+                            <div class="course-details">
+                                <h3 class="course-title">${course.name}</h3>
+                                <div class="course-location">${course.city}</div>
+                                <div style="color:#666; margin-bottom:20px; font-size:0.95rem; line-height:1.5;">
+                                    ${course.description}
+                                </div>
+                                
+                                <!-- Informations de la course -->
+                                <div style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                    <div class="distance-badge">${course.distance} km</div>
+                                    <div style="color:#666; font-size:0.9rem;">
+                                        📅 ${course.date.dayOfMonth}/${course.date.monthValue}/${course.date.year}
+                                    </div>
+                                    <div style="color:#666; font-size:0.9rem;">
+                                        👥 ${course.maxParticipants} places max
+                                    </div>
+                                </div>
+                                
+                                <!-- Prix et boutons d'action -->
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div class="course-price" style="margin-right:10px;">Gratuit</div>
+                                    <div style="display:flex; gap:8px;">
+                                        <c:choose>
+                                            <c:when test="${isAuthenticated}">
+                                                <!-- Vérifier si l'utilisateur est déjà inscrit -->
+                                                <c:choose>
+                                                    <c:when test="${userParticipations[course.id]}">
+                                                        <!-- Utilisateur déjà inscrit -->
+                                                        <span class="search-button" style="min-width:100px; font-size:0.95rem; background:#e0e0e0; color:#666; cursor:not-allowed;">
+                                                            Déjà inscrit
+                                                        </span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <!-- Bouton Participer -->
+                                                        <a href="${pageContext.request.contextPath}/participate?courseId=${course.id}" 
+                                                           class="search-button" style="min-width:100px; font-size:0.95rem;">
+                                                            Participer
+                                                        </a>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <!-- Bouton Détails -->
+                                                <a href="${pageContext.request.contextPath}/courseDetail?id=${course.id}" 
+                                                   class="search-button secondary" style="min-width:80px; font-size:0.95rem;">
+                                                    Détail
+                                                </a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- Utilisateur non connecté -->
+                                                <button class="search-button secondary" onclick="openAccountPopup()" 
+                                                        style="min-width:90px; font-size:0.85rem;">
+                                                    Se connecter
+                                                </button>
+                                                <a href="${pageContext.request.contextPath}/courseDetail?id=${course.id}" 
+                                                   class="search-button secondary" style="min-width:80px; font-size:0.95rem;">
+                                                    Détail
+                                                </a>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <!-- Aucune course trouvée -->
+                <div class="acceuil-bloc-blanc" style="text-align:center; padding:60px 40px;">
+                    <div style="font-size:4rem; margin-bottom:20px;">🏃‍♂️</div>
+                    <h3 style="color:#666; margin-bottom:16px;">Aucune course disponible</h3>
+                    <p style="color:#999; margin-bottom:32px;">
+                        Il n'y a aucune course programmée pour le moment.<br>
+                        Revenez bientôt pour découvrir nos prochaines aventures colorées !
+                    </p>
+                    <c:if test="${isOrganizer}">
+                        <a href="${pageContext.request.contextPath}/creation-course" class="search-button">
+                            Créer la première course
+                        </a>
+                    </c:if>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</main>
+
+<script>
+    // Fonction de filtrage des courses
+    function filterCourses() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const cityFilter = document.getElementById('cityFilter').value.toLowerCase();
+        const dateFilter = document.getElementById('dateFilter').value;
+        
+        const courses = document.querySelectorAll('.course-card');
+        let visibleCount = 0;
+        
+        courses.forEach(course => {
+            const courseName = course.getAttribute('data-course-name').toLowerCase();
+            const courseCity = course.getAttribute('data-course-city').toLowerCase();
+            const courseDate = course.getAttribute('data-course-date');
             
-            // Log des informations utilisateur pour debug
-            <c:if test="${isAuthenticated}">
-                console.log('Utilisateur connecté: ${userName} (${userRole})');
-            </c:if>
-            <c:if test="${not isAuthenticated}">
-                console.log('Utilisateur non connecté');
-            </c:if>
+            let isVisible = true;
+            
+            // Filtre par nom
+            if (searchTerm && !courseName.includes(searchTerm)) {
+                isVisible = false;
+            }
+            
+            // Filtre par ville
+            if (cityFilter && !courseCity.includes(cityFilter)) {
+                isVisible = false;
+            }
+            
+            // Filtre par date (comparaison exacte au format YYYY-MM-DD)
+            if (dateFilter && courseDate && courseDate !== dateFilter) {
+                isVisible = false;
+            }
+            
+            if (isVisible) {
+                course.style.display = 'block';
+                visibleCount++;
+            } else {
+                course.style.display = 'none';
+            }
         });
-    </script>
+        
+        // Mettre à jour le compteur dans l'interface
+        const counter = document.querySelector('.acceuil-bloc-blanc p');
+        if (counter) {
+            counter.textContent = `${visibleCount} course(s) trouvée(s)`;
+        }
+        console.log(`${visibleCount} course(s) trouvée(s)`);
+    }
+    
+    // Filtrage en temps réel
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const cityFilter = document.getElementById('cityFilter');
+        const dateFilter = document.getElementById('dateFilter');
+        
+        if (searchInput) searchInput.addEventListener('input', filterCourses);
+        if (cityFilter) cityFilter.addEventListener('input', filterCourses);
+        if (dateFilter) dateFilter.addEventListener('change', filterCourses);
+        
+        // Log informations de debug
+        <c:if test="${isAuthenticated}">
+            console.log('Utilisateur connecté: ${userName} (${userRole})');
+        </c:if>
+        <c:if test="${not isAuthenticated}">
+            console.log('Utilisateur non connecté');
+        </c:if>
+        console.log('Page des courses chargée avec ${courses.size()} courses');
+    });
+</script>
+
+<!-- Inclusion du footer -->
+<jsp:include page="../fragments/footer.jsp"/>
+
 </body>
 </html> 

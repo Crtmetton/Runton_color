@@ -166,7 +166,7 @@ public class RegistrationServlet extends HttpServlet {
             user.setLastName(lastName.trim());
             user.setEmail(email.trim().toLowerCase()); // Normalisation de l'email
             user.setPasswordHash(password); // Le hachage sera fait par le service
-            user.setRole("PARTICIPANT"); // Rôle par défaut pour les nouveaux inscrits
+            user.setRole("USER"); // Rôle par défaut pour les nouveaux inscrits
             user.setEnabled(false); // Le compte sera activé après vérification email
             
             Logger.info("RegistrationServlet", "Utilisateur créé: " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");

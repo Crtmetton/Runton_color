@@ -1,615 +1,3 @@
-Arrêt de tous les processus Tomcat en cours...
-Nettoyage du cache Maven et recompilation...
-Réinitialisation de la base de données...
-Téléchargement de la bibliothèque H2...
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 2483k  100 2483k    0     0  12.0M      0 --:--:-- --:--:-- --:--:-- 12.0M
-Mise à jour de la base de données avec le script db/sqlScriptDropAndCreateUpdated.sql...
--- Drop tables in correct order to respect foreign key constraints
-DROP TABLE IF EXISTS VerificationToken;
-DROP TABLE IF EXISTS Message;
-DROP TABLE IF EXISTS Discussion;
-DROP TABLE IF EXISTS Organisation;
-DROP TABLE IF EXISTS Inscription;
-DROP TABLE IF EXISTS Participation;
-DROP TABLE IF EXISTS DemandeOrganisateur;
-DROP TABLE IF EXISTS Organisateur;
-DROP TABLE IF EXISTS Participant;
-DROP TABLE IF EXISTS Admin;
-DROP TABLE IF EXISTS Course;
-DROP TABLE IF EXISTS Utilisateur;
-
-
-CREATE TABLE Utilisateur (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(255) NOT NULL,
-    prenom VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    hashMotDePasse VARCHAR(255) NOT NULL,
-    photoProfile TEXT,
-    enabled BOOLEAN DEFAULT TRUE
-);
-
-CREATE TABLE Course (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(255) NOT NULL,
-    description TEXT,
-    date TIMESTAMP NOT NULL,
-    lieu VARCHAR(255) NOT NULL,
-    distance DOUBLE NOT NULL,
-    maxParticipants INT NOT NULL,
-    prix INT NOT NULL,
-    cause VARCHAR(255)
-);
-
-CREATE TABLE Participation (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateurId INT NOT NULL,
-    courseId INT NOT NULL,
-    date TIMESTAMP NOT NULL,
-    statut VARCHAR(50) NOT NULL, -- REGISTERED, CANCELED, etc.
-    FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    FOREIGN KEY (courseId) REFERENCES Course(id) ON DELETE CASCADE
-);
-
-CREATE TABLE DemandeOrganisateur (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateurId INT NOT NULL,
-    date TIMESTAMP NOT NULL,
-    motivations TEXT NOT NULL,
-    statut VARCHAR(50) NOT NULL, -- PENDING, APPROVED, REJECTED
-    FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);
-
--- Conserver les tables du schéma original pour compatibilité
-CREATE TABLE Participant (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);
-
-CREATE TABLE Inscription (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    participant_id INT NOT NULL,
-    course_id INT NOT NULL,
-    FOREIGN KEY (participant_id) REFERENCES Participant(id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
-);
-
-CREATE TABLE Admin (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);
-
-CREATE TABLE Organisateur (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);
-
-CREATE TABLE Organisation (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    organisateur_id INT NOT NULL,
-    course_id INT NOT NULL,
-    FOREIGN KEY (organisateur_id) REFERENCES Organisateur(id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
-);
-
-CREATE TABLE Discussion (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    course_id INT NOT NULL,
-    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
-);
-
--- Modifier la structure de Message pour correspondre à notre DAO
-CREATE TABLE Message (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    expediteurId INT NOT NULL,
-    destinataireId INT NOT NULL,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    contenu TEXT NOT NULL,
-    lu BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (expediteurId) REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    FOREIGN KEY (destinataireId) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);
-
--- Optionnel: Table pour la vérification des emails
-CREATE TABLE VerificationToken (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    token VARCHAR(255) NOT NULL,
-    expiry_date TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Utilisateur(id) ON DELETE CASCADE
-);Base de données mise à jour avec succès !
-Insertion des données de test depuis db/testData.sql...
--- Insertion de données de test dans la table Utilisateur
-INSERT INTO Utilisateur (nom, prenom, email, role, hashMotDePasse, photoProfile, enabled)
-VALUES 
-('Dupont', 'Jean', 'jean.dupont@example.com', 'USER', '$2a$10$hKDVYxLefVHV/vtuPhWD3OigtRyOykRLDdUAp80Z1crSoS1lFqaFS', 'profile1.jpg', TRUE),
-('Martin', 'Sophie', 'sophie.martin@example.com', 'USER', '$2a$10$hKDVYxLefVHV/vtuPhWD3OigtRyOykRLDdUAp80Z1crSoS1lFqaFS', 'profile2.jpg', TRUE),
-('Bernard', 'Pierre', 'pierre.bernard@example.com', 'ORGANIZER', '$2a$10$hKDVYxLefVHV/vtuPhWD3OigtRyOykRLDdUAp80Z1crSoS1lFqaFS', 'profile3.jpg', TRUE),
-('Admin', 'System', 'admin@runton.com', 'ADMIN', '$2a$10$hKDVYxLefVHV/vtuPhWD3OigtRyOykRLDdUAp80Z1crSoS1lFqaFS', 'admin.jpg', TRUE);
-
--- Insertion de données de test dans la table Course
-INSERT INTO Course (nom, description, date, lieu, distance, maxParticipants, prix, cause)
-VALUES 
-('Color Run Paris', 'Course colorée à travers Paris', '2023-06-15 10:00:00', 'Paris', 5.0, 1000, 25, 'Association pour la recherche contre le cancer'),
-('Color Run Lyon', 'Course colorée au cœur de Lyon', '2023-07-20 09:30:00', 'Lyon', 10.0, 500, 30, 'Fondation pour la protection de l''environnement'),
-('Color Run Marseille', 'Course colorée sur la Canebière', '2023-08-05 08:00:00', 'Marseille', 7.5, 750, 20, 'Aide aux enfants défavorisés');
-
--- Insertion de données de test dans la table Participation
-INSERT INTO Participation (utilisateurId, courseId, date, statut)
-VALUES 
-(1, 1, '2023-05-10 14:30:00', 'REGISTERED'),
-(2, 1, '2023-05-12 09:15:00', 'REGISTERED'),
-(1, 2, '2023-06-05 16:45:00', 'REGISTERED'),
-(3, 3, '2023-07-01 11:20:00', 'REGISTERED');
-
--- Insertion de données de test dans la table DemandeOrganisateur
-INSERT INTO DemandeOrganisateur (utilisateurId, date, motivations, statut)
-VALUES 
-(2, '2023-04-25 10:30:00', 'Je souhaite organiser des courses car j''ai une grande expérience dans l''événementiel sportif.', 'PENDING'),
-(1, '2023-05-02 16:15:00', 'Passionné de course à pied, je souhaite partager ma passion en organisant des événements.', 'APPROVED');
-
--- Insertion de données de test dans la table Message
-INSERT INTO Message (expediteurId, destinataireId, date, contenu, lu)
-VALUES 
-(1, 3, '2023-05-15 09:20:00', 'Bonjour, pouvez-vous me donner plus d''informations sur la Color Run Lyon ?', FALSE),
-(3, 1, '2023-05-15 11:45:00', 'Bonjour, bien sûr ! La course se déroulera au centre-ville de Lyon, le départ est prévu Place Bellecour.', TRUE),
-(2, 4, '2023-05-16 14:30:00', 'Bonjour, j''ai fait une demande pour devenir organisateur, pouvez-vous me dire où en est ma demande ?', FALSE),
-(4, 2, '2023-05-16 15:10:00', 'Bonjour, votre demande est en cours d''examen, nous vous tiendrons informé rapidement.', TRUE);
-
--- Insertion de données de test dans les tables de compatibilité
-INSERT INTO Participant (utilisateur_id)
-VALUES (1), (2);
-
-INSERT INTO Organisateur (utilisateur_id)
-VALUES (3);
-
-INSERT INTO Admin (utilisateur_id)
-VALUES (4);
-
-INSERT INTO Organisation (organisateur_id, course_id)
-VALUES (1, 3);
-
-INSERT INTO Discussion (course_id)
-VALUES (1), (2), (3);
-
--- Note: Le mot de passe pour tous les utilisateurs est 'password' ;Données de test insérées avec succès !
-Compilation du projet...
-WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.10/libexec/lib/guice-5.1.0-classes.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
-WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
-[INFO] Scanning for projects...
-[INFO] 
-[INFO] ------------------------< fr.esgi:runton-color >------------------------
-[INFO] Building runton-color 1.0-SNAPSHOT
-[INFO]   from pom.xml
-[INFO] --------------------------------[ war ]---------------------------------
-[INFO] 
-[INFO] --- clean:3.2.0:clean (default-clean) @ runton-color ---
-[INFO] Deleting /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/target
-[INFO] 
-[INFO] --- resources:3.3.1:resources (default-resources) @ runton-color ---
-[INFO] Copying 0 resource from src/main/resources to target/classes
-[INFO] 
-[INFO] --- compiler:3.10.1:compile (default-compile) @ runton-color ---
-[INFO] Changes detected - recompiling the module!
-[INFO] Compiling 44 source files to /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/target/classes
-[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
-[INFO] -------------------------------------------------------------
-[ERROR] COMPILATION ERROR : 
-[INFO] -------------------------------------------------------------
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[65,2] cannot find symbol
-  symbol: class WebServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[26,35] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[27,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[28,38] cannot find symbol
-  symbol:   method getMotivation()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[100,35] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[101,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[102,38] cannot find symbol
-  symbol:   method getMotivation()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[134,16] cannot find symbol
-  symbol:   method setUser(com.colorrun.business.User)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[136,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[137,16] cannot find symbol
-  symbol:   method setMotivation(java.lang.String)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[72,21] cannot find symbol
-  symbol:   method setPhotoUrl(java.lang.String)
-  location: variable user of type com.colorrun.business.User
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[79,24] cannot find symbol
-  symbol:   method updateProfile(com.colorrun.business.User)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[87,56] incompatible types: java.lang.String cannot be converted to int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[90,16] cannot find symbol
-  symbol:   method setNomParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[91,16] cannot find symbol
-  symbol:   method setPrenomParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[92,16] cannot find symbol
-  symbol:   method setEmailParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[95,16] cannot find symbol
-  symbol:   method setNomCourse(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[96,16] cannot find symbol
-  symbol:   method setDateCourse(java.time.LocalDateTime)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[97,16] cannot find symbol
-  symbol:   method setLieuCourse(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[98,16] cannot find symbol
-  symbol:   method setDistance(java.lang.Double)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[101,16] cannot find symbol
-  symbol:   method generateQrCodeData()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[105,16] cannot find symbol
-  symbol:   method setQrCodeImage(byte[])
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[109,16] cannot find symbol
-  symbol:   method setDossardPdf(byte[])
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[112,16] cannot find symbol
-  symbol:   method setGenere(boolean)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[131,24] cannot find symbol
-  symbol:   method getQrCodeData()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[185,55] cannot find symbol
-  symbol:   method getNumeroDossard()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[198,47] cannot find symbol
-  symbol:   method getNomCompletParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[203,59] cannot find symbol
-  symbol:   method getEmailParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[216,47] cannot find symbol
-  symbol:   method getNomCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[221,58] cannot find symbol
-  symbol:   method getDateCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[226,58] cannot find symbol
-  symbol:   method getLieuCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[231,62] cannot find symbol
-  symbol:   method getDistance()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[235,28] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[236,89] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[237,109] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[281,62] cannot find symbol
-  symbol:   method getDateGeneration()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[371,24] cannot find symbol
-  symbol:   method getParticipationId()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[372,24] cannot find symbol
-  symbol:   method getEmailParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[373,24] cannot find symbol
-  symbol:   method getNomCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[27,35] cannot find symbol
-  symbol:   method getReceiver()
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[28,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[136,16] cannot find symbol
-  symbol:   method setReceiver(com.colorrun.business.User)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[138,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[13,8] com.colorrun.service.impl.CourseServiceImpl is not abstract and does not override abstract method validateCourseData(com.colorrun.business.Course) in com.colorrun.service.CourseService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[118,20] hasAvailableSpots(int) in com.colorrun.service.impl.CourseServiceImpl cannot implement hasAvailableSpots(int) in com.colorrun.service.CourseService
-  overridden method does not throw java.sql.SQLException
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[57,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[70,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[75,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[137,21] cannot find symbol
-  symbol:   method showOrganizerRequests(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[140,21] cannot find symbol
-  symbol:   method showStatistics(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[143,21] cannot find symbol
-  symbol:   method showModeration(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[191,21] cannot find symbol
-  symbol:   method changeUserRole(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[197,21] cannot find symbol
-  symbol:   method rejectOrganizerRequest(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[200,21] cannot find symbol
-  symbol:   method moderateCourse(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[203,21] cannot find symbol
-  symbol:   method resetUserPassword(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[269,55] cannot find symbol
-  symbol:   method countPendingRequests()
-  location: variable organizerRequestService of type com.colorrun.service.OrganizerRequestService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[272,45] cannot find symbol
-  symbol:   method getRecentUsers(int)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[306,39] cannot find symbol
-  symbol:   method getFilteredUsers(java.lang.String,java.lang.String,java.lang.String,int)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[307,38] cannot find symbol
-  symbol:   method countFilteredUsers(java.lang.String,java.lang.String,java.lang.String)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[386,32] method approveRequest in interface com.colorrun.service.OrganizerRequestService cannot be applied to given types;
-  required: int
-  found:    int,java.lang.String
-  reason: actual and formal argument lists differ in length
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[15,8] com.colorrun.service.impl.MessageServiceImpl is not abstract and does not override abstract method archiveOldMessages(int) in com.colorrun.service.MessageService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[72,17] markAllAsRead(int) in com.colorrun.service.impl.MessageServiceImpl cannot implement markAllAsRead(int) in com.colorrun.service.MessageService
-  return type void is not compatible with int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[25,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[42,16] cannot find symbol
-  symbol:   method setReceiver(com.colorrun.business.User)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[44,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[66,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[71,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[76,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[40,16] cannot find symbol
-  symbol:   method setUser(com.colorrun.business.User)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[41,16] cannot find symbol
-  symbol:   method setMotivation(java.lang.String)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[42,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[82,28] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[INFO] 72 errors 
-[INFO] -------------------------------------------------------------
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.781 s
-[INFO] Finished at: 2025-06-26T21:54:59+02:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project runton-color: Compilation failure: Compilation failure: 
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[65,2] cannot find symbol
-[ERROR]   symbol: class WebServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[26,35] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[27,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[28,38] cannot find symbol
-[ERROR]   symbol:   method getMotivation()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[100,35] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[101,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[102,38] cannot find symbol
-[ERROR]   symbol:   method getMotivation()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[134,16] cannot find symbol
-[ERROR]   symbol:   method setUser(com.colorrun.business.User)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[136,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[137,16] cannot find symbol
-[ERROR]   symbol:   method setMotivation(java.lang.String)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[72,21] cannot find symbol
-[ERROR]   symbol:   method setPhotoUrl(java.lang.String)
-[ERROR]   location: variable user of type com.colorrun.business.User
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[79,24] cannot find symbol
-[ERROR]   symbol:   method updateProfile(com.colorrun.business.User)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[87,56] incompatible types: java.lang.String cannot be converted to int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[90,16] cannot find symbol
-[ERROR]   symbol:   method setNomParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[91,16] cannot find symbol
-[ERROR]   symbol:   method setPrenomParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[92,16] cannot find symbol
-[ERROR]   symbol:   method setEmailParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[95,16] cannot find symbol
-[ERROR]   symbol:   method setNomCourse(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[96,16] cannot find symbol
-[ERROR]   symbol:   method setDateCourse(java.time.LocalDateTime)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[97,16] cannot find symbol
-[ERROR]   symbol:   method setLieuCourse(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[98,16] cannot find symbol
-[ERROR]   symbol:   method setDistance(java.lang.Double)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[101,16] cannot find symbol
-[ERROR]   symbol:   method generateQrCodeData()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[105,16] cannot find symbol
-[ERROR]   symbol:   method setQrCodeImage(byte[])
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[109,16] cannot find symbol
-[ERROR]   symbol:   method setDossardPdf(byte[])
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[112,16] cannot find symbol
-[ERROR]   symbol:   method setGenere(boolean)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[131,24] cannot find symbol
-[ERROR]   symbol:   method getQrCodeData()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[185,55] cannot find symbol
-[ERROR]   symbol:   method getNumeroDossard()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[198,47] cannot find symbol
-[ERROR]   symbol:   method getNomCompletParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[203,59] cannot find symbol
-[ERROR]   symbol:   method getEmailParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[216,47] cannot find symbol
-[ERROR]   symbol:   method getNomCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[221,58] cannot find symbol
-[ERROR]   symbol:   method getDateCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[226,58] cannot find symbol
-[ERROR]   symbol:   method getLieuCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[231,62] cannot find symbol
-[ERROR]   symbol:   method getDistance()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[235,28] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[236,89] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[237,109] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[281,62] cannot find symbol
-[ERROR]   symbol:   method getDateGeneration()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[371,24] cannot find symbol
-[ERROR]   symbol:   method getParticipationId()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[372,24] cannot find symbol
-[ERROR]   symbol:   method getEmailParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[373,24] cannot find symbol
-[ERROR]   symbol:   method getNomCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[27,35] cannot find symbol
-[ERROR]   symbol:   method getReceiver()
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[28,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[136,16] cannot find symbol
-[ERROR]   symbol:   method setReceiver(com.colorrun.business.User)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[138,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[13,8] com.colorrun.service.impl.CourseServiceImpl is not abstract and does not override abstract method validateCourseData(com.colorrun.business.Course) in com.colorrun.service.CourseService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[118,20] hasAvailableSpots(int) in com.colorrun.service.impl.CourseServiceImpl cannot implement hasAvailableSpots(int) in com.colorrun.service.CourseService
-[ERROR]   overridden method does not throw java.sql.SQLException
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[57,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[70,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[75,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[137,21] cannot find symbol
-[ERROR]   symbol:   method showOrganizerRequests(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[140,21] cannot find symbol
-[ERROR]   symbol:   method showStatistics(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[143,21] cannot find symbol
-[ERROR]   symbol:   method showModeration(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[191,21] cannot find symbol
-[ERROR]   symbol:   method changeUserRole(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[197,21] cannot find symbol
-[ERROR]   symbol:   method rejectOrganizerRequest(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[200,21] cannot find symbol
-[ERROR]   symbol:   method moderateCourse(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[203,21] cannot find symbol
-[ERROR]   symbol:   method resetUserPassword(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[269,55] cannot find symbol
-[ERROR]   symbol:   method countPendingRequests()
-[ERROR]   location: variable organizerRequestService of type com.colorrun.service.OrganizerRequestService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[272,45] cannot find symbol
-[ERROR]   symbol:   method getRecentUsers(int)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[306,39] cannot find symbol
-[ERROR]   symbol:   method getFilteredUsers(java.lang.String,java.lang.String,java.lang.String,int)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[307,38] cannot find symbol
-[ERROR]   symbol:   method countFilteredUsers(java.lang.String,java.lang.String,java.lang.String)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[386,32] method approveRequest in interface com.colorrun.service.OrganizerRequestService cannot be applied to given types;
-[ERROR]   required: int
-[ERROR]   found:    int,java.lang.String
-[ERROR]   reason: actual and formal argument lists differ in length
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[15,8] com.colorrun.service.impl.MessageServiceImpl is not abstract and does not override abstract method archiveOldMessages(int) in com.colorrun.service.MessageService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[72,17] markAllAsRead(int) in com.colorrun.service.impl.MessageServiceImpl cannot implement markAllAsRead(int) in com.colorrun.service.MessageService
-[ERROR]   return type void is not compatible with int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[25,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[42,16] cannot find symbol
-[ERROR]   symbol:   method setReceiver(com.colorrun.business.User)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[44,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[66,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[71,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[76,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[40,16] cannot find symbol
-[ERROR]   symbol:   method setUser(com.colorrun.business.User)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[41,16] cannot find symbol
-[ERROR]   symbol:   method setMotivation(java.lang.String)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[42,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[82,28] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
-Démarrage de Tomcat sur le port 8090...
-L'application sera accessible à l'adresse: http://localhost:8090/runton-color
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
 WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.10/libexec/lib/guice-5.1.0-classes.jar)
 WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
@@ -627,413 +15,123 @@ WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
 [INFO] Copying 0 resource from src/main/resources to target/classes
 [INFO] 
 [INFO] --- compiler:3.10.1:compile (default-compile) @ runton-color ---
-[INFO] Changes detected - recompiling the module!
-[INFO] Compiling 44 source files to /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/target/classes
-[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
-[INFO] -------------------------------------------------------------
-[ERROR] COMPILATION ERROR : 
-[INFO] -------------------------------------------------------------
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[65,2] cannot find symbol
-  symbol: class WebServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[26,35] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[27,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[28,38] cannot find symbol
-  symbol:   method getMotivation()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[100,35] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[101,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[102,38] cannot find symbol
-  symbol:   method getMotivation()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[134,16] cannot find symbol
-  symbol:   method setUser(com.colorrun.business.User)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[136,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[137,16] cannot find symbol
-  symbol:   method setMotivation(java.lang.String)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[72,21] cannot find symbol
-  symbol:   method setPhotoUrl(java.lang.String)
-  location: variable user of type com.colorrun.business.User
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[79,24] cannot find symbol
-  symbol:   method updateProfile(com.colorrun.business.User)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[87,56] incompatible types: java.lang.String cannot be converted to int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[90,16] cannot find symbol
-  symbol:   method setNomParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[91,16] cannot find symbol
-  symbol:   method setPrenomParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[92,16] cannot find symbol
-  symbol:   method setEmailParticipant(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[95,16] cannot find symbol
-  symbol:   method setNomCourse(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[96,16] cannot find symbol
-  symbol:   method setDateCourse(java.time.LocalDateTime)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[97,16] cannot find symbol
-  symbol:   method setLieuCourse(java.lang.String)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[98,16] cannot find symbol
-  symbol:   method setDistance(java.lang.Double)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[101,16] cannot find symbol
-  symbol:   method generateQrCodeData()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[105,16] cannot find symbol
-  symbol:   method setQrCodeImage(byte[])
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[109,16] cannot find symbol
-  symbol:   method setDossardPdf(byte[])
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[112,16] cannot find symbol
-  symbol:   method setGenere(boolean)
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[131,24] cannot find symbol
-  symbol:   method getQrCodeData()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[185,55] cannot find symbol
-  symbol:   method getNumeroDossard()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[198,47] cannot find symbol
-  symbol:   method getNomCompletParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[203,59] cannot find symbol
-  symbol:   method getEmailParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[216,47] cannot find symbol
-  symbol:   method getNomCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[221,58] cannot find symbol
-  symbol:   method getDateCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[226,58] cannot find symbol
-  symbol:   method getLieuCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[231,62] cannot find symbol
-  symbol:   method getDistance()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[235,28] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[236,89] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[237,109] cannot find symbol
-  symbol:   method getQrCodeImage()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[281,62] cannot find symbol
-  symbol:   method getDateGeneration()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[371,24] cannot find symbol
-  symbol:   method getParticipationId()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[372,24] cannot find symbol
-  symbol:   method getEmailParticipant()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[373,24] cannot find symbol
-  symbol:   method getNomCourse()
-  location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[27,35] cannot find symbol
-  symbol:   method getReceiver()
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[28,59] cannot find symbol
-  symbol:   method getDate()
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[136,16] cannot find symbol
-  symbol:   method setReceiver(com.colorrun.business.User)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[138,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[13,8] com.colorrun.service.impl.CourseServiceImpl is not abstract and does not override abstract method validateCourseData(com.colorrun.business.Course) in com.colorrun.service.CourseService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[118,20] hasAvailableSpots(int) in com.colorrun.service.impl.CourseServiceImpl cannot implement hasAvailableSpots(int) in com.colorrun.service.CourseService
-  overridden method does not throw java.sql.SQLException
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[57,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[70,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[75,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[137,21] cannot find symbol
-  symbol:   method showOrganizerRequests(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[140,21] cannot find symbol
-  symbol:   method showStatistics(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[143,21] cannot find symbol
-  symbol:   method showModeration(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[191,21] cannot find symbol
-  symbol:   method changeUserRole(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[197,21] cannot find symbol
-  symbol:   method rejectOrganizerRequest(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[200,21] cannot find symbol
-  symbol:   method moderateCourse(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[203,21] cannot find symbol
-  symbol:   method resetUserPassword(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-  location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[269,55] cannot find symbol
-  symbol:   method countPendingRequests()
-  location: variable organizerRequestService of type com.colorrun.service.OrganizerRequestService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[272,45] cannot find symbol
-  symbol:   method getRecentUsers(int)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[306,39] cannot find symbol
-  symbol:   method getFilteredUsers(java.lang.String,java.lang.String,java.lang.String,int)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[307,38] cannot find symbol
-  symbol:   method countFilteredUsers(java.lang.String,java.lang.String,java.lang.String)
-  location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[386,32] method approveRequest in interface com.colorrun.service.OrganizerRequestService cannot be applied to given types;
-  required: int
-  found:    int,java.lang.String
-  reason: actual and formal argument lists differ in length
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[15,8] com.colorrun.service.impl.MessageServiceImpl is not abstract and does not override abstract method archiveOldMessages(int) in com.colorrun.service.MessageService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[72,17] markAllAsRead(int) in com.colorrun.service.impl.MessageServiceImpl cannot implement markAllAsRead(int) in com.colorrun.service.MessageService
-  return type void is not compatible with int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[25,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[42,16] cannot find symbol
-  symbol:   method setReceiver(com.colorrun.business.User)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[44,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[66,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[71,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[76,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[40,16] cannot find symbol
-  symbol:   method setUser(com.colorrun.business.User)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[41,16] cannot find symbol
-  symbol:   method setMotivation(java.lang.String)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[42,16] cannot find symbol
-  symbol:   method setDate(java.time.LocalDateTime)
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[82,28] cannot find symbol
-  symbol:   method getUser()
-  location: variable request of type com.colorrun.business.OrganizerRequest
-[INFO] 72 errors 
-[INFO] -------------------------------------------------------------
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.679 s
-[INFO] Finished at: 2025-06-26T21:55:00+02:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project runton-color: Compilation failure: Compilation failure: 
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[65,2] cannot find symbol
-[ERROR]   symbol: class WebServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[26,35] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[27,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[28,38] cannot find symbol
-[ERROR]   symbol:   method getMotivation()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[100,35] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[101,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[102,38] cannot find symbol
-[ERROR]   symbol:   method getMotivation()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[134,16] cannot find symbol
-[ERROR]   symbol:   method setUser(com.colorrun.business.User)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[136,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/OrganizerRequestDAO.java:[137,16] cannot find symbol
-[ERROR]   symbol:   method setMotivation(java.lang.String)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[72,21] cannot find symbol
-[ERROR]   symbol:   method setPhotoUrl(java.lang.String)
-[ERROR]   location: variable user of type com.colorrun.business.User
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/ProfileServlet.java:[79,24] cannot find symbol
-[ERROR]   symbol:   method updateProfile(com.colorrun.business.User)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[87,56] incompatible types: java.lang.String cannot be converted to int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[90,16] cannot find symbol
-[ERROR]   symbol:   method setNomParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[91,16] cannot find symbol
-[ERROR]   symbol:   method setPrenomParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[92,16] cannot find symbol
-[ERROR]   symbol:   method setEmailParticipant(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[95,16] cannot find symbol
-[ERROR]   symbol:   method setNomCourse(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[96,16] cannot find symbol
-[ERROR]   symbol:   method setDateCourse(java.time.LocalDateTime)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[97,16] cannot find symbol
-[ERROR]   symbol:   method setLieuCourse(java.lang.String)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[98,16] cannot find symbol
-[ERROR]   symbol:   method setDistance(java.lang.Double)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[101,16] cannot find symbol
-[ERROR]   symbol:   method generateQrCodeData()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[105,16] cannot find symbol
-[ERROR]   symbol:   method setQrCodeImage(byte[])
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[109,16] cannot find symbol
-[ERROR]   symbol:   method setDossardPdf(byte[])
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[112,16] cannot find symbol
-[ERROR]   symbol:   method setGenere(boolean)
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[131,24] cannot find symbol
-[ERROR]   symbol:   method getQrCodeData()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[185,55] cannot find symbol
-[ERROR]   symbol:   method getNumeroDossard()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[198,47] cannot find symbol
-[ERROR]   symbol:   method getNomCompletParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[203,59] cannot find symbol
-[ERROR]   symbol:   method getEmailParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[216,47] cannot find symbol
-[ERROR]   symbol:   method getNomCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[221,58] cannot find symbol
-[ERROR]   symbol:   method getDateCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[226,58] cannot find symbol
-[ERROR]   symbol:   method getLieuCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[231,62] cannot find symbol
-[ERROR]   symbol:   method getDistance()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[235,28] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[236,89] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[237,109] cannot find symbol
-[ERROR]   symbol:   method getQrCodeImage()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[281,62] cannot find symbol
-[ERROR]   symbol:   method getDateGeneration()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[371,24] cannot find symbol
-[ERROR]   symbol:   method getParticipationId()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[372,24] cannot find symbol
-[ERROR]   symbol:   method getEmailParticipant()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/DossardServiceImpl.java:[373,24] cannot find symbol
-[ERROR]   symbol:   method getNomCourse()
-[ERROR]   location: variable dossard of type com.colorrun.business.Dossard
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[27,35] cannot find symbol
-[ERROR]   symbol:   method getReceiver()
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[28,59] cannot find symbol
-[ERROR]   symbol:   method getDate()
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[136,16] cannot find symbol
-[ERROR]   symbol:   method setReceiver(com.colorrun.business.User)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/dao/MessageDAO.java:[138,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[13,8] com.colorrun.service.impl.CourseServiceImpl is not abstract and does not override abstract method validateCourseData(com.colorrun.business.Course) in com.colorrun.service.CourseService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[118,20] hasAvailableSpots(int) in com.colorrun.service.impl.CourseServiceImpl cannot implement hasAvailableSpots(int) in com.colorrun.service.CourseService
-[ERROR]   overridden method does not throw java.sql.SQLException
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[57,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[70,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/CourseServiceImpl.java:[75,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[137,21] cannot find symbol
-[ERROR]   symbol:   method showOrganizerRequests(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[140,21] cannot find symbol
-[ERROR]   symbol:   method showStatistics(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[143,21] cannot find symbol
-[ERROR]   symbol:   method showModeration(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[191,21] cannot find symbol
-[ERROR]   symbol:   method changeUserRole(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[197,21] cannot find symbol
-[ERROR]   symbol:   method rejectOrganizerRequest(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[200,21] cannot find symbol
-[ERROR]   symbol:   method moderateCourse(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[203,21] cannot find symbol
-[ERROR]   symbol:   method resetUserPassword(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
-[ERROR]   location: class com.colorrun.servlet.AdminServlet
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[269,55] cannot find symbol
-[ERROR]   symbol:   method countPendingRequests()
-[ERROR]   location: variable organizerRequestService of type com.colorrun.service.OrganizerRequestService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[272,45] cannot find symbol
-[ERROR]   symbol:   method getRecentUsers(int)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[306,39] cannot find symbol
-[ERROR]   symbol:   method getFilteredUsers(java.lang.String,java.lang.String,java.lang.String,int)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[307,38] cannot find symbol
-[ERROR]   symbol:   method countFilteredUsers(java.lang.String,java.lang.String,java.lang.String)
-[ERROR]   location: variable userService of type com.colorrun.service.UserService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/servlet/AdminServlet.java:[386,32] method approveRequest in interface com.colorrun.service.OrganizerRequestService cannot be applied to given types;
-[ERROR]   required: int
-[ERROR]   found:    int,java.lang.String
-[ERROR]   reason: actual and formal argument lists differ in length
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[15,8] com.colorrun.service.impl.MessageServiceImpl is not abstract and does not override abstract method archiveOldMessages(int) in com.colorrun.service.MessageService
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[72,17] markAllAsRead(int) in com.colorrun.service.impl.MessageServiceImpl cannot implement markAllAsRead(int) in com.colorrun.service.MessageService
-[ERROR]   return type void is not compatible with int
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[25,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[42,16] cannot find symbol
-[ERROR]   symbol:   method setReceiver(com.colorrun.business.User)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[44,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable message of type com.colorrun.business.Message
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[66,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[71,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/MessageServiceImpl.java:[76,5] method does not override or implement a method from a supertype
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[40,16] cannot find symbol
-[ERROR]   symbol:   method setUser(com.colorrun.business.User)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[41,16] cannot find symbol
-[ERROR]   symbol:   method setMotivation(java.lang.String)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[42,16] cannot find symbol
-[ERROR]   symbol:   method setDate(java.time.LocalDateTime)
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/src/main/java/com/colorrun/service/impl/OrganizerRequestServiceImpl.java:[82,28] cannot find symbol
-[ERROR]   symbol:   method getUser()
-[ERROR]   location: variable request of type com.colorrun.business.OrganizerRequest
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< tomcat7:2.2:run (default-cli) < process-classes @ runton-color <<<
+[INFO] 
+[INFO] 
+[INFO] --- tomcat7:2.2:run (default-cli) @ runton-color ---
+[INFO] Running war on http://localhost:8080/runton-color
+[INFO] Using existing Tomcat server configuration at /Users/emk/IdeaProjects/RUNTON_COLOR/Runton_color/target/tomcat
+[INFO] create webapp with contextPath: /runton-color
+Jul 01, 2025 5:12:36 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-bio-8080"]
+Jul 01, 2025 5:12:36 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service Tomcat
+Jul 01, 2025 5:12:36 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet Engine: Apache Tomcat/7.0.47
+Jul 01, 2025 5:12:37 PM org.apache.catalina.startup.ContextConfig processAnnotationsJar
+SEVERE: Unable to process Jar entry [META-INF/versions/9/module-info.class] from Jar [jar:file:/Users/emk/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.16.1/jackson-core-2.16.1.jar!/] for annotations
+org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in constant pool: 19
+	at org.apache.tomcat.util.bcel.classfile.Constant.readConstant(Constant.java:133)
+	at org.apache.tomcat.util.bcel.classfile.ConstantPool.<init>(ConstantPool.java:60)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:209)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.parse(ClassParser.java:119)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsStream(ContextConfig.java:2134)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsJar(ContextConfig.java:2010)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsUrl(ContextConfig.java:1976)
+	at org.apache.catalina.startup.ContextConfig.processAnnotations(ContextConfig.java:1961)
+	at org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1319)
+	at org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:878)
+	at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:376)
+	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:90)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5322)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1559)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1549)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1095)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:619)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+
+Jul 01, 2025 5:12:37 PM org.apache.catalina.startup.ContextConfig processAnnotationsJar
+SEVERE: Unable to process Jar entry [META-INF/versions/9/module-info.class] from Jar [jar:file:/Users/emk/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.16.1/jackson-databind-2.16.1.jar!/] for annotations
+org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in constant pool: 19
+	at org.apache.tomcat.util.bcel.classfile.Constant.readConstant(Constant.java:133)
+	at org.apache.tomcat.util.bcel.classfile.ConstantPool.<init>(ConstantPool.java:60)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:209)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.parse(ClassParser.java:119)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsStream(ContextConfig.java:2134)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsJar(ContextConfig.java:2010)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsUrl(ContextConfig.java:1976)
+	at org.apache.catalina.startup.ContextConfig.processAnnotations(ContextConfig.java:1961)
+	at org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1319)
+	at org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:878)
+	at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:376)
+	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:90)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5322)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1559)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1549)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1095)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:619)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+
+Jul 01, 2025 5:12:37 PM org.apache.catalina.startup.ContextConfig processAnnotationsJar
+SEVERE: Unable to process Jar entry [module-info.class] from Jar [jar:file:/Users/emk/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.16.1/jackson-annotations-2.16.1.jar!/] for annotations
+org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in constant pool: 19
+	at org.apache.tomcat.util.bcel.classfile.Constant.readConstant(Constant.java:133)
+	at org.apache.tomcat.util.bcel.classfile.ConstantPool.<init>(ConstantPool.java:60)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:209)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.parse(ClassParser.java:119)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsStream(ContextConfig.java:2134)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsJar(ContextConfig.java:2010)
+	at org.apache.catalina.startup.ContextConfig.processAnnotationsUrl(ContextConfig.java:1976)
+	at org.apache.catalina.startup.ContextConfig.processAnnotations(ContextConfig.java:1961)
+	at org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1319)
+	at org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:878)
+	at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:376)
+	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:90)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5322)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1559)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1549)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1095)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:619)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+Jul 01, 2025 5:12:37 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["http-bio-8080"]
+ERROR: IllegalAccessException for stop method in class org.apache.tomcat.maven.plugin.tomcat7.run.ExtendedTomcat
+java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:119)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.apache.tomcat.maven.common.run.EmbeddedRegistry.shutdownAll(EmbeddedRegistry.java:110)
+	at org.apache.tomcat.maven.common.run.EmbeddedRegistry$1.run(EmbeddedRegistry.java:69)
+Caused by: org.apache.catalina.LifecycleException: Failed to stop component [StandardServer[-1]]
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:236)
+	at org.apache.catalina.startup.Tomcat.stop(Tomcat.java:351)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	... 3 more
+Caused by: org.apache.catalina.LifecycleException: Failed to stop component [StandardService[Tomcat]]
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:236)
+	at org.apache.catalina.core.StandardServer.stopInternal(StandardServer.java:753)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:232)
+	... 5 more
+Caused by: org.apache.catalina.LifecycleException: Failed to stop component [StandardEngine[Tomcat]]
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:236)
+	at org.apache.catalina.core.StandardService.stopInternal(StandardService.java:502)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:232)
+	... 7 more
+Caused by: org.apache.catalina.LifecycleException: A child container failed during stop
+	at org.apache.catalina.core.ContainerBase.stopInternal(ContainerBase.java:1186)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:232)
+	... 9 more

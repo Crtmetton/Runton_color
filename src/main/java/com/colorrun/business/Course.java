@@ -44,6 +44,12 @@ public class Course {
     /** Cause ou association bénéficiaire de l'événement */
     private String cause;
 
+    /** Prix d'inscription à la course en euros */
+    private int prix;
+
+    /** Identifiant de l'utilisateur qui a créé cette course */
+    private int userCreateId;
+
     /**
      * Constructeur par défaut.
      * Initialise une course avec des valeurs par défaut.
@@ -237,6 +243,42 @@ public class Course {
      */
     public void setCause(String cause) {
         this.cause = cause;
+    }
+
+    /**
+     * Retourne le prix d'inscription à la course.
+     * 
+     * @return Le prix en euros
+     */
+    public int getPrix() {
+        return prix;
+    }
+
+    /**
+     * Définit le prix d'inscription à la course.
+     * 
+     * @param prix Le prix en euros (doit être positif ou nul)
+     */
+    public void setPrix(int prix) {
+        this.prix = prix;
+    }
+
+    /**
+     * Retourne l'identifiant de l'utilisateur qui a créé cette course.
+     * 
+     * @return L'ID de l'utilisateur créateur
+     */
+    public int getUserCreateId() {
+        return userCreateId;
+    }
+
+    /**
+     * Définit l'identifiant de l'utilisateur qui a créé cette course.
+     * 
+     * @param userCreateId L'ID de l'utilisateur créateur
+     */
+    public void setUserCreateId(int userCreateId) {
+        this.userCreateId = userCreateId;
     }
     
     /**

@@ -1,16 +1,3 @@
--- Drop tables in correct order to respect foreign key constraints
-DROP TABLE IF EXISTS VerificationToken;
-DROP TABLE IF EXISTS Message;
-DROP TABLE IF EXISTS Discussion;
-DROP TABLE IF EXISTS Organisation;
-DROP TABLE IF EXISTS Inscription;
-DROP TABLE IF EXISTS Participation;
-DROP TABLE IF EXISTS DemandeOrganisateur;
-DROP TABLE IF EXISTS Organisateur;
-DROP TABLE IF EXISTS Participant;
-DROP TABLE IF EXISTS Admin;
-DROP TABLE IF EXISTS Course;
-DROP TABLE IF EXISTS Utilisateur;
 
 
 CREATE TABLE Utilisateur (
@@ -33,7 +20,9 @@ CREATE TABLE Course (
     distance DOUBLE NOT NULL,
     maxParticipants INT NOT NULL,
     prix INT NOT NULL,
-    cause VARCHAR(255)
+    cause VARCHAR(255),
+    UserCreateId INT NOT NULL,
+    FOREIGN KEY (UserCreateId) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Participation (
@@ -93,7 +82,11 @@ CREATE TABLE Organisation (
 CREATE TABLE Discussion (
     id INT PRIMARY KEY AUTO_INCREMENT,
     course_id INT NOT NULL,
-    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    contenu TEXT NOT NULL,
+    expediteurId INT NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE,
+    FOREIGN KEY (expediteurId) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
 -- Modifier la structure de Message pour correspondre à notre DAO

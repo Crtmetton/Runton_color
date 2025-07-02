@@ -6,6 +6,15 @@
     min-height: 260px;
     padding: 2.5rem 3.5rem;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: 24px;
+    transition: transform 0.2s ease;
+}
+
+#mes-courses-list .course-card:hover {
+    transform: translateY(-2px);
 }
 
 /* Titre plus grand */
@@ -76,10 +85,12 @@
 }
 
 .mes-courses-bloc-blanc {
-    background: #fff;
-    border-radius: 48px;
-    box-shadow: 0 4px 32px rgba(106,130,251,0.07), 0 1.5px 8px rgba(255,106,136,0.06);
-    padding: 48px 48px 32px 48px;
+    background-color: white;
+    border-radius: 30px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
     max-width: 1200px;
     margin: 0 auto 48px auto;
 }
@@ -89,4 +100,128 @@
         padding: 18px 6px 12px 6px;
         border-radius: 24px;
     }
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.course-card {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.course-image {
+    background-size: cover;
+    background-position: center;
+}
+
+.course-details {
+    padding: 1.5rem;
+}
+
+.course-title {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.course-location {
+    color: #6a82fb;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.search-button {
+    background: linear-gradient(135deg, #6a82fb 0%, #fc5c7d 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(106, 130, 251, 0.3);
+}
+
+.search-button.secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.search-button.secondary:hover {
+    background: #e9ecef;
+    color: #495057;
+    box-shadow: 0 2px 10px rgba(108, 117, 125, 0.2);
+}
+
+.distance-badge {
+    background-color: #e2e7ff;
+    color: #6a82fb;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Styles pour les cercles de fond */
+.bg-circle1,
+.bg-circle2,
+.bg-circle3 {
+    position: fixed;
+    border-radius: 50%;
+    opacity: 0.03;
+    z-index: -1;
+}
+
+.bg-circle1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #6a82fb 0%, #fc5c7d 100%);
+    top: -50px;
+    right: -50px;
+}
+
+.bg-circle2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+    bottom: -100px;
+    left: -100px;
+}
+
+.bg-circle3 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #6a82fb 0%, #fc5c7d 100%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

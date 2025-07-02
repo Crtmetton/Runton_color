@@ -65,7 +65,7 @@ public class CourseDAO {
      * @throws SQLException En cas d'erreur lors de l'insertion
      */
     public void save(Course course) throws SQLException {
-        String sql = "INSERT INTO Course (NOM, DESCRIPTION, DATE, LIEU, DISTANCE, MAXPARTICIPANTS, PRIX, CAUSE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Course (NOM, DESCRIPTION, DATE, LIEU, DISTANCE, MAXPARTICIPANTS, PRIX, CAUSE, USERCREATEID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, course.getName());
@@ -74,8 +74,9 @@ public class CourseDAO {
             stmt.setString(4, course.getCity());
             stmt.setDouble(5, course.getDistance());
             stmt.setInt(6, course.getMaxParticipants());
-            stmt.setInt(7, 0); // prix est requis mais n'existe pas dans l'objet Course
+            stmt.setInt(7, course.getPrix());
             stmt.setString(8, course.getCause());
+            stmt.setInt(9, course.getUserCreateId());
             stmt.executeUpdate();
             
             try (ResultSet keys = stmt.getGeneratedKeys()) {
@@ -200,7 +201,7 @@ public class CourseDAO {
      * @throws SQLException En cas d'erreur lors de la mise à jour
      */
     public void update(Course course) throws SQLException {
-        String sql = "UPDATE Course SET NOM = ?, DESCRIPTION = ?, DATE = ?, LIEU = ?, DISTANCE = ?, MAXPARTICIPANTS = ?, CAUSE = ? WHERE ID = ?";
+        String sql = "UPDATE Course SET NOM = ?, DESCRIPTION = ?, DATE = ?, LIEU = ?, DISTANCE = ?, MAXPARTICIPANTS = ?, PRIX = ?, CAUSE = ?, USERCREATEID = ? WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, course.getName());
@@ -209,8 +210,10 @@ public class CourseDAO {
             stmt.setString(4, course.getCity());
             stmt.setDouble(5, course.getDistance());
             stmt.setInt(6, course.getMaxParticipants());
-            stmt.setString(7, course.getCause());
-            stmt.setInt(8, course.getId());
+            stmt.setInt(7, course.getPrix());
+            stmt.setString(8, course.getCause());
+            stmt.setInt(9, course.getUserCreateId());
+            stmt.setInt(10, course.getId());
             stmt.executeUpdate();
         }
     }
@@ -248,6 +251,8 @@ public class CourseDAO {
         // Nous devrons calculer ce nombre autrement, ou l'ajouter au schéma
         course.setCurrentParticipants(0);
         course.setCause(rs.getString("CAUSE"));
+        course.setPrix(rs.getInt("PRIX"));
+        course.setUserCreateId(rs.getInt("USERCREATEID"));
         return course;
     }
 }

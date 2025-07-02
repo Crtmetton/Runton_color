@@ -1,8 +1,8 @@
 package com.colorrun.servlet;
 
 import com.colorrun.business.Course;
-import com.colorrun.business.User;
 import com.colorrun.security.TokenManager;
+import com.colorrun.security.UserToken;
 import com.colorrun.service.CourseService;
 import com.colorrun.service.impl.CourseServiceImpl;
 import com.colorrun.util.Logger;
@@ -61,7 +61,7 @@ public class CourseCreationServlet extends HttpServlet {
         Logger.stepSuccess("CourseCreationServlet", "Affichage formulaire création");
         
         // Afficher le formulaire de création
-        request.getRequestDispatcher("/WEB-INF/views/creation-course.html").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/creation-course.jsp").forward(request, response);
     }
     
     @Override
@@ -92,49 +92,71 @@ public class CourseCreationServlet extends HttpServlet {
         HttpSession session = request.getSession();
         
         try {
-            // Récupération des paramètres
-            String name = request.getParameter("name");
+            // Récupération des paramètres correspondant aux champs de la table COURSE
+            String nom = request.getParameter("nom");
             String description = request.getParameter("description");
-            String city = request.getParameter("city");
+            String lieu = request.getParameter("lieu");
             String dateStr = request.getParameter("date");
+            String heureStr = request.getParameter("heure");
             String distanceStr = request.getParameter("distance");
             String maxParticipantsStr = request.getParameter("maxParticipants");
+            String prixStr = request.getParameter("prix");
+            String cause = request.getParameter("cause");
             
             Logger.info("CourseCreationServlet", "Paramètres reçus pour création course");
-            Logger.debug("CourseCreationServlet", "name: " + (name != null ? "✓" : "✗"));
-            Logger.debug("CourseCreationServlet", "city: " + (city != null ? city : "✗"));
+            Logger.debug("CourseCreationServlet", "nom: " + (nom != null ? "✓" : "✗"));
+            Logger.debug("CourseCreationServlet", "lieu: " + (lieu != null ? lieu : "✗"));
+            Logger.debug("CourseCreationServlet", "date: " + (dateStr != null ? dateStr : "✗"));
+            Logger.debug("CourseCreationServlet", "heure: " + (heureStr != null ? heureStr : "✗"));
             
-            // Validation
-            if (name == null || name.trim().isEmpty() ||
+            // Validation des champs obligatoires
+            if (nom == null || nom.trim().isEmpty() ||
                 description == null || description.trim().isEmpty() ||
-                city == null || city.trim().isEmpty() ||
-                dateStr == null || dateStr.trim().isEmpty()) {
+                lieu == null || lieu.trim().isEmpty() ||
+                dateStr == null || dateStr.trim().isEmpty() ||
+                heureStr == null || heureStr.trim().isEmpty()) {
                 
                 Logger.error("CourseCreationServlet", "Champs obligatoires manquants");
                 request.setAttribute("error", "Tous les champs obligatoires doivent être remplis.");
-                request.getRequestDispatcher("/WEB-INF/views/creation-course.html").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/creation-course.jsp").forward(request, response);
                 return;
             }
             
-            // Conversion de la date
-            LocalDateTime courseDate = LocalDateTime.parse(dateStr + "T10:00:00");
+            // Conversion de la date et heure
+            String dateTimeStr = dateStr + "T" + heureStr + ":00";
+            LocalDateTime courseDate = LocalDateTime.parse(dateTimeStr);
             
-            // Conversion des valeurs numériques
-            double distance = Double.parseDouble(distanceStr != null ? distanceStr : "5.0");
-            int maxParticipants = Integer.parseInt(maxParticipantsStr != null ? maxParticipantsStr : "100");
+            // Conversion des valeurs numériques avec validation
+            double distance = Double.parseDouble(distanceStr != null && !distanceStr.trim().isEmpty() ? distanceStr : "5.0");
+            int maxParticipants = Integer.parseInt(maxParticipantsStr != null && !maxParticipantsStr.trim().isEmpty() ? maxParticipantsStr : "100");
+            int prix = Integer.parseInt(prixStr != null && !prixStr.trim().isEmpty() ? prixStr : "0");
             
             Logger.step("CourseCreationServlet", "Création de l'objet Course");
             
-            // Créer la course
+            // Récupérer l'utilisateur connecté pour définir le créateur
+            UserToken currentToken = TokenManager.getToken(request);
+            if (currentToken == null || !currentToken.isAuthenticated()) {
+                Logger.error("CourseCreationServlet", "Impossible de récupérer l'utilisateur connecté");
+                request.setAttribute("error", "Erreur d'authentification. Veuillez vous reconnecter.");
+                request.getRequestDispatcher("/WEB-INF/views/creation-course.jsp").forward(request, response);
+                return;
+            }
+            
+            // Créer la course avec tous les champs de la table
             Course course = new Course();
-            course.setName(name.trim());
+            course.setName(nom.trim());
             course.setDescription(description.trim());
-            course.setCity(city.trim());
+            course.setCity(lieu.trim()); // lieu correspond au champ LIEU de la table
             course.setDate(courseDate);
             course.setDistance(distance);
             course.setMaxParticipants(maxParticipants);
+            course.setPrix(prix);
+            if (cause != null && !cause.trim().isEmpty()) {
+                course.setCause(cause.trim());
+            }
+            course.setUserCreateId(currentToken.getUserId()); // Définir qui a créé cette course
             
-            Logger.info("CourseCreationServlet", "Course créée: " + name + " à " + city);
+            Logger.info("CourseCreationServlet", "Course créée: " + nom + " à " + lieu + " par " + currentToken.getFullName());
             Logger.stepSuccess("CourseCreationServlet", "Objet Course créé");
             
             Logger.step("CourseCreationServlet", "Enregistrement en base de données");
@@ -146,13 +168,13 @@ public class CourseCreationServlet extends HttpServlet {
             Logger.stepSuccess("CourseCreationServlet", "Processus création");
             
             // Redirection avec message de succès
-            session.setAttribute("success", "Course '" + name + "' créée avec succès!");
+            session.setAttribute("success", "Course '" + nom + "' créée avec succès!");
             response.sendRedirect(request.getContextPath() + "/courses");
             
         } catch (Exception e) {
             Logger.error("CourseCreationServlet", "Erreur lors de la création", e);
             request.setAttribute("error", "Erreur lors de la création de la course. Veuillez réessayer.");
-            request.getRequestDispatcher("/WEB-INF/views/creation-course.html").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/creation-course.jsp").forward(request, response);
         }
     }
 } 

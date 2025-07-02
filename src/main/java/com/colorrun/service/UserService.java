@@ -15,7 +15,7 @@ import java.util.Optional;
  * Le service gère les différents types d'utilisateurs :
  * - ADMIN : Administrateurs avec tous les droits
  * - ORGANIZER : Organisateurs pouvant créer des courses
- * - PARTICIPANT : Participants aux courses Color Run
+ * - USER : Utilisateurs qui peuvent s'inscrire aux courses
  * 
  * @author Équipe Color Run
  * @version 1.0
@@ -27,7 +27,7 @@ public interface UserService {
      * Inscrit un nouvel utilisateur dans l'application.
      * 
      * Cette méthode crée un nouveau compte utilisateur avec un rôle par défaut
-     * de PARTICIPANT. Le mot de passe est automatiquement haché avant le stockage.
+     * de USER. Le mot de passe est automatiquement haché avant le stockage.
      * L'email doit être unique dans le système.
      * 
      * @param user L'utilisateur à inscrire (avec mot de passe en clair)
@@ -36,7 +36,7 @@ public interface UserService {
      * @throws IllegalArgumentException si l'email existe déjà ou si les données sont invalides
      * 
      * @example
-     * User newUser = new User("Jean", "Dupont", "jean@example.com", "motdepasse123", "PARTICIPANT");
+     * User newUser = new User("Jean", "Dupont", "jean@example.com", "motdepasse123", "USER");
      * User registeredUser = userService.register(newUser);
      */
     User register(User user) throws SQLException;
@@ -92,7 +92,7 @@ public interface UserService {
     /**
      * Récupère tous les utilisateurs ayant un rôle spécifique.
      * 
-     * @param role Le rôle des utilisateurs à rechercher (ADMIN, ORGANIZER, PARTICIPANT)
+     * @param role Le rôle des utilisateurs à rechercher (ADMIN, ORGANIZER, USER)
      * @return La liste des utilisateurs ayant ce rôle
      * @throws SQLException si erreur lors de l'accès à la base de données
      * 
@@ -192,7 +192,7 @@ public interface UserService {
      * Change le rôle d'un utilisateur.
      * 
      * Cette action est généralement réservée aux administrateurs.
-     * Les rôles possibles sont : ADMIN, ORGANIZER, PARTICIPANT.
+     * Les rôles possibles sont : ADMIN, ORGANIZER, USER.
      * 
      * @param userId L'identifiant de l'utilisateur
      * @param newRole Le nouveau rôle à assigner
@@ -282,7 +282,7 @@ public interface UserService {
     /**
      * Compte le nombre d'utilisateurs ayant un rôle spécifique.
      * 
-     * @param role Le rôle à compter (ADMIN, ORGANIZER, PARTICIPANT)
+     * @param role Le rôle à compter (ADMIN, ORGANIZER, USER)
      * @return Le nombre d'utilisateurs ayant ce rôle
      * @throws SQLException si erreur lors de l'accès à la base de données
      * 

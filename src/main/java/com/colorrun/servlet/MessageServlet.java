@@ -2,10 +2,16 @@ package com.colorrun.servlet;
 
 import com.colorrun.business.Message;
 import com.colorrun.business.User;
+import com.colorrun.business.Course;
+import com.colorrun.security.TokenManager;
+import com.colorrun.security.UserToken;
 import com.colorrun.service.MessageService;
 import com.colorrun.service.UserService;
+import com.colorrun.service.CourseService;
 import com.colorrun.service.impl.MessageServiceImpl;
 import com.colorrun.service.impl.UserServiceImpl;
+import com.colorrun.service.impl.CourseServiceImpl;
+import com.colorrun.util.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,10 +33,12 @@ public class MessageServlet extends HttpServlet {
     
     private final MessageService messageService;
     private final UserService userService;
+    private final CourseService courseService;
     
     public MessageServlet() {
         this.messageService = new MessageServiceImpl();
         this.userService = new UserServiceImpl();
+        this.courseService = new CourseServiceImpl();
     }
     
     @Override
@@ -68,6 +77,9 @@ public class MessageServlet extends HttpServlet {
                 case "course-discussion":
                     showCourseDiscussion(req, resp, user);
                     break;
+                case "messages":
+                    handleGetMessages(req, resp);
+                    break;
                 default:
                     showInbox(req, resp, user);
             }
@@ -105,7 +117,7 @@ public class MessageServlet extends HttpServlet {
                     markAsRead(req, resp, user);
                     break;
                 case "delete":
-                    deleteMessage(req, resp, user);
+                    handleDeleteMessage(req, resp);
                     break;
                 default:
                     resp.sendRedirect(req.getContextPath() + "/messages");
@@ -316,22 +328,156 @@ public class MessageServlet extends HttpServlet {
     }
     
     /**
-     * Supprime un message
+     * Gère la suppression d'un message par l'organisateur de la course
      */
-    private void deleteMessage(HttpServletRequest req, HttpServletResponse resp, User user) 
-            throws SQLException, IOException {
-        
-        String messageIdParam = req.getParameter("messageId");
-        
-        if (messageIdParam != null) {
-            try {
-                int messageId = Integer.parseInt(messageIdParam);
-                messageService.deleteMessage(messageId, user.getId());
-            } catch (NumberFormatException e) {
-                // Ignore l'erreur
+    private void handleDeleteMessage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            // Vérification de l'authentification
+            UserToken currentToken = TokenManager.getToken(req);
+            if (currentToken == null) {
+                Logger.error("MessageServlet", "Tentative de suppression sans authentification");
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                resp.getWriter().write("{\"error\": \"Non authentifié\"}");
+                return;
             }
+            
+            String messageIdStr = req.getParameter("messageId");
+            if (messageIdStr == null || messageIdStr.trim().isEmpty()) {
+                Logger.error("MessageServlet", "ID de message manquant");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"ID de message manquant\"}");
+                return;
+            }
+            
+            int messageId = Integer.parseInt(messageIdStr);
+            Logger.info("MessageServlet", "Tentative de suppression du message " + messageId + " par " + currentToken.getEmail());
+            
+            // Récupérer le message
+            Message message = messageService.getMessageById(messageId);
+            if (message == null) {
+                Logger.error("MessageServlet", "Message " + messageId + " non trouvé");
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\": \"Message non trouvé\"}");
+                return;
+            }
+            
+            // Vérifier que l'utilisateur a les droits de supprimer ce message
+            if (!canUserDeleteMessage(currentToken, message)) {
+                Logger.error("MessageServlet", "Utilisateur " + currentToken.getEmail() + " non autorisé à supprimer le message " + messageId);
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                resp.getWriter().write("{\"error\": \"Non autorisé à supprimer ce message\"}");
+                return;
+            }
+            
+            // Supprimer le message
+            boolean deleted = messageService.deleteMessage(messageId, currentToken.getUserId());
+            
+            if (deleted) {
+                Logger.success("MessageServlet", "Message " + messageId + " supprimé avec succès");
+                resp.setContentType("application/json");
+                resp.getWriter().write("{\"success\": true, \"message\": \"Message supprimé\"}");
+            } else {
+                Logger.error("MessageServlet", "Échec de la suppression du message " + messageId);
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"error\": \"Erreur lors de la suppression\"}");
+            }
+            
+        } catch (NumberFormatException e) {
+            Logger.error("MessageServlet", "ID de message invalide", e);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"ID de message invalide\"}");
+        } catch (Exception e) {
+            Logger.error("MessageServlet", "Erreur lors de la suppression du message", e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Erreur interne du serveur\"}");
         }
-        
-        resp.sendRedirect(req.getContextPath() + "/messages");
+    }
+    
+    /**
+     * Récupère les messages d'une course pour l'actualisation AJAX
+     */
+    private void handleGetMessages(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            String courseIdStr = req.getParameter("courseId");
+            if (courseIdStr == null || courseIdStr.trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"ID de course manquant\"}");
+                return;
+            }
+            
+            int courseId = Integer.parseInt(courseIdStr);
+            List<Message> messages = messageService.getCourseMessages(courseId);
+            
+            resp.setContentType("application/json");
+            PrintWriter out = resp.getWriter();
+            
+            out.print("{\"messages\": [");
+            for (int i = 0; i < messages.size(); i++) {
+                Message msg = messages.get(i);
+                if (i > 0) out.print(",");
+                out.print("{");
+                out.print("\"id\": " + msg.getId() + ",");
+                out.print("\"content\": \"" + escapeJson(msg.getContent()) + "\",");
+                out.print("\"timestamp\": \"" + msg.getTimestamp() + "\",");
+                out.print("\"sender\": {");
+                out.print("\"firstName\": \"" + escapeJson(msg.getSender().getFirstName()) + "\",");
+                out.print("\"lastName\": \"" + escapeJson(msg.getSender().getLastName()) + "\"");
+                out.print("}");
+                out.print("}");
+            }
+            out.print("]}");
+            
+        } catch (NumberFormatException e) {
+            Logger.error("MessageServlet", "ID de course invalide", e);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"ID de course invalide\"}");
+        } catch (Exception e) {
+            Logger.error("MessageServlet", "Erreur lors de la récupération des messages", e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Erreur interne du serveur\"}");
+        }
+    }
+    
+    /**
+     * Vérifie si l'utilisateur peut supprimer un message
+     */
+    private boolean canUserDeleteMessage(UserToken token, Message message) {
+        try {
+            // L'utilisateur peut supprimer ses propres messages
+            if (message.getSender().getId() == token.getUserId()) {
+                return true;
+            }
+            
+            // Les administrateurs peuvent supprimer tous les messages
+            if ("ADMIN".equals(token.getRole())) {
+                return true;
+            }
+            
+            // L'organisateur de la course peut supprimer les messages de sa course
+            if (message.getCourseId() != null) {
+                Course course = courseService.findById(message.getCourseId()).orElse(null);
+                if (course != null && course.getUserCreateId() == token.getUserId()) {
+                    return true;
+                }
+            }
+            
+            return false;
+            
+        } catch (Exception e) {
+            Logger.error("MessageServlet", "Erreur lors de la vérification des droits", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Échappe les caractères spéciaux pour JSON
+     */
+    private String escapeJson(String text) {
+        if (text == null) return "";
+        return text.replace("\\", "\\\\")
+                   .replace("\"", "\\\"")
+                   .replace("\n", "\\n")
+                   .replace("\r", "\\r")
+                   .replace("\t", "\\t");
     }
 } 

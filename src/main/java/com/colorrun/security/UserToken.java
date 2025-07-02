@@ -15,7 +15,7 @@ public class UserToken {
     private String firstName;
     private String lastName;
     private String email;
-    private String role; // USER, ORGANISATEUR, ADMIN
+    private String role; // USER, ORGANIZER, ADMIN
     private LocalDateTime createdAt;
     private LocalDateTime lastActivity;
     private boolean isValid;
@@ -53,7 +53,7 @@ public class UserToken {
      * Vérifie si l'utilisateur est organisateur (ou admin)
      */
     public boolean isOrganizer() {
-        return isAuthenticated() && ("ORGANISATEUR".equals(role) || "ADMIN".equals(role));
+        return isAuthenticated() && ("ORGANIZER".equals(role) || "ADMIN".equals(role));
     }
     
     /**
@@ -98,6 +98,7 @@ public class UserToken {
         switch (role) {
             case "ADMIN": return "Administrateur";
             case "ORGANIZER": return "Organisateur";
+            case "USER": return "Utilisateur";
             case "PARTICIPANT": return "Utilisateur";
             default: return "Inconnu";
         }

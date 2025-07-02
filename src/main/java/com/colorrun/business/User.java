@@ -27,7 +27,7 @@ public class User {
     /** Hash sécurisé du mot de passe (BCrypt) */
     private String passwordHash;
     
-    /** Rôle de l'utilisateur dans l'application (ADMIN, ORGANIZER, PARTICIPANT) */
+    /** Rôle de l'utilisateur dans l'application (ADMIN, ORGANIZER, USER) */
     private String role;
     
     /** URL ou chemin vers la photo de profil de l'utilisateur */
@@ -42,7 +42,7 @@ public class User {
      */
     public User() {
         this.enabled = true; // Par défaut, les utilisateurs sont activés
-        this.role = "PARTICIPANT"; // Rôle par défaut
+        this.role = "USER"; // Rôle par défaut
     }
 
     /**
@@ -159,7 +159,7 @@ public class User {
     /**
      * Retourne le rôle de l'utilisateur dans l'application.
      * 
-     * @return Le rôle de l'utilisateur (ADMIN, ORGANIZER, PARTICIPANT)
+     * @return Le rôle de l'utilisateur (ADMIN, ORGANIZER, USER)
      */
     public String getRole() {
         return role;
@@ -168,7 +168,7 @@ public class User {
     /**
      * Définit le rôle de l'utilisateur dans l'application.
      * 
-     * @param role Le rôle de l'utilisateur (ADMIN, ORGANIZER, PARTICIPANT)
+     * @param role Le rôle de l'utilisateur (ADMIN, ORGANIZER, USER)
      */
     public void setRole(String role) {
         this.role = role;
@@ -248,12 +248,12 @@ public class User {
     }
 
     /**
-     * Vérifie si l'utilisateur a le rôle de participant.
+     * Vérifie si l'utilisateur a le rôle d'utilisateur standard.
      * 
-     * @return true si l'utilisateur est participant, false sinon
+     * @return true si l'utilisateur est un utilisateur standard, false sinon
      */
-    public boolean isParticipant() {
-        return "PARTICIPANT".equals(role);
+    public boolean isUser() {
+        return "USER".equals(role);
     }
 
     /**

@@ -26,6 +26,11 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
+        // Configurer l'encodage UTF-8 pour toutes les requêtes
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
         // Ajouter les informations token à chaque requête
         TokenManager.addTokenToRequest(httpRequest);
         

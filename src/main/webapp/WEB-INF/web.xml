@@ -107,6 +107,10 @@
     <servlet-name>CourseDetailServlet</servlet-name>
     <url-pattern>/courseDetail</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CourseDetailServlet</servlet-name>
+    <url-pattern>/course/detail</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>ParticipationServlet</servlet-name>
@@ -132,6 +136,10 @@
     <servlet-name>AdminServlet</servlet-name>
     <servlet-class>com.colorrun.servlet.AdminServlet</servlet-class>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AdminServlet</servlet-name>
     <url-pattern>/admin/*</url-pattern>
@@ -195,5 +203,50 @@
     <url-pattern>/MyCourses</url-pattern>
   </servlet-mapping>
 
+  <!-- Course Edit Servlet -->
+  <servlet>
+    <servlet-name>CourseEditServlet</servlet-name>
+    <servlet-class>com.colorrun.servlet.CourseEditServlet</servlet-class>
+  </servlet>
+      <servlet-mapping>
+        <servlet-name>CourseEditServlet</servlet-name>
+        <url-pattern>/course/edit</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Servlet pour gestion des messages/chat -->
+    <servlet>
+        <servlet-name>MessageDeleteServlet</servlet-name>
+        <servlet-class>com.colorrun.servlet.MessageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>MessageDeleteServlet</servlet-name>
+        <url-pattern>/message/delete</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>MessageDeleteServlet</servlet-name>
+        <url-pattern>/message/get</url-pattern>
+    </servlet-mapping>
+
+    <!-- Discussion Servlet pour les messages de course -->
+    <servlet>
+        <servlet-name>DiscussionServlet</servlet-name>
+        <servlet-class>com.colorrun.servlet.DiscussionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DiscussionServlet</servlet-name>
+        <url-pattern>/discussion/delete</url-pattern>
+    </servlet-mapping>
+
+    <!-- Dossard QR Code Servlet -->
+    <servlet>
+        <servlet-name>DossardServlet</servlet-name>
+        <servlet-class>com.colorrun.servlet.DossardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DossardServlet</servlet-name>
+        <url-pattern>/dossard</url-pattern>
+    </servlet-mapping>
 
 </web-app>

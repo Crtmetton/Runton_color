@@ -133,7 +133,8 @@ public class TokenManager {
             request.setAttribute("isUser", token.isUser());
             request.setAttribute("currentUser", token);
             request.setAttribute("userName", token.getFullName());
-            request.setAttribute("userRole", token.getRoleDescription());
+            request.setAttribute("userRole", token.getRole()); // Rôle technique (USER, ORGANIZER, ADMIN)
+            request.setAttribute("userRoleDescription", token.getRoleDescription()); // Description française
             
             Logger.debug("TokenManager", "Informations token ajoutées à la requête pour " + token.getEmail());
         } else {
@@ -145,6 +146,7 @@ public class TokenManager {
             request.setAttribute("currentUser", null);
             request.setAttribute("userName", "");
             request.setAttribute("userRole", "");
+            request.setAttribute("userRoleDescription", "");
             
             Logger.debug("TokenManager", "Aucune authentification - attributs vides ajoutés");
         }

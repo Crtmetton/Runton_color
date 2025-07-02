@@ -6,6 +6,9 @@ import com.colorrun.service.OrganizerRequestService;
 import com.colorrun.service.UserService;
 import com.colorrun.service.impl.OrganizerRequestServiceImpl;
 import com.colorrun.service.impl.UserServiceImpl;
+import com.colorrun.security.TokenManager;
+import com.colorrun.security.UserToken;
+import com.colorrun.util.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,15 +18,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Optional;
 
 /**
  * Servlet d'administration pour gérer les utilisateurs, les demandes d'organisateur et les statistiques.
  */
 public class AdminServlet extends HttpServlet {
-    
-    private static final Logger LOGGER = Logger.getLogger(AdminServlet.class.getName());
     
     private UserService userService;
     private OrganizerRequestService organizerRequestService;
@@ -40,6 +40,7 @@ public class AdminServlet extends HttpServlet {
         
         // Vérification des droits d'administrateur
         if (!isAdmin(request)) {
+            Logger.warn("AdminServlet", "Tentative d'accès non autorisé à l'admin");
             response.sendRedirect(request.getContextPath() + "/");
             return;
         }
@@ -69,7 +70,7 @@ public class AdminServlet extends HttpServlet {
                     break;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur de base de données dans AdminServlet", e);
+            Logger.error("AdminServlet", "Erreur de base de données: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
                              "Erreur de base de données : " + e.getMessage());
         }
@@ -79,38 +80,38 @@ public class AdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        request.setCharacterEncoding("UTF-8");
+        
         // Vérification des droits d'administrateur
         if (!isAdmin(request)) {
+            Logger.warn("AdminServlet", "Tentative d'action admin non autorisée");
             response.sendRedirect(request.getContextPath() + "/");
             return;
         }
         
-        String pathInfo = request.getPathInfo();
-        if (pathInfo == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        String action = request.getParameter("action");
+        if (action == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action requise");
             return;
         }
         
         try {
-            switch (pathInfo) {
-                case "/approve-organizer":
+            switch (action) {
+                case "approve-organizer":
                     approveOrganizerRequest(request, response);
                     break;
-                case "/reject-organizer":
+                case "reject-organizer":
                     rejectOrganizerRequest(request, response);
                     break;
-                case "/change-user-role":
-                    changeUserRole(request, response);
-                    break;
-                case "/reset-password":
-                    resetUserPassword(request, response);
+                case "delete-user":
+                    deleteUser(request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action inconnue");
                     break;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur de base de données dans AdminServlet POST", e);
+            Logger.error("AdminServlet", "Erreur lors de l'action " + action + ": " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
                              "Erreur de base de données : " + e.getMessage());
         }
@@ -122,20 +123,37 @@ public class AdminServlet extends HttpServlet {
     private void showDashboard(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException, SQLException {
         
-        // Statistiques de base
-        long totalUsers = getTotalUsersCount();
-        long pendingRequests = getPendingRequestsCount();
-        long totalOrganizers = getOrganizersCount();
+        Logger.info("AdminServlet", "Affichage du dashboard admin");
         
-        request.setAttribute("totalUsers", totalUsers);
+        // Récupérer les demandes d'organisateur en attente
+        List<OrganizerRequest> pendingRequests = organizerRequestService.getPendingRequests();
+        
+        // Récupérer tous les utilisateurs
+        List<User> allUsers = userService.findAll();
+        
+        // Récupérer les organisateurs actuels
+        List<User> organizers = userService.findByRole("ORGANIZER");
+        
+        // Statistiques
+        long totalUsers = allUsers.size();
+        long pendingRequestsCount = pendingRequests.size();
+        long organizersCount = organizers.size();
+        
+        // Ajouter les informations d'authentification pour la navbar
+        TokenManager.addTokenToRequest(request);
+        
+        // Passer les données au template
         request.setAttribute("pendingRequests", pendingRequests);
-        request.setAttribute("totalOrganizers", totalOrganizers);
+        request.setAttribute("allUsers", allUsers);
+        request.setAttribute("organizers", organizers);
+        request.setAttribute("totalUsers", totalUsers);
+        request.setAttribute("pendingRequestsCount", pendingRequestsCount);
+        request.setAttribute("organizersCount", organizersCount);
         
-        // Demandes récentes
-        List<OrganizerRequest> recentRequests = organizerRequestService.getPendingRequests();
-        request.setAttribute("recentRequests", recentRequests);
+        Logger.info("AdminServlet", "Dashboard: " + totalUsers + " utilisateurs, " 
+                   + pendingRequestsCount + " demandes, " + organizersCount + " organisateurs");
         
-        request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.html").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);
     }
     
     /**
@@ -204,22 +222,37 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         
         String requestIdStr = request.getParameter("requestId");
-        if (requestIdStr == null || requestIdStr.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande manquant");
+        if (requestIdStr == null || requestIdStr.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande requis");
             return;
         }
         
         try {
             int requestId = Integer.parseInt(requestIdStr);
-            organizerRequestService.approveRequest(requestId);
             
-            request.getSession().setAttribute("successMessage", "Demande approuvée avec succès !");
+            // Récupérer la demande
+            Optional<OrganizerRequest> requestOpt = organizerRequestService.findById(requestId);
+            if (!requestOpt.isPresent()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Demande non trouvée");
+                return;
+            }
+            
+            OrganizerRequest organizerRequest = requestOpt.get();
+            
+            // Approuver la demande
+            organizerRequestService.approve(requestId);
+            
+            // Changer le rôle de l'utilisateur
+            userService.changeRole(organizerRequest.getRequester().getId(), "ORGANIZER");
+            
+            Logger.info("AdminServlet", "Demande d'organisateur approuvée pour l'utilisateur " + organizerRequest.getRequester().getId());
+            
+            // Rediriger vers le dashboard avec un message de succès
+            response.sendRedirect(request.getContextPath() + "/admin?success=Demande approuvée avec succès");
+            
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande invalide");
-            return;
         }
-        
-        response.sendRedirect(request.getContextPath() + "/admin/organizer-requests");
     }
     
     /**
@@ -229,93 +262,75 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         
         String requestIdStr = request.getParameter("requestId");
-        if (requestIdStr == null || requestIdStr.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande manquant");
+        if (requestIdStr == null || requestIdStr.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande requis");
             return;
         }
         
         try {
             int requestId = Integer.parseInt(requestIdStr);
-            organizerRequestService.rejectRequest(requestId);
             
-            request.getSession().setAttribute("successMessage", "Demande rejetée.");
+            // Vérifier que la demande existe
+            Optional<OrganizerRequest> requestOpt = organizerRequestService.findById(requestId);
+            if (!requestOpt.isPresent()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Demande non trouvée");
+                return;
+            }
+            
+            // Rejeter la demande
+            organizerRequestService.reject(requestId);
+            
+            Logger.info("AdminServlet", "Demande d'organisateur rejetée: " + requestId);
+            
+            // Rediriger vers le dashboard avec un message de succès
+            response.sendRedirect(request.getContextPath() + "/admin?success=Demande rejetée");
+            
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de demande invalide");
-            return;
         }
-        
-        response.sendRedirect(request.getContextPath() + "/admin/organizer-requests");
     }
     
     /**
-     * Change le rôle d'un utilisateur
+     * Supprime un utilisateur
      */
-    private void changeUserRole(HttpServletRequest request, HttpServletResponse response) 
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException, SQLException {
         
         String userIdStr = request.getParameter("userId");
-        String newRole = request.getParameter("role");
-        
-        if (userIdStr == null || newRole == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètres manquants");
+        if (userIdStr == null || userIdStr.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID utilisateur requis");
             return;
         }
         
         try {
             int userId = Integer.parseInt(userIdStr);
-            java.util.Optional<User> userOpt = userService.findById(userId);
-            if (userOpt.isPresent()) {
-                User user = userOpt.get();
-                user.setRole(newRole);
-                userService.update(user);
-                
-                request.getSession().setAttribute("successMessage", 
-                    "Rôle de l'utilisateur modifié avec succès !");
-            } else {
-                request.getSession().setAttribute("errorMessage", "Utilisateur introuvable.");
+            
+            // Vérifier que l'utilisateur existe
+            Optional<User> userOpt = userService.findById(userId);
+            if (!userOpt.isPresent()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Utilisateur non trouvé");
+                return;
             }
+            
+            User user = userOpt.get();
+            
+            // Empêcher la suppression d'un admin par un autre admin (sécurité)
+            if ("ADMIN".equals(user.getRole())) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Impossible de supprimer un administrateur");
+                return;
+            }
+            
+            // Supprimer l'utilisateur
+            userService.delete(userId);
+            
+            Logger.info("AdminServlet", "Utilisateur supprimé: " + user.getEmail() + " (ID: " + userId + ")");
+            
+            // Rediriger vers le dashboard avec un message de succès
+            response.sendRedirect(request.getContextPath() + "/admin?success=Utilisateur supprimé avec succès");
+            
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID utilisateur invalide");
-            return;
         }
-        
-        response.sendRedirect(request.getContextPath() + "/admin/users");
-    }
-    
-    /**
-     * Réinitialise le mot de passe d'un utilisateur
-     */
-    private void resetUserPassword(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException {
-        
-        String userIdStr = request.getParameter("userId");
-        String newPassword = request.getParameter("newPassword");
-        
-        if (userIdStr == null || newPassword == null || newPassword.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètres manquants");
-            return;
-        }
-        
-        try {
-            int userId = Integer.parseInt(userIdStr);
-            java.util.Optional<User> userOpt = userService.findById(userId);
-            if (userOpt.isPresent()) {
-                User user = userOpt.get();
-                // TODO: Hasher le mot de passe avec BCrypt avant de le stocker
-                user.setPasswordHash(newPassword); // Note: Doit être hashé en production
-                userService.update(user);
-                
-                request.getSession().setAttribute("successMessage", 
-                    "Mot de passe réinitialisé avec succès !");
-            } else {
-                request.getSession().setAttribute("errorMessage", "Utilisateur introuvable.");
-            }
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID utilisateur invalide");
-            return;
-        }
-        
-        response.sendRedirect(request.getContextPath() + "/admin/users");
     }
     
     // Méthodes utilitaires
@@ -324,13 +339,12 @@ public class AdminServlet extends HttpServlet {
      * Vérifie si l'utilisateur connecté est administrateur
      */
     private boolean isAdmin(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
+        UserToken currentToken = TokenManager.getToken(request);
+        if (currentToken == null || !currentToken.isAuthenticated()) {
             return false;
         }
         
-        User user = (User) session.getAttribute("user");
-        return user != null && "ADMIN".equals(user.getRole());
+        return "ADMIN".equals(currentToken.getRole());
     }
     
     /**
@@ -341,7 +355,7 @@ public class AdminServlet extends HttpServlet {
             List<User> allUsers = userService.findAll();
             return allUsers.size(); // TODO: Optimiser avec une requête COUNT
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Erreur lors du comptage des utilisateurs", e);
+            Logger.error("AdminServlet", "Erreur lors du comptage des utilisateurs: " + e.getMessage());
             return 0;
         }
     }
@@ -354,7 +368,7 @@ public class AdminServlet extends HttpServlet {
             List<OrganizerRequest> pendingRequests = organizerRequestService.getPendingRequests();
             return pendingRequests.size(); // TODO: Optimiser avec une requête COUNT
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Erreur lors du comptage des demandes", e);
+            Logger.error("AdminServlet", "Erreur lors du comptage des demandes: " + e.getMessage());
             return 0;
         }
     }
@@ -376,7 +390,7 @@ public class AdminServlet extends HttpServlet {
                     .filter(user -> role.equals(user.getRole()))
                     .count();
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Erreur lors du comptage par rôle", e);
+            Logger.error("AdminServlet", "Erreur lors du comptage par rôle: " + e.getMessage());
             return 0;
         }
     }

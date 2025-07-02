@@ -425,11 +425,13 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
+    background-color: transparent !important;
 }
 
 .navbar .menu a:hover {
     color: #000;
     transform: translateY(-2px);
+    background-color: transparent !important;
 }
 
 .navbar .menu a::after {
@@ -450,6 +452,7 @@ body {
 .navbar .menu .active {
     color: #000;
     font-weight: 800;
+    background-color: transparent !important;
 }
 
 .navbar .menu .active::after {
@@ -852,4 +855,18 @@ body {
     background: #ffe3ec !important;
     color: #ff6a88 !important;
     border-color: #ff6a88 !important;
+}
+
+/* Ensure navbar links never have a white background */
+body .navbar .menu a:hover,
+body .navbar .menu a.active,
+body .navbar .menu a:focus,
+body .navbar .menu a:active {
+    background-color: transparent !important;
+    color: #000;
+}
+
+/* Additional style to ensure no white background on hover */
+.navbar .menu a {
+    background-color: transparent !important;
 }

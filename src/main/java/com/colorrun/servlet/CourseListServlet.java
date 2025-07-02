@@ -1,9 +1,12 @@
 package com.colorrun.servlet;
 
 import com.colorrun.business.Course;
+import com.colorrun.business.User;
 import com.colorrun.security.TokenManager;
 import com.colorrun.service.CourseService;
+import com.colorrun.service.ParticipationService;
 import com.colorrun.service.impl.CourseServiceImpl;
+import com.colorrun.service.impl.ParticipationServiceImpl;
 import com.colorrun.util.Logger;
 
 import javax.servlet.ServletException;
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Servlet pour afficher la liste des courses
@@ -22,12 +27,14 @@ import java.util.List;
 public class CourseListServlet extends HttpServlet {
     
     private CourseService courseService;
+    private ParticipationService participationService;
     
     @Override
     public void init() throws ServletException {
         super.init();
         this.courseService = new CourseServiceImpl();
-        Logger.info("CourseListServlet", "✅ Service courses initialisé");
+        this.participationService = new ParticipationServiceImpl();
+        Logger.info("CourseListServlet", "✅ Services courses et participations initialisés");
     }
     
     @Override
@@ -47,6 +54,7 @@ public class CourseListServlet extends HttpServlet {
             String userName = (String) request.getAttribute("userName");
             String userRole = (String) request.getAttribute("userRole");
             Boolean isAuthenticated = (Boolean) request.getAttribute("isAuthenticated");
+            User user = (User) request.getSession().getAttribute("user");
             
             Logger.debug("CourseListServlet", 
                 "Utilisateur: " + (isAuthenticated ? userName + " (" + userRole + ")" : "Non connecté"));
@@ -69,9 +77,31 @@ public class CourseListServlet extends HttpServlet {
                 Logger.warn("CourseListServlet", "⚠️ Aucune course trouvée");
                 courses = List.of(); // Liste vide pour éviter les erreurs
             }
+
+            // Vérifier les participations de l'utilisateur si connecté
+            Map<Integer, Boolean> userParticipations = new HashMap<>();
+            if (isAuthenticated && user != null) {
+                Logger.step("CourseListServlet", "🔄 Vérification participations utilisateur");
+                for (Course course : courses) {
+                    try {
+                        boolean isRegistered = participationService.isUserRegistered(user.getId(), course.getId());
+                        userParticipations.put(course.getId(), isRegistered);
+                        if (isRegistered) {
+                            Logger.debug("CourseListServlet", 
+                                "Utilisateur déjà inscrit à: " + course.getName());
+                        }
+                    } catch (Exception e) {
+                        Logger.warn("CourseListServlet", 
+                            "Erreur vérification participation pour course " + course.getId() + ": " + e.getMessage());
+                        userParticipations.put(course.getId(), false);
+                    }
+                }
+                Logger.step("CourseListServlet", "✅ Participations vérifiées");
+            }
             
-            // Ajouter les courses à la requête pour le JSP
+            // Ajouter les courses et participations à la requête pour le JSP
             request.setAttribute("courses", courses);
+            request.setAttribute("userParticipations", userParticipations);
             
             // Messages flash (si présents) - les garder en session pour le JSP
             String success = (String) request.getSession().getAttribute("success");

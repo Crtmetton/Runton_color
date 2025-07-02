@@ -27,6 +27,10 @@ public class OrganizerRequestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
         Logger.separator("ACCÈS DEVENIR ORGANISATEUR");
         Logger.step("OrganizerRequestServlet", "🔄 Chargement page devenir organisateur");
         
@@ -77,6 +81,8 @@ public class OrganizerRequestServlet extends HttpServlet {
         Logger.step("OrganizerRequestServlet", "🔄 Traitement demande organisateur");
         
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         
         // Vérifier l'authentification
         if (!TokenManager.isAuthenticated(request)) {
@@ -96,12 +102,12 @@ public class OrganizerRequestServlet extends HttpServlet {
         }
         
         int userId = userToken.getUserId();
-        String reason = request.getParameter("motivation");
+        String motivation = request.getParameter("motivation");
         
         Logger.debug("OrganizerRequestServlet", "Demande de: " + userToken.getFullName());
-        Logger.debug("OrganizerRequestServlet", "Motivation: " + reason);
+        Logger.debug("OrganizerRequestServlet", "Motivation: " + motivation);
         
-        if (reason == null || reason.trim().isEmpty()) {
+        if (motivation == null || motivation.trim().isEmpty()) {
             Logger.warn("OrganizerRequestServlet", "Motivation vide");
             request.setAttribute("error", "La motivation est obligatoire.");
             request.getRequestDispatcher("/WEB-INF/views/devenir-organisateur.jsp").forward(request, response);
@@ -118,7 +124,7 @@ public class OrganizerRequestServlet extends HttpServlet {
             }
             
             // Créer la demande
-            organizerRequestService.submitRequest(userId, reason);
+            organizerRequestService.submitRequest(userId, motivation);
             Logger.success("OrganizerRequestServlet", "Demande créée avec succès pour " + userToken.getFullName());
             request.setAttribute("success", "Votre demande d'organisateur a été envoyée avec succès ! Elle sera traitée par un administrateur.");
             

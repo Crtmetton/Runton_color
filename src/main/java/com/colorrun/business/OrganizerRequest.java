@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
  * Représente une demande de devenir organisateur dans l'application Color Run.
  * 
  * Cette classe encapsule les informations relatives à une demande d'élévation
- * de privilèges d'un utilisateur PARTICIPANT vers le rôle ORGANIZER. Elle permet
+ * de privilèges d'un utilisateur USER vers le rôle ORGANIZER. Elle permet
  * de gérer le processus d'approbation des organisateurs par les administrateurs.
  * 
  * <p><strong>Processus de demande :</strong></p>

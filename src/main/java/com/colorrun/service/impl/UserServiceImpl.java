@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         }
         
         // Configuration des valeurs par défaut
-        user.setRole("PARTICIPANT"); // Rôle par défaut pour les nouveaux inscrits
+        user.setRole("USER"); // Rôle par défaut pour les nouveaux inscrits
         user.setEnabled(true); // Compte activé par défaut
         
         // Validation du mot de passe et hachage

@@ -92,13 +92,11 @@ public class AuthServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         
-        Logger.debug("AuthServlet", "Tentative de connexion pour : " + email);
-        Logger.debug("AuthServlet", "Mot de passe reçu (masqué) : " + (password != null ? "[REÇU]" : "[VIDE]"));
-        
         // Validation de la présence des paramètres obligatoires
         if (email == null || email.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
-            Logger.warn("AuthServlet", "Champs email ou mot de passe manquants");
+            
+            // Paramètres manquants - affichage d'une erreur générique
             req.setAttribute("error", "Veuillez remplir tous les champs");
             req.getRequestDispatcher("/WEB-INF/views/acceuil-2.jsp").forward(req, resp);
             return;
@@ -107,7 +105,6 @@ public class AuthServlet extends HttpServlet {
         try {
             // Tentative d'authentification via le service utilisateur
             User user = userService.authenticate(email.trim(), password);
-            Logger.debug("AuthServlet", "Authentification réussie pour : " + email);
             
             // Authentification réussie - création du token utilisateur
             HttpSession session = req.getSession();
