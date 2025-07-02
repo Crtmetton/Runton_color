@@ -10,7 +10,7 @@ import com.colorrun.business.User;
 
 public class RegistrationServlet extends HttpServlet {
     
-    private final UserService userService;
+    UserService userService;
     
     public RegistrationServlet() {
         this.userService = new UserServiceImpl();
