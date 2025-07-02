@@ -3,7 +3,7 @@
 
 <!-- Navbar -->
 <header class="navbar">
-    <div class="logo">Color Run</div>
+    <a href="${pageContext.request.contextPath}/" class="logo" style="text-decoration:none; color:inherit;">RUNTON</a>
     <nav class="menu">
         <!-- Navigation principale -->
         <a href="${pageContext.request.contextPath}/" 
@@ -42,7 +42,7 @@
                 <!-- Username à droite avec popup de déconnexion -->
                 <div class="user-section" style="margin-left: auto;">
                     <div class="user-dropdown" onclick="toggleUserMenu()">
-                        <span class="username">${userName}</span>
+                        <span class="username" style="font-weight:700; font-style:italic; font-size:1.05rem; color:inherit;">${userName}</span>
                         <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -50,6 +50,12 @@
                     
                     <!-- Dropdown menu -->
                     <div id="user-menu" class="user-menu-dropdown" style="display: none;">
+                        <a href="${pageContext.request.contextPath}/profile" class="logout-link">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 1a3 3 0 110 6 3 3 0 010-6zM2 15c0-2.7614 2.2386-5 5-5h2c2.7614 0 5 2.2386 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Mon profil
+                        </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-link">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -81,7 +87,7 @@
 <div id="account-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.38); z-index:9999;">
     <div id="account-popup" style="position:fixed; top:0; right:0; width:370px; max-width:100vw; height:100vh; background:#fff; box-shadow:-2px 0 24px rgba(0,0,0,0.10); z-index:10000; display:flex; flex-direction:column; align-items:center; padding:32px 28px 0 28px;">
         <button onclick="closeAccountPopup()" style="position:absolute; top:18px; right:24px; background:none; border:none; font-size:1.5rem; color:#ff6a88; cursor:pointer;">×</button>
-        <img src="${pageContext.request.contextPath}/images/logo.png" alt="Logo Color Run" style="height:38px; margin-bottom:32px; margin-top:8px;">
+        <div style="font-size:1.8rem; font-weight:800; color:#000; margin-bottom:32px; margin-top:8px; font-family:inherit;">RUNTON</div>
         
         <!-- Contenu de connexion -->
         <div id="account-popup-content">

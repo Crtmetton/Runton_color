@@ -37,11 +37,23 @@
         <!-- En-tête -->
         <div style="text-align:center; margin-bottom:32px;">
             <h1 style="font-size:2.5rem; margin-bottom:16px;">Mes courses</h1>
-            <div style="display:flex; justify-content:center; margin-bottom:24px;">
+            <div style="display:flex; justify-content:center; align-items:center; gap:32px; margin-bottom:24px; flex-wrap:wrap;">
                 <div style="text-align:center;">
                     <div style="font-size:2rem; font-weight:bold; color:#6a82fb;">${userCourses.size()}</div>
                     <div style="color:#666;">Course(s) inscrite(s)</div>
                 </div>
+                
+                <!-- Bouton pour les organisateurs -->
+                <c:if test="${user != null && (user.role == 'ORGANIZER' || user.role == 'ADMIN')}">
+                    <div style="text-align:center;">
+                        <a href="${pageContext.request.contextPath}/my-created-courses" 
+                           class="search-button" 
+                           style="display:inline-block; text-decoration:none; padding:12px 20px; font-size:1rem; background:linear-gradient(135deg, #28a745 0%, #20c997 100%); white-space:nowrap;">
+                            📋 Mes courses créées
+                        </a>
+                        <div style="color:#666; font-size:0.85rem; margin-top:4px;">Gérer vos événements</div>
+                    </div>
+                </c:if>
             </div>
         </div>
 

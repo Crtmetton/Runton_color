@@ -43,8 +43,8 @@
                     <input id="date" name="date" type="date" class="filter-input form-field" required>
                     
                     <label for="heure" class="form-label">Heure :</label>
-                    <input id="heure" name="heure" type="text" class="filter-input form-field" 
-                           placeholder="00:00" maxlength="5" required>
+                    <input id="heure" name="heure" type="time" class="filter-input form-field" 
+                           value="09:00" required>
 
                     <label for="distance" class="form-label">Distance (km) :</label>
                     <input id="distance" name="distance" type="number" step="0.1" class="filter-input form-field" placeholder="Ex : 5.0" value="5.0" required>
@@ -116,20 +116,9 @@
         background: #fafbff !important;
     }
     
-    /* Style spécifique pour le select de l'heure */
-    select.form-field {
+    /* Style spécifique pour le champ time */
+    input[type="time"].form-field {
         cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236a82fb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        background-size: 20px;
-        padding-right: 40px !important;
-    }
-    
-    select.form-field option {
-        padding: 8px 12px;
-        font-size: 1rem;
     }
     
     /* Amélioration pour le textarea */
@@ -147,68 +136,6 @@
     }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const timeInput = document.getElementById('heure');
-    
-    // Initialiser avec 00:00
-    timeInput.value = '00:00';
-    
-    timeInput.addEventListener('focus', function() {
-        // Sélectionner tout le texte au focus pour faciliter la saisie
-        this.select();
-    });
-    
-    timeInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, ''); // Garder que les chiffres
-        
-        // Limiter à 4 chiffres
-        if (value.length > 4) {
-            value = value.substring(0, 4);
-        }
-        
-        // Formater automatiquement avec :
-        if (value.length >= 2) {
-            const hours = value.substring(0, 2);
-            const minutes = value.substring(2, 4);
-            
-            // Valider les heures (00-23)
-            const validHours = Math.min(parseInt(hours) || 0, 23);
-            const formattedHours = validHours.toString().padStart(2, '0');
-            
-            if (value.length <= 2) {
-                e.target.value = formattedHours + ':00';
-            } else {
-                // Valider les minutes (00-59)
-                const validMinutes = Math.min(parseInt(minutes) || 0, 59);
-                const formattedMinutes = validMinutes.toString().padStart(2, '0');
-                e.target.value = formattedHours + ':' + formattedMinutes;
-            }
-        } else if (value.length === 1) {
-            e.target.value = '0' + value + ':00';
-        } else if (value.length === 0) {
-            e.target.value = '00:00';
-        }
-        
-        // Placer le curseur à la fin
-        setTimeout(() => {
-            e.target.setSelectionRange(e.target.value.length, e.target.value.length);
-        }, 0);
-    });
-    
-    timeInput.addEventListener('keydown', function(e) {
-        // Permettre navigation, suppression, etc.
-        if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' || e.key === 'Enter' || 
-            e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End') {
-            return;
-        }
-        
-        // Permettre seulement les chiffres
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    });
-});
-</script>
+
 </body>
 </html> 

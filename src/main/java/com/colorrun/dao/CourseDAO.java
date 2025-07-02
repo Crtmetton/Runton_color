@@ -124,6 +124,10 @@ public class CourseDAO {
                 courses.add(mapRow(rs));
             }
         }
+        // Add logging to check the prices of courses
+        for (Course course : courses) {
+            System.out.println("Course ID: " + course.getId() + ", Name: " + course.getName() + ", Price: " + course.getPrix());
+        }
         return courses;
     }
     
@@ -237,6 +241,28 @@ public class CourseDAO {
     
     // La méthode updateParticipantCount ne peut pas être utilisée car la table Course
     // n'a pas de colonne current_participants dans le schéma SQL
+    
+    /**
+     * Récupère les courses créées par un utilisateur spécifique.
+     * 
+     * @param creatorId L'identifiant du créateur
+     * @return Liste des courses créées par cet utilisateur
+     * @throws SQLException En cas d'erreur lors de la requête
+     */
+    public List<Course> findByCreator(int creatorId) throws SQLException {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT * FROM Course WHERE USERCREATEID = ? ORDER BY DATE DESC";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, creatorId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(mapRow(rs));
+                }
+            }
+        }
+        return courses;
+    }
     
     private Course mapRow(ResultSet rs) throws SQLException {
         Course course = new Course();

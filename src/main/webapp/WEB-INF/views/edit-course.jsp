@@ -8,8 +8,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier la course | Color Run</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style-liste-course.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style-creation-course.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style-acceuil.css">
 </head>
 <body>
 <div class="bg-circle1"></div>
@@ -103,39 +103,22 @@
                     Annuler
                 </a>
                 <button type="submit" class="search-button" 
-                        style="width:180px; font-size:1.1rem; padding:12px 0; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                    ✅ Sauvegarder les modifications
+                        style="width:200px; font-size:1rem; padding:12px 0; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    Sauvegarder
                 </button>
             </div>
         </form>
     </section>
 </main>
 
-<footer class="footer">
-    <div class="footer-content">
-        <div class="newsletter">
-            <p>Abonnez-vous à notre newsletter</p>
-            <form>
-                <input type="email" placeholder="Votre email">
-                <button type="submit">S'abonner</button>
-            </form>
-        </div>
-        <div class="social-icons">
-            <a href="#">📸 Instagram</a>
-            <a href="#">📘 Facebook</a>
-        </div>
-        <div class="credits">
-            <p>2025 © Color Run. Tous droits réservés.</p>
-        </div>
-    </div>
-</footer>
+<!-- Inclusion du footer -->
+<jsp:include page="fragments/footer.jsp"/>
 
 <style>
     /* Correction pour permettre l'interaction avec les champs */
     .course-card input, 
     .course-card textarea, 
-    .course-card button,
-    .course-card a {
+    .course-card button {
         pointer-events: auto !important;
     }
     
@@ -165,6 +148,11 @@
         background: #fafbff !important;
     }
     
+    /* Style spécifique pour le champ time */
+    input[type="time"].form-field {
+        cursor: pointer;
+    }
+    
     /* Amélioration pour le textarea */
     textarea.form-field {
         resize: vertical;
@@ -172,42 +160,14 @@
         line-height: 1.5;
     }
     
-    /* Style spécial pour les champs modifiés */
-    .form-field:not([value=""]) {
-        background: #f8fffa !important;
-        border-color: #28a745 !important;
-    }
-    
-    /* Style pour le bouton d'annulation */
-    .search-button.secondary:hover {
-        background: #e9ecef !important;
-        border-color: #adb5bd !important;
-    }
-    
     /* Responsive pour les colonnes */
     @media (max-width: 768px) {
         .main-container div[style*="display:flex"] {
             flex-direction: column !important;
         }
-        
-        .main-container div[style*="gap:20px"] {
-            flex-direction: column !important;
-            gap: 12px !important;
-        }
-        
-        .main-container div[style*="gap:20px"] .search-button,
-        .main-container div[style*="gap:20px"] a {
-            width: 100% !important;
-        }
     }
 </style>
 
-<script>
-    // Script pour formater automatiquement les dates lors du chargement
-    document.addEventListener('DOMContentLoaded', function() {
-        // Les dates sont déjà formatées correctement via les attributs value des inputs
-        console.log('Formulaire de modification de course chargé');
-    });
-</script>
+
 </body>
 </html> 

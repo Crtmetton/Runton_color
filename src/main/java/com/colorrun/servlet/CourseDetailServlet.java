@@ -115,7 +115,8 @@ public class CourseDetailServlet extends HttpServlet {
             req.setAttribute("isRegistered", isRegistered);
             req.setAttribute("isAuthenticated", isAuthenticated);
             req.setAttribute("isCreator", isCreator);
-            req.setAttribute("showParticipationPopup", false);
+            // Afficher la popup de participation si l'utilisateur est authentifié et pas encore inscrit
+            req.setAttribute("showParticipationPopup", isAuthenticated && !isRegistered);
             
             Logger.info("CourseDetailServlet", "Affichage course " + course.getName() + " avec " + discussions.size() + " messages");
             

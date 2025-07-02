@@ -9,8 +9,8 @@
             </form>
         </div>
         <div class="social-icons">
-            <a href="#">📸 Instagram</a>
-            <a href="#">📘 Facebook</a>
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
         </div>
         <div class="credits">
             <p>2025 © Color Run. Tous droits réservés.</p>

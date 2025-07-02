@@ -281,4 +281,9 @@ public class CourseServiceImpl implements CourseService {
         
         return distances;
     }
+    
+    @Override
+    public List<Course> findByCreator(int creatorId) throws SQLException {
+        return courseDAO.findByCreator(creatorId);
+    }
 } 

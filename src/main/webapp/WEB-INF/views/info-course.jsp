@@ -145,7 +145,14 @@
                 </div>
                 <!-- Prix principal et bouton paiement -->
                 <div style="margin-top:28px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
-                    <span style="font-size:1.25rem; font-weight:700; color:#ff6a88;">Gratuit</span>
+                    <c:choose>
+                        <c:when test="${course.prix > 0}">
+                            <span style="font-size:1.25rem; font-weight:700; color:#ff6a88;">${course.prix}€</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span style="font-size:1.25rem; font-weight:700; color:#ff6a88;">Gratuit</span>
+                        </c:otherwise>
+                    </c:choose>
                     <c:if test="${isAuthenticated && !isRegistered}">
                         <button class="search-button" style="min-width:160px; font-size:1.08rem;" onclick="openParticipationPopup()">
                             Participer
@@ -162,20 +169,20 @@
                     
                     <!-- Bouton modifier visible seulement par le créateur -->
                     <c:if test="${isCreator}">
-                        <a href="${pageContext.request.contextPath}/course/edit?id=${course.id}" 
-                           class="btn-modify" 
-                           style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-                                  color: white; 
-                                  border: none; 
-                                  padding: 12px 24px; 
-                                  border-radius: 25px; 
-                                  font-size: 1.08rem; 
-                                  font-weight: bold; 
-                                  text-decoration: none; 
-                                  cursor: pointer; 
-                                  transition: transform 0.2s, box-shadow 0.2s; 
-                                  min-width: 140px; 
-                                  text-align: center; 
+                        <a href="${pageContext.request.contextPath}/course/edit?id=${course.id}"
+                           class="btn-modify"
+                           style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                                  color: white;
+                                  border: none;
+                                  padding: 12px 24px;
+                                  border-radius: 25px;
+                                  font-size: 1.08rem;
+                                  font-weight: bold;
+                                  text-decoration: none;
+                                  cursor: pointer;
+                                  transition: transform 0.2s, box-shadow 0.2s;
+                                  min-width: 140px;
+                                  text-align: center;
                                   display: inline-block;
                                   box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);"
                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.4)';"
@@ -272,7 +279,7 @@
                                             </span>
                                             <!-- Bouton supprimer visible seulement par l'organisateur -->
                                             <c:if test="${isCreator}">
-                                                <button onclick="deleteMessage(${discussion.id})" 
+                                                <button onclick="deleteMessage('${discussion.id}')" 
                                                         style="background:none; border:none; color:#ff6a88; cursor:pointer; font-size:0.8rem; padding:2px 4px; border-radius:4px;"
                                                         title="Supprimer ce message">
                                                     X
@@ -340,7 +347,14 @@
         <div style="color:#666; margin-bottom:20px;">
             ${course.city} - ${course.date.dayOfMonth}/${course.date.monthValue}/${course.date.year}
         </div>
-        <div class="popup-price">Gratuit</div>
+        <c:choose>
+            <c:when test="${course.prix > 0}">
+                <div class="popup-price">${course.prix}€</div>
+            </c:when>
+            <c:otherwise>
+                <div class="popup-price">Gratuit</div>
+            </c:otherwise>
+        </c:choose>
         <div style="color:#666; margin-bottom:20px;">
             Une course accessible à tous !<br>
             <strong style="color:#28a745;">📱 Votre QR code de participation vous sera envoyé par email après inscription</strong>
@@ -468,13 +482,13 @@
         
         // Préparer les données du formulaire
         const formData = new URLSearchParams();
-        formData.append('message', message);
+        formData.append('content', message);
         formData.append('courseId', courseId);
         
         console.log('Données à envoyer:', formData.toString());
         
         // Envoyer la requête POST
-        fetch('${pageContext.request.contextPath}/discussion', {
+        fetch('${pageContext.request.contextPath}/courseDetail', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

@@ -601,6 +601,7 @@ button.search-button {
     bottom: 0;
     z-index: 2;
     cursor: pointer;
+    pointer-events: none; /* Allow clicks to reach the date input */
 }
 
 .date-range {

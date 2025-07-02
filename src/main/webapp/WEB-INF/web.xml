@@ -203,6 +203,16 @@
     <url-pattern>/MyCourses</url-pattern>
   </servlet-mapping>
 
+  <!-- My Created Courses Servlet -->
+  <servlet>
+    <servlet-name>MyCreatedCoursesServlet</servlet-name>
+    <servlet-class>com.colorrun.servlet.MyCreatedCoursesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MyCreatedCoursesServlet</servlet-name>
+    <url-pattern>/my-created-courses</url-pattern>
+  </servlet-mapping>
+
   <!-- Course Edit Servlet -->
   <servlet>
     <servlet-name>CourseEditServlet</servlet-name>
@@ -247,6 +257,11 @@
     <servlet-mapping>
         <servlet-name>DossardServlet</servlet-name>
         <url-pattern>/dossard</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/images/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

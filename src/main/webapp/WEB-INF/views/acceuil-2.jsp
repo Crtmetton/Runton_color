@@ -33,12 +33,13 @@
         <!-- Concept Section -->
         <section class="courses-container">
             <div style="display:flex;align-items:center;gap:40px;justify-content:center;">
-                <div style="width:160px;height:160px;background:#e2e7ff;border-radius:20px;"></div>
+                <img src="${pageContext.request.contextPath}/images/im1.jpg" alt="Concept" style="width:160px;height:160px;border-radius:20px;object-fit:cover;">
                 <div style="max-width:500px; margin-left:48px; margin-right:48px;">
-                    <h2>Découvrez le concept de la Color Run</h2>
+                    <h2>Découvrez le concept RUNTON Color&nbsp;Run</h2>
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Participez à une course festive et colorée, accessible à tous, sans chrono ni pression, où le plaisir et la convivialité priment !
+                        RUNTON Color&nbsp;Run est une course <strong>non chronométrée</strong> où, à chaque kilomètre, les participants sont
+                        aspergés de poudre colorée 100&nbsp;% naturelle. Ici, pas de compétition&nbsp;: l'objectif est de <strong>partager un moment haut en
+                        couleur</strong> avec ses proches et de terminer la course le sourire aux lèvres – couvert de la tête aux pieds de pigments arc-en-ciel&nbsp;!
                     </p>
                 </div>
             </div>
@@ -49,16 +50,16 @@
             <h2 style="text-align:center;margin-bottom:32px;">Pourquoi participer ?</h2>
             <div style="display:flex;justify-content:center;gap:60px;">
                 <div style="text-align:center;">
-                    <div style="width:80px;height:80px;background:#e2e7ff;border-radius:15px;margin:0 auto 20px;"></div>
-                    <div style="margin:0 24px;">Titre à remplir</div>
+                    <img src="${pageContext.request.contextPath}/images/im2.jpg" alt="Avantage 1" style="width:80px;height:80px;border-radius:15px;margin:0 auto 20px;object-fit:cover;">
+                    <div style="margin:0 24px; font-weight:600;">Explosion&nbsp;de&nbsp;couleurs</div>
                 </div>
                 <div style="text-align:center;">
-                    <div style="width:80px;height:80px;background:#e2e7ff;border-radius:15px;margin:0 auto 20px;"></div>
-                    <div style="margin:0 24px;">Titre à remplir</div>
+                    <img src="${pageContext.request.contextPath}/images/im3.jpg" alt="Avantage 2" style="width:80px;height:80px;border-radius:15px;margin:0 auto 20px;object-fit:cover;">
+                    <div style="margin:0 24px; font-weight:600;">Accessible&nbsp;à&nbsp;tous</div>
                 </div>
                 <div style="text-align:center;">
-                    <div style="width:80px;height:80px;background:#e2e7ff;border-radius:15px;margin:0 auto 20px;"></div>
-                    <div style="margin:0 24px;">Titre à remplir</div>
+                    <img src="${pageContext.request.contextPath}/images/im4.jpg" alt="Avantage 3" style="width:80px;height:80px;border-radius:15px;margin:0 auto 20px;object-fit:cover;">
+                    <div style="margin:0 24px; font-weight:600;">Ambiance&nbsp;festive</div>
                 </div>
             </div>
         </section>

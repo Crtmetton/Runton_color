@@ -306,4 +306,13 @@ public interface CourseService {
      * @throws SQLException En cas d'erreur lors de la récupération
      */
     List<Double> getAllDistances() throws SQLException;
+    
+    /**
+     * Récupère les courses créées par un utilisateur spécifique.
+     * 
+     * @param creatorId L'identifiant du créateur de la course
+     * @return Liste des courses créées par cet utilisateur
+     * @throws SQLException En cas d'erreur lors de la récupération
+     */
+    List<Course> findByCreator(int creatorId) throws SQLException;
 } 

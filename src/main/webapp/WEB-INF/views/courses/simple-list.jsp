@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courses | Color Run</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style-liste-course.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 </head>
 <body>
 <div class="bg-circle1"></div>
@@ -30,7 +33,7 @@
                 <input type="text" class="filter-input" placeholder="Ville ou région..." id="cityFilter">
             </div>
             <div class="filter-input-container date-container">
-                <input type="date" class="filter-input" placeholder="Date" id="dateFilter">
+                <input type="text" class="filter-input" placeholder="Date (JJ/MM/AAAA)" id="dateFilter" data-value="">
             </div>
             <button class="search-button" onclick="filterCourses()">Rechercher</button>
         </div>
@@ -66,7 +69,7 @@
             <c:when test="${not empty courses}">
                 <div class="courses-grid" id="coursesGrid">
                     <c:forEach var="course" items="${courses}">
-                        <article class="course-card" data-course-name="${course.name}" data-course-city="${course.city}" data-course-date="${course.date.year}-${String.format('%02d', course.date.monthValue)}-${String.format('%02d', course.date.dayOfMonth)}">
+                        <article class="course-card" data-course-name="${course.name}" data-course-city="${course.city}" data-course-date="${course.date.year}-${course.date.monthValue < 10 ? '0' : ''}${course.date.monthValue}-${course.date.dayOfMonth < 10 ? '0' : ''}${course.date.dayOfMonth}">
                             <!-- Image de la course -->
                             <div class="course-image" style="background-image: url('${pageContext.request.contextPath}/images/course-placeholder.jpg');"></div>
                             
@@ -91,7 +94,14 @@
                                 
                                 <!-- Prix et boutons d'action -->
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <c:choose>
+                                        <c:when test="${course.prix > 0}">
+                                            <div class="course-price" style="margin-right:10px;">${course.prix}€</div>
+                                        </c:when>
+                                        <c:otherwise>
                                     <div class="course-price" style="margin-right:10px;">Gratuit</div>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <div style="display:flex; gap:8px;">
                                         <c:choose>
                                             <c:when test="${isAuthenticated}">
@@ -161,7 +171,7 @@
     function filterCourses() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const cityFilter = document.getElementById('cityFilter').value.toLowerCase();
-        const dateFilter = document.getElementById('dateFilter').value;
+        const dateFilter = document.getElementById('dateFilter').dataset.value || '';
         
         const courses = document.querySelectorAll('.course-card');
         let visibleCount = 0;
@@ -208,20 +218,29 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const cityFilter = document.getElementById('cityFilter');
-        const dateFilter = document.getElementById('dateFilter');
+        const dateInput = document.getElementById('dateFilter');
         
         if (searchInput) searchInput.addEventListener('input', filterCourses);
         if (cityFilter) cityFilter.addEventListener('input', filterCourses);
-        if (dateFilter) dateFilter.addEventListener('change', filterCourses);
+        if (dateInput) dateInput.addEventListener('change', filterCourses);
         
-        // Log informations de debug
-        <c:if test="${isAuthenticated}">
-            console.log('Utilisateur connecté: ${userName} (${userRole})');
-        </c:if>
-        <c:if test="${not isAuthenticated}">
-            console.log('Utilisateur non connecté');
-        </c:if>
         console.log('Page des courses chargée avec ${courses.size()} courses');
+    });
+
+    // Initialize Flatpickr for French locale
+    flatpickr("#dateFilter", {
+        locale: "fr",
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length) {
+                const iso = selectedDates[0].toISOString().split('T')[0];
+                instance._input.dataset.value = iso; // store ISO for filtering
+            } else {
+                instance._input.dataset.value = '';
+            }
+            filterCourses();
+        }
     });
 </script>
 
