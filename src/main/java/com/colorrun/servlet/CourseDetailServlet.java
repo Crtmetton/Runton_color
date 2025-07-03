@@ -14,18 +14,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CourseDetailServlet extends HttpServlet {
-    
+public abstract class CourseDetailServlet extends HttpServlet {
+
     private final CourseService courseService;
     private final MessageService messageService;
     private final ObjectMapper objectMapper;
-    
+
     public CourseDetailServlet() {
         this.courseService = new CourseServiceImpl();
         this.messageService = new MessageServiceImpl();
         this.objectMapper = new ObjectMapper();
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
@@ -33,16 +33,16 @@ public class CourseDetailServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Course ID is required");
             return;
         }
-        
+
         try {
             int id = Integer.parseInt(idParam);
-            
+
             courseService.findById(id).ifPresentOrElse(course -> {
                 try {
                     Map<String, Object> responseData = new HashMap<>();
                     responseData.put("course", course);
                     responseData.put("messages", messageService.findByCourse(id));
-                    
+
                     resp.setContentType("application/json");
                     objectMapper.writeValue(resp.getOutputStream(), responseData);
                 } catch (Exception e) {
@@ -61,7 +61,7 @@ public class CourseDetailServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
@@ -69,15 +69,15 @@ public class CourseDetailServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to post messages");
             return;
         }
-        
+
         String courseIdParam = req.getParameter("courseId");
         String content = req.getParameter("content");
-        
+
         if (courseIdParam == null || courseIdParam.isEmpty() || content == null || content.isEmpty()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Course ID and content are required");
             return;
         }
-        
+
         try {
             int courseId = Integer.parseInt(courseIdParam);
             messageService.create(courseId, user.getId(), content);
@@ -88,4 +88,8 @@ public class CourseDetailServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    protected abstract CourseService getCourseService();
+
+    protected abstract MessageService getMessageService();
 }

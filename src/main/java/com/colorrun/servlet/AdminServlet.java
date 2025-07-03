@@ -9,13 +9,13 @@ import com.colorrun.service.impl.OrganizerRequestServiceImpl;
 import com.colorrun.business.User;
 
 public class AdminServlet extends HttpServlet {
-    
+
     private final OrganizerRequestService organizerRequestService;
-    
+
     public AdminServlet() {
         this.organizerRequestService = new OrganizerRequestServiceImpl();
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
@@ -23,7 +23,7 @@ public class AdminServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
-        
+
         try {
             req.setAttribute("requests", organizerRequestService.findPending());
             req.getRequestDispatcher("/WEB-INF/views/admin/requests.html").forward(req, resp);
@@ -31,7 +31,7 @@ public class AdminServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
@@ -39,10 +39,10 @@ public class AdminServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must be an admin to perform this action");
             return;
         }
-        
+
         int requestId = Integer.parseInt(req.getParameter("requestId"));
         String action = req.getParameter("action");
-        
+
         try {
             if ("approve".equals(action)) {
                 organizerRequestService.approve(requestId);

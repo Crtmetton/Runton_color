@@ -15,11 +15,17 @@ import com.colorrun.config.ThymeleafConfig;
 public class HomeServlet extends HttpServlet {
     
     private final CourseService courseService;
-    
+
+
     public HomeServlet() {
         this.courseService = new CourseServiceImpl();
     }
-    
+
+    // constructeur pour tests
+    public HomeServlet(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -28,14 +34,14 @@ public class HomeServlet extends HttpServlet {
             if (upcomingCourses.size() > 3) {
                 upcomingCourses = upcomingCourses.subList(0, 3);
             }
-            
+
             // Configurer Thymeleaf
             TemplateEngine engine = ThymeleafConfig.getTemplateEngine();
             Context context = new Context();
-            
+
             // Ajouter les données au contexte
             context.setVariable("upcomingCourses", upcomingCourses);
-            
+
             // Rendre le template
             resp.setContentType("text/html;charset=UTF-8");
             engine.process("acceuil-2", context, resp.getWriter());

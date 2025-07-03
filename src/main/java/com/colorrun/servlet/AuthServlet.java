@@ -10,29 +10,29 @@ import com.colorrun.service.impl.UserServiceImpl;
 import com.colorrun.business.User;
 
 public class AuthServlet extends HttpServlet {
-    
+
     private final UserService userService;
-    
+
     public AuthServlet() {
         this.userService = new UserServiceImpl();
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/views/acceuil-2.html").forward(req, resp);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        
+
         try {
             userService.login(email, password).ifPresentOrElse(user -> {
                 try {
                     HttpSession session = req.getSession();
                     session.setAttribute("user", user);
-                    
+
                     switch (user.getRole()) {
                         case "ADMIN":
                             resp.sendRedirect(req.getContextPath() + "/admin/requests");

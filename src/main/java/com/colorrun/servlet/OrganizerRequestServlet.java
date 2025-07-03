@@ -9,7 +9,7 @@ import com.colorrun.business.User;
 
 public class OrganizerRequestServlet extends HttpServlet {
     
-    private final OrganizerRequestService organizerRequestService;
+    OrganizerRequestService organizerRequestService;
     
     public OrganizerRequestServlet() {
         this.organizerRequestService = new OrganizerRequestServiceImpl();

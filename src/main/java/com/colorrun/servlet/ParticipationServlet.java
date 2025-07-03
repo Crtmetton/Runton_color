@@ -9,7 +9,7 @@ import com.colorrun.business.User;
 
 public class ParticipationServlet extends HttpServlet {
     
-    private final ParticipationService participationService;
+    ParticipationService participationService;
     
     public ParticipationServlet() {
         this.participationService = new ParticipationServiceImpl();
